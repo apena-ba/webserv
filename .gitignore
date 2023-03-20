@@ -4,6 +4,9 @@ webserv
 # Prerequisites
 *.d
 
+# Text
+*.txt
+
 # Compiled Object files
 *.slo
 *.lo
