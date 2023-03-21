@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:31:53 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/21 21:35:26 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/03/21 21:46:42 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <fstream>
 #include <fcntl.h>
 #include <cstring>
+#include <unistd.h>
+#include <netinet/in.h>
 #include "macro.hpp"
 
 class Server{

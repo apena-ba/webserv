@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:33:56 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/21 21:35:19 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/03/21 21:51:43 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ Server::Server()
     this->_address.sin_family = AF_INET;
     this->_address.sin_addr.s_addr = INADDR_ANY;
     this->_address.sin_port = htons(PORT);
-    std::memset(this->_address.sin_zero, 0, sizeof(this->_address.sin_zero));
-    if(bind(this->_fd, &this->_address, sizeof(this->_address)) == -1)
+    std::memset(this->_address.sin_zero, 0, this->_addressLen);
+    if(bind(this->_fd, (struct sockaddr *)&this->_address, sizeof(this->_address)) == -1)
         throw (Server::FailBindException());
     if(listen(this->_fd, 10) == -1)
         throw (Server::FailListenException());
@@ -39,20 +39,9 @@ void Server::run(void){
     
     while(1){
         std::cout << "* WAITING FOR NEW CONNECTION *" << std::endl;
-        if(client_socket_fd = accept(this->_fd, &this->_address, &this->_address) == -1)
+        write(1, "one\n", 4);
+        if((client_socket_fd = accept(this->_fd, (struct sockaddr *)&this->_address, &this->_addressLen)) == -1)
             throw (Server::FailAcceptException());
-        do
-        {
-            if (!read(fd, i, 1))
-            {
-                //exception
-            }
-            client_content = strdup(i);
-        }
-        while(read(fd, i, 1)){
-            saver = client_content;
-            client_content = strjoin(client_content, i);
-            delete saver;        
-        }
+        write(1, "two\n", 4);
     }
 }
