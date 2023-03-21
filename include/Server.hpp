@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:31:53 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/21 20:06:01 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/03/21 21:35:26 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,24 @@
 
 #include <sys/socket.h>
 #include <iostream>
+#include <list>
+#include <fstream>
+#include <fcntl.h>
+#include <cstring>
+#include "macro.hpp"
 
 class Server{
     private:
         int _fd;
+        struct sockaddr_in _address;
+        socklen_t _addressLen;
 
     public:
         Server();
         ~Server();
-    
-    class FailSocketDeclarationException : std::exception
+        void run();
+
+    class FailSocketDeclarationException : public std::exception
     {
         virtual const char* what() const throw()
         {
@@ -32,7 +40,7 @@ class Server{
         };
     };
     
-    class FailBindException : std::exception
+    class FailBindException : public std::exception
     {
         virtual const char* what() const throw()
         {
@@ -40,7 +48,7 @@ class Server{
         };
     };
 
-    class FailListenException : std::exception
+    class FailListenException : public std::exception
     {
         virtual const char* what() const throw()
         {
@@ -48,7 +56,7 @@ class Server{
         };
     };
 
-    class FailAcceptException : std::exception
+    class FailAcceptException : public std::exception
     {
         virtual const char* what() const throw()
         {
