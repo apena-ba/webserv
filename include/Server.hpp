@@ -1,18 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/20 17:49:10 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/21 19:41:02 by apena-ba         ###   ########.fr       */
+/*   Created: 2023/03/21 19:31:53 by apena-ba          #+#    #+#             */
+/*   Updated: 2023/03/21 19:42:50 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
+#ifndef SERVER_HPP
+#define SERVER_HPP
 
-int main(void){
-    std::cout << "SERVER ON" << std::endl;
-    return(0);
-}
+#include <sys/socket.h>
+#include <iostream>
+
+class Server{
+    private:
+        int _fd;
+    public:
+        Server();
+        ~Server();
+};
+
+#endif

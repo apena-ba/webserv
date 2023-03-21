@@ -2,19 +2,21 @@ NAME = webserv
 
 CXX = c++
 
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -Wno-unused -std=c++98
 
-SRC = src/main.cpp
+INC = -I include
+
+SRC = src/main.cpp src/Server.cpp
 
 OBJ = obj/main.o
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJ)
+	$(CXX) $(CXXFLAGS) $(INC) -o $(NAME) $(OBJ)
 
 $(OBJ): $(SRC)
-	$(CXX) $(CXXFLAGS) -c $(SRC)
+	$(CXX) $(CXXFLAGS) $(INC) -c $(SRC)
 	rm -rf obj
 	mkdir obj
 	mv *.o obj
