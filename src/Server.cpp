@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:33:56 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/21 21:51:43 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/03/21 22:01:13 by efournou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,15 +33,17 @@ Server::~Server(){}
 
 void Server::run(void){
     int client_socket_fd;
-    char * client_content;
-    char * saver;
-    char *i;
+    std::string client_content;
+    char i;
     
     while(1){
         std::cout << "* WAITING FOR NEW CONNECTION *" << std::endl;
-        write(1, "one\n", 4);
         if((client_socket_fd = accept(this->_fd, (struct sockaddr *)&this->_address, &this->_addressLen)) == -1)
             throw (Server::FailAcceptException());
-        write(1, "two\n", 4);
+        while(read(client_socket_fd, &i, 1))
+        {
+            client_content.append(&i);   
+        }
+        std::cout << client_content << std::endl;
     }
 }
