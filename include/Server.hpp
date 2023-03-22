@@ -21,6 +21,7 @@
 #include <cstring>
 #include <unistd.h>
 #include <netinet/in.h>
+#include <poll.h>
 #include "macro.hpp"
 
 class Server{
@@ -28,6 +29,7 @@ class Server{
         int _fd;
         struct sockaddr_in _address;
         socklen_t _addressLen;
+        struct pollfd pollfds[2];
 
     public:
         Server();
