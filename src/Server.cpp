@@ -18,6 +18,13 @@ Server::Server()
     std::cout << "fd = " << this->_fd << std::endl;
     if (this->_fd == -1 || this->_fd == 0)
         throw (Server::FailSocketDeclarationException());
+
+    /*int opt = 1;
+    if (setsockopt(this->_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
+    {
+        std::cout << "setsockopt failed" << std::endl;
+        exit (1);
+    }*/
     this->_addressLen = sizeof(this->_address);
     this->_address.sin_family = AF_INET;
     this->_address.sin_addr.s_addr = INADDR_ANY;
@@ -25,7 +32,7 @@ Server::Server()
     std::memset(this->_address.sin_zero, 0, this->_addressLen);
     if(bind(this->_fd, (struct sockaddr *)&this->_address, sizeof(this->_address)) == -1)
         throw (Server::FailBindException());
-    if(listen(this->_fd, 10) == -1)
+    if(listen(this->_fd, MAXCLIENT) == -1)
         throw (Server::FailListenException());
     memset(this->pollfds, 0, sizeof (this->pollfds));
     this->pollfds[0].fd = this->_fd;
@@ -41,29 +48,60 @@ void Server::run(void){
     int new_client;
     int ret_read;
 
+
+    this->pollfds[1].fd = 0;
+    this->pollfds[1].events = POLLIN;
     while(1){
-        ret_poll = poll(this->pollfds, 2, TIMEOUT_POLL);
-        if (ret_poll == 0)
-        {
-            std::cout << "timeout" << std::endl;
-            continue ;
-        }
+        ret_poll = poll(this->pollfds, MAXCLIENT + 1, 100);
+        //-1 error
         if (ret_poll == -1)
         {
-            //insted of exit and cout throw exception
-            std::cout << "poll failed" << std::endl;
+            //throw poll exception
+            std::cout << "poll fail" << std::endl;
             exit (1);
         }
+        //timeout
+        else if (ret_poll == 0)
+        {
+            std::cout << "A" << std::endl;
+            if (client_content.empty() == false)
+            {
+                //std::cout << client_content << std::endl;
+                //client_content.clear();
+                //send
+            }
+        }
+        else
+        {
+            std::cout << "B" << std::endl;
+            read(this->pollfds[1].fd, &i, 1);
+            std::cout << i;
+        }
+    }
+}
+/*
+void Server::run(void){
+    std::string client_content;
+    char i;
+    int ret_poll;
+    int new_client;
+    int ret_read;
+
+    while(1){
+        ret_poll = poll(this->pollfds, MAXCLIENT + 1, TIMEOUT_POLL);
+        std::cout << "p0 revents POLLIN " << (this->pollfds[0].revents & POLLIN) << std::endl;
+        std::cout << "p0 revents POLLOUT" << (this->pollfds[0].revents & POLLOUT) << std::endl;
+        std::cout << "p1 revents POLLIN" << (this->pollfds[1].revents & POLLIN) << std::endl;
+        std::cout << "p1 revents POLLOUT" << (this->pollfds[1].revents & POLLOUT) << std::endl;
+        if (ret_poll <= 0)
+        {
+            std::cout << "retpoll0" << std::endl;
+            continue ;
+        }
+
         //Mean server is in PollIn
         if (this->pollfds[0].revents & POLLIN)
         {
-            if (this->pollfds[1].revents == 1 && client_content.empty() == false)
-            {
-                std::cout << "client content : " << std::endl;
-                std::cout << client_content << std::endl;
-                client_content.clear();
-                continue;
-            }
             new_client = accept(this->_fd, (struct sockaddr *)&this->_address, (socklen_t*)&this->_addressLen);
             if (new_client == -1)
             {
@@ -72,30 +110,40 @@ void Server::run(void){
                 exit (1);
             }
             std::cout << "Creating a new client" << std::endl;
-            this->pollfds[1].fd = new_client;
-            this->pollfds[1].events = POLLIN;
+            for (int index = 1; index <= MAXCLIENT; ++index)
+            {
+                if (this->pollfds[index].fd == 0)
+                {
+                    this->pollfds[index].fd = new_client;
+                    this->pollfds[index].events = POLLIN;
+                }
+            }
         }
         //Mean client is in PollIn
-        if (this->pollfds[1].revents & POLLIN)
+        for (int index = 1; index <= MAXCLIENT; ++index)
         {
-            ret_read = read(this->pollfds[1].fd, &i, 1);
-            if (ret_read == -1) {
-                //Dont exit and cout but throw exception
-                std::cout << "Error reading from the client" << std::endl;
-                exit(1);
-            }
-            else if (ret_read == 0)
-            {
-                std::cout << "Client disconnect" << std::endl;
-                close (this->pollfds[1].fd);
-                this->pollfds[1].fd = 0;
+            if (this->pollfds[index].fd == 0)
                 continue;
-            }
-            else
-            {
-                std::cout << "appending" << std::endl;
-                client_content.append(&i);
+            if (this->pollfds[index].revents & POLLIN) {
+                while (true) {
+                    ret_read = read(this->pollfds[index].fd, &i, 1);
+                    if (ret_read == -1) {
+                        //Dont exit and cout but throw exception
+                        std::cout << "Error reading from the client" << std::endl;
+                        exit(1);
+                    } else if (ret_read == 0) {
+                        std::cout << "Client disconnect" << std::endl;
+                        close(this->pollfds[index].fd);
+                        this->pollfds[index].fd = 0;
+                        break;
+                    } else {
+                        //std::cout << "appending" << std::endl;
+                        client_content.append(&i);
+                    }
+                }
             }
         }
+        std::cout << client_content << std::endl;
+        client_content.clear();
     }
-}
+}*/

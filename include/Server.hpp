@@ -29,7 +29,7 @@ class Server{
         int _fd;
         struct sockaddr_in _address;
         socklen_t _addressLen;
-        struct pollfd pollfds[2];
+        struct pollfd pollfds[MAXCLIENT + 1];
 
     public:
         Server();
