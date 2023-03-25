@@ -13,7 +13,7 @@
 #ifndef MACRO_HPP
 #define MACRO_HPP
 
-# define PORT 1020
+# define PORT 2020
 
 # define TIMEOUT_POLL 100
 # define MAXCLIENT 10
