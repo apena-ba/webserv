@@ -13,8 +13,10 @@
 #ifndef MACRO_HPP
 #define MACRO_HPP
 
-# define PORT 1070
+# define PORT 1020
+
 # define TIMEOUT_POLL 100
 # define MAXCLIENT 10
+# define BUFFER_SIZE 1000
 
 #endif

@@ -42,11 +42,13 @@ Server::Server()
 Server::~Server(){}
 
 void Server::run(void){
-    std::string client_content;
+    std::string client_content[MAXCLIENT];
     char i;
     int ret_poll;
     int new_client;
     int ret_read;
+    char hello[] = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+    std::string helloRequest(hello);
 
 
     this->pollfds[1].fd = 0;
@@ -63,19 +65,53 @@ void Server::run(void){
         //timeout
         else if (ret_poll == 0)
         {
-            std::cout << "A" << std::endl;
-            if (client_content.empty() == false)
-            {
-                //std::cout << client_content << std::endl;
-                //client_content.clear();
-                //send
-            }
+            //timeout
+            continue;
         }
         else
         {
-            std::cout << "B" << std::endl;
-            read(this->pollfds[1].fd, &i, 1);
-            std::cout << i;
+            //
+            if (this->pollfds[0].revents & POLLIN)
+            {
+                std::cout << "new client" << std::endl;
+                struct sockaddr_in client_address;
+                socklen_t client_address_length = sizeof(client_address);
+                new_client = accept(this->pollfds[0].fd,
+                                    (struct sockaddr *)&client_address,
+                                            &client_address_length);
+                for (int index = 1; index != MAXCLIENT; index++)
+                {
+                    if (this->pollfds[index].fd == 0 || this->pollfds[index].fd == -1)
+                    {
+                        this->pollfds[index].fd = new_client;
+                        this->pollfds[index].events = POLLIN | POLLOUT;
+                        break ;
+                    }
+                }
+            }
+            for (int index = 1; index != MAXCLIENT; index++)
+            {
+                if (this->pollfds[index].fd != 0 && this->pollfds[index].fd != -1)
+                {
+                    if (this->pollfds[index].revents & POLLIN) {
+                        ret_read = read(this->pollfds[1].fd, &i, BUFFER_SIZE);
+                        if (ret_read <= 0) {
+                            //client disconnect or error occur, remove the client
+                            close (this->pollfds[index].fd);
+                            this->pollfds[index].fd = -1;
+                        } else {
+                            client_content[index].push_back(i);
+                        }
+                    }
+                    if (this->pollfds[index].revents & POLLOUT) {
+                        if (this->pollfds[index].fd != -1) {
+                            std::cout << client_content[index];
+                            client_content[index].clear();
+                            write(this->pollfds[index].fd, hello, helloRequest.length());
+                        }
+                    }
+                }
+            }
         }
     }
 }
