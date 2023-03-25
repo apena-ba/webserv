@@ -62,7 +62,7 @@ void Server::run(void){
             std::cout << "poll fail" << std::endl;
             exit (1);
         }
-        //timeout
+            //timeout
         else if (ret_poll == 0)
         {
             //timeout
@@ -78,7 +78,7 @@ void Server::run(void){
                 socklen_t client_address_length = sizeof(client_address);
                 new_client = accept(this->pollfds[0].fd,
                                     (struct sockaddr *)&client_address,
-                                            &client_address_length);
+                                    &client_address_length);
                 for (int index = 1; index != MAXCLIENT; index++)
                 {
                     if (this->pollfds[index].fd == 0 || this->pollfds[index].fd == -1)
