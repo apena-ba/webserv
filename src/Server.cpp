@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:33:56 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/27 17:42:48 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/03/27 17:46:02 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,6 @@ Server::Server()
     if (this->_fd == -1 || this->_fd == 0)
         throw (Server::FailSocketDeclarationException());
 
-    /*int opt = 1;
-    if (setsockopt(this->_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
-    {
-        std::cout << "setsockopt failed" << std::endl;
-        exit (1);
-    }*/
     this->_addressLen = sizeof(this->_address);
     this->_address.sin_family = AF_INET;
     this->_address.sin_addr.s_addr = INADDR_ANY;
@@ -65,7 +59,6 @@ void Server::run(void){
             if (this->pollfds[0].revents & POLLIN)
                 this->createNewClient();
             this->checkConnections();
-            //std::cout << "Something to read" << std::endl;
             this->readData();
             this->sendData();
         }
@@ -87,7 +80,7 @@ void Server::checkConnections(void){
 }
 
 void Server::createNewClient(void){
-    // std::cout << "new client" << std::endl;
+    std::cout << std::endl << "NEW CLIENT" << std::endl;
 
     int new_client;
     struct sockaddr_in client_address;
@@ -101,7 +94,6 @@ void Server::createNewClient(void){
             this->pollfds[index].fd = new_client;
             this->pollfds[index].events = POLLIN | POLLERR | POLLHUP;
             this->pollfds[index].revents = 0;
-            // std::cout << "Index of the new client is " << index << std::endl;
             break ;
         }
     }
@@ -112,29 +104,17 @@ void Server::readData(void){
     int ret_read;
 
     memset(buff, 0, BUFFER_SIZE + 1);
-    //std::cout << "going to read" << std::endl;
     // Loop and reads from sockets and store the content into each client content
     for (int index = 1; index < MAXCLIENT; index++) {
-        // if(this->pollfds[index].fd > 0){
-        //     //std::cout << "Index of the fd > 0 is " << index << std::endl;
-        //     std::cout << "revents IN of the fd " << this->pollfds[index].fd << " -> " << (this->pollfds[index].revents & POLLIN) << std::endl;
-        //     std::cout << "revents OUT of the fd " << this->pollfds[index].fd << " -> " << (this->pollfds[index].revents & POLLOUT) << std::endl;
-        //     //std::cout << "fd of the fd > 0 is " << this->pollfds[index].fd << std::endl;
-        // }
         if ((this->pollfds[index].fd > 0) && (this->pollfds[index].revents & POLLIN)) {
-            // std::cout << "READ" << std::endl;
             ret_read = read(this->pollfds[index].fd, buff, BUFFER_SIZE);
-            // std::cout << "BUFF is = " << buff << std::endl;
-            // std::cout << "ret_read is = " << ret_read << std::endl;
             if (ret_read < BUFFER_SIZE || (buff[BUFFER_SIZE - 1] == '\n' && buff[BUFFER_SIZE - 2] == '\n')) {
-                // std::cout << "Alredy read everything" << std::endl;
                 if(ret_read > 0)
                     this->client_content[index].append(buff);
                 this->pollfds[index].events = POLLOUT | POLLERR | POLLHUP;
             }
             else
                 this->client_content[index].append(buff);
-            // std::cout << "Content is = " << this->client_content[index] << std::endl;
             memset(buff, 0, BUFFER_SIZE + 1);
         }
     }
