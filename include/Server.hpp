@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:31:53 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/21 21:46:42 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/03/26 22:31:03 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,16 @@ class Server{
         struct sockaddr_in _address;
         socklen_t _addressLen;
         struct pollfd pollfds[MAXCLIENT + 1];
+        std::string client_content[MAXCLIENT];
 
     public:
         Server();
         ~Server();
         void run();
+        void readData();
+        void sendData();
+        void createNewClient();
+        void checkConnections();
 
     class FailSocketDeclarationException : public std::exception
     {
@@ -65,6 +70,14 @@ class Server{
         virtual const char* what() const throw()
         {
             return ("Accept failed");
+        };
+    };
+    
+    class FailPollException : public std::exception
+    {
+        virtual const char* what() const throw()
+        {
+            return ("Poll failed");
         };
     };
 };

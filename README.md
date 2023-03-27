@@ -107,7 +107,7 @@ RFC:
 
 TCP socket:
     - Mecanismo que utilizan programas para tener acceso a una red.
-    - Permite la cominación entre programas en diferentes sistemas.
+    - Permite la comuninación entre programas en diferentes sistemas.
 
     Uso de TCP/IP socket:
     1. Crear el socket:
@@ -138,7 +138,12 @@ TCP socket:
     - int listen(int socket, int backlog)
     - backlog: define el número máximo de conexiones que se pueden
       poner en cola antes de rechazar nuevas conexiones.
-    - más cosas de accept que se harán luego.
+    - Usamos poll para evitar el bloqueo de I/O (input/output).
+    - Se utiliza la struct sockaddr_in que tiene 3 variables:
+      a. Un int fd.
+      b. Un int events -> Son los eventos que poll va a monitorear.
+      c. Un int revents -> Son los eventos que poll pone para indicar qué
+          eventos han sucedido.
 
     4. Mandar y recivir mensajes:
     - read -> socket (recordar que es un fd)
