@@ -6,7 +6,7 @@
 /*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:33:56 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/28 21:08:39 by efournou         ###   ########.fr       */
+/*   Updated: 2023/03/28 21:11:06 by efournou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,10 @@ Server::Server() : _timeOutRead(this->initializeTimeOutRead()), _timeOutWrite(th
     memset(this->pollfds, 0, sizeof (this->pollfds));
     this->pollfds[0].fd = this->_fd;
     this->pollfds[0].events = POLLIN;
-    for(int index = 1; index < MAXCLIENT; index++){
+    for(int index = 1; index < MAXCLIENT; index++)
+    {
         this->pollfds[index].fd = -1;
-        this->pollfds[index].events = POLLIN | POLLERR | POLLHUP;
+        this->pollfds[index].events = 0;
         this->pollfds[index].revents = 0;
     }
 }
@@ -78,9 +79,10 @@ void Server::run(void){
         if (ret_poll == -1)
             throw (Server::FailPollException());
         // 0 nothing to read - maybe something to send
-        else if (ret_poll == 0){
+        else if (ret_poll == 0)
+        {
             // std::cout << "Waiting for connection" << std::endl;
-            //this->sendData();
+            this->sendData();
         }
         // positive something to read
         else
@@ -126,6 +128,7 @@ void Server::createNewClient(void){
             this->pollfds[index].fd = new_client;
             this->pollfds[index].events = POLLIN | POLLERR | POLLHUP;
             this->pollfds[index].revents = 0;
+            fcntl(this->pollfds[index].fd, F_SETFL, O_NONBLOCK);
             break ;
         }
     }
@@ -140,18 +143,20 @@ void Server::readData(void){
     char buff[BUFFER_SIZE];
     int ret_read;
     // Loop and reads from sockets and store the content into each client content
-    for (int index = 1; index < MAXCLIENT; index++) {
-        if (this->pollfds[index].revents == POLLIN)
+    for (int index = 1; index < MAXCLIENT; index++)
+    {
+        if ((this->pollfds[index].fd > 0) && (this->pollfds[index].revents & POLLIN))
         {
-            while ((ret_read =
-                read(this->pollfds[index].fd, buff, BUFFER_SIZE)>0))
-        {
-              this->client_content[index].push_back(*buff);  
-        }
-        }
-        else
-        {
-            std::cout << "not equal POLLI" << std::endl;
+            ret_read = read(this->pollfds[index].fd, buff, BUFFER_SIZE);
+            this->pollfds[index].events |= POLLOUT;
+            if (ret_read < BUFFER_SIZE)
+            {
+                if(ret_read > 0)
+                    this->client_content[index].append(buff);
+            }
+            else
+                this->client_content[index].append(buff);
+            memset(buff, 0, BUFFER_SIZE + 1);
         }
     }
 }
@@ -162,8 +167,10 @@ void Server::sendData(void){
     static int responses = 0;
 
     // Loop until some socket is opened and is able to take output
-    for (int index = 1; index < MAXCLIENT; index++) {
-        if ((this->pollfds[index].revents & POLLOUT) && (this->pollfds[index].fd > 0) && !(this->pollfds[index].revents & POLLIN)) {
+    for (int index = 1; index < MAXCLIENT; index++)
+    {
+        if ((this->pollfds[index].revents & POLLOUT) && (this->pollfds[index].fd > 0) && !(this->pollfds[index].revents & POLLIN))
+        {
             std::cout << std::endl << "RESPONSE NUMBER = " << responses++ << std::endl << std::endl;
             std::cout << "Content was = " << this->client_content[index] << std::endl;
             this->client_content[index].clear();
