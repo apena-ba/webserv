@@ -6,7 +6,7 @@
 /*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:31:53 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/28 21:06:52 by efournou         ###   ########.fr       */
+/*   Updated: 2023/03/28 21:24:36 by efournou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ class Server{
         void sendData();
         void createNewClient();
         void checkConnections();
-        void setSockTimeOut(int fd);
+        int setSockTimeOut(int fd);
 
     class FailSocketDeclarationException : public std::exception
     {
