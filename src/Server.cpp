@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:33:56 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/27 17:46:02 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/03/28 21:08:39 by efournou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-Server::Server()
+Server::Server() : _timeOutRead(this->initializeTimeOutRead()), _timeOutWrite(this->initializeTimeOutWrite())
 {
     this->_fd = socket(AF_INET, SOCK_STREAM, 0);
     std::cout << "SERVER fd = " << this->_fd << std::endl;
     if (this->_fd == -1 || this->_fd == 0)
         throw (Server::FailSocketDeclarationException());
-
+    this->setSockTimeOut(this->_fd);
     this->_addressLen = sizeof(this->_address);
     this->_address.sin_family = AF_INET;
     this->_address.sin_addr.s_addr = INADDR_ANY;
@@ -39,6 +39,35 @@ Server::Server()
 }
 
 Server::~Server(){}
+
+timeval Server::initializeTimeOutRead()
+{
+    timeval temp;
+    temp.tv_sec = TIMEOUT_READING_SEC;
+    temp.tv_usec = TIMEOUT_READING_USEC;
+    return temp;
+}
+
+timeval Server::initializeTimeOutWrite()
+{
+    timeval temp;
+    temp.tv_sec = TIMEOUT_WRITING_SEC;
+    temp.tv_usec = TIMEOUT_WRITING_USEC;
+    return temp;
+}
+
+void Server::setSockTimeOut(int fd)
+{
+    if (setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (const void *) &this->_timeOutRead, sizeof(this->_timeOutRead)) < 0)
+    {
+        throw (Server::FailSocketSetTimeoutException());
+    }
+    if (setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, (const void *) &this->_timeOutWrite, sizeof(this->_timeOutWrite)) < 0)
+    {
+        throw (Server::FailSocketSetTimeoutException());
+    }
+    
+}
 
 void Server::run(void){
     int ret_poll;
@@ -86,8 +115,11 @@ void Server::createNewClient(void){
     struct sockaddr_in client_address;
     socklen_t client_address_length = sizeof(client_address);
     new_client = accept(this->pollfds[0].fd, (struct sockaddr *)&client_address, &client_address_length);
-
-    for (int index = 1; index < MAXCLIENT; index++)
+    
+    if (new_client > 0)
+    {
+        fcntl (new_client, F_SETFL, O_NONBLOCK);
+        for (int index = 1; index < MAXCLIENT; index++)
     {
         if (this->pollfds[index].fd < 1)
         {
@@ -97,25 +129,29 @@ void Server::createNewClient(void){
             break ;
         }
     }
+    }
+    else
+    {
+        std::cout << "Accept failed" << std::endl;
+    }
 }
 
 void Server::readData(void){
-    char buff[BUFFER_SIZE + 1];
+    char buff[BUFFER_SIZE];
     int ret_read;
-
-    memset(buff, 0, BUFFER_SIZE + 1);
     // Loop and reads from sockets and store the content into each client content
     for (int index = 1; index < MAXCLIENT; index++) {
-        if ((this->pollfds[index].fd > 0) && (this->pollfds[index].revents & POLLIN)) {
-            ret_read = read(this->pollfds[index].fd, buff, BUFFER_SIZE);
-            if (ret_read < BUFFER_SIZE || (buff[BUFFER_SIZE - 1] == '\n' && buff[BUFFER_SIZE - 2] == '\n')) {
-                if(ret_read > 0)
-                    this->client_content[index].append(buff);
-                this->pollfds[index].events = POLLOUT | POLLERR | POLLHUP;
-            }
-            else
-                this->client_content[index].append(buff);
-            memset(buff, 0, BUFFER_SIZE + 1);
+        if (this->pollfds[index].revents == POLLIN)
+        {
+            while ((ret_read =
+                read(this->pollfds[index].fd, buff, BUFFER_SIZE)>0))
+        {
+              this->client_content[index].push_back(*buff);  
+        }
+        }
+        else
+        {
+            std::cout << "not equal POLLI" << std::endl;
         }
     }
 }

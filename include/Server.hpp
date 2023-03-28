@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
+/*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:31:53 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/26 22:31:03 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/03/28 21:06:52 by efournou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,11 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <poll.h>
+#include <stdlib.h>
+#include <sys/types.h>
+
 #include "macro.hpp"
+
 
 class Server{
     private:
@@ -31,7 +35,10 @@ class Server{
         socklen_t _addressLen;
         struct pollfd pollfds[MAXCLIENT + 1];
         std::string client_content[MAXCLIENT];
-
+        const struct timeval _timeOutRead;
+        const struct timeval _timeOutWrite;
+        static timeval initializeTimeOutRead();
+        static timeval initializeTimeOutWrite();
     public:
         Server();
         ~Server();
@@ -40,8 +47,17 @@ class Server{
         void sendData();
         void createNewClient();
         void checkConnections();
+        void setSockTimeOut(int fd);
 
     class FailSocketDeclarationException : public std::exception
+    {
+        virtual const char* what() const throw()
+        {
+            return ("Problem setting timeout socket");
+        };
+    };
+
+    class FailSocketSetTimeoutException : public std::exception
     {
         virtual const char* what() const throw()
         {
