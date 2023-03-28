@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:33:56 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/27 17:46:02 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/03/28 19:01:02 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void Server::run(void){
         // 0 nothing to read - maybe something to send
         else if (ret_poll == 0){
             // std::cout << "Waiting for connection" << std::endl;
-            //this->sendData();
+            this->sendData();
         }
         // positive something to read
         else
@@ -108,10 +108,10 @@ void Server::readData(void){
     for (int index = 1; index < MAXCLIENT; index++) {
         if ((this->pollfds[index].fd > 0) && (this->pollfds[index].revents & POLLIN)) {
             ret_read = read(this->pollfds[index].fd, buff, BUFFER_SIZE);
-            if (ret_read < BUFFER_SIZE || (buff[BUFFER_SIZE - 1] == '\n' && buff[BUFFER_SIZE - 2] == '\n')) {
+            this->pollfds[index].events |= POLLOUT;
+            if (ret_read < BUFFER_SIZE) {
                 if(ret_read > 0)
                     this->client_content[index].append(buff);
-                this->pollfds[index].events = POLLOUT | POLLERR | POLLHUP;
             }
             else
                 this->client_content[index].append(buff);
