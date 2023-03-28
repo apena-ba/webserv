@@ -6,7 +6,7 @@
 /*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:31:53 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/28 21:24:36 by efournou         ###   ########.fr       */
+/*   Updated: 2023/03/28 21:26:06 by efournou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,6 @@ class Server{
         virtual const char* what() const throw()
         {
             return ("Problem setting timeout socket");
-        };
-    };
-
-    class FailSocketSetTimeoutException : public std::exception
-    {
-        virtual const char* what() const throw()
-        {
-            return ("Socket declaration failed");
         };
     };
     
