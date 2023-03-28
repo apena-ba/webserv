@@ -6,7 +6,7 @@
 /*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:33:56 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/28 21:25:13 by efournou         ###   ########.fr       */
+/*   Updated: 2023/03/28 22:04:34 by efournou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,13 @@ int Server::setSockTimeOut(int fd)
 {
     if (setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (const void *) &this->_timeOutRead, sizeof(this->_timeOutRead)) < 0)
     {
-        return (-1);
+        return (false);
     }
     if (setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, (const void *) &this->_timeOutWrite, sizeof(this->_timeOutWrite)) < 0)
     {
-        return (-1);
+        return (false));
     }
-    return (0);
+    return (true);
 }
 
 void Server::run(void){
@@ -117,9 +117,8 @@ void Server::createNewClient(void){
     struct sockaddr_in client_address;
     socklen_t client_address_length = sizeof(client_address);
     new_client = accept(this->pollfds[0].fd, (struct sockaddr *)&client_address, &client_address_length);
-    if (this->setSockTimeOut(new_client) == 0 && new_client > 0)
+    if (new_client > 0 this->setSockTimeOut(new_client) == true && fcntl (new_client, F_SETFL, O_NONBLOCK) == 0)
     {
-        fcntl (new_client, F_SETFL, O_NONBLOCK);
         for (int index = 1; index < MAXCLIENT; index++)
     {
         if (this->pollfds[index].fd < 1)

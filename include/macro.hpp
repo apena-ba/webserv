@@ -6,12 +6,24 @@
 /*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 20:33:46 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/28 21:11:04 by efournou         ###   ########.fr       */
+/*   Updated: 2023/03/28 21:29:08 by efournou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MACRO_HPP
 #define MACRO_HPP
+
+#include <sys/socket.h>
+#include <iostream>
+#include <list>
+#include <fstream>
+#include <fcntl.h>
+#include <cstring>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <poll.h>
+#include <stdlib.h>
+#include <sys/types.h>
 
 # define PORT 8082
 

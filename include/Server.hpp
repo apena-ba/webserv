@@ -6,26 +6,14 @@
 /*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 19:31:53 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/28 21:26:06 by efournou         ###   ########.fr       */
+/*   Updated: 2023/03/28 21:42:13 by efournou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include <sys/socket.h>
-#include <iostream>
-#include <list>
-#include <fstream>
-#include <fcntl.h>
-#include <cstring>
-#include <unistd.h>
-#include <netinet/in.h>
-#include <poll.h>
-#include <stdlib.h>
-#include <sys/types.h>
-
-#include "macro.hpp"
+#include "Client.hpp"
 
 
 class Server{
@@ -33,12 +21,12 @@ class Server{
         int _fd;
         struct sockaddr_in _address;
         socklen_t _addressLen;
-        struct pollfd pollfds[MAXCLIENT + 1];
-        std::string client_content[MAXCLIENT];
+        Clients clients;
         const struct timeval _timeOutRead;
         const struct timeval _timeOutWrite;
         static timeval initializeTimeOutRead();
         static timeval initializeTimeOutWrite();
+        
     public:
         Server();
         ~Server();
@@ -47,7 +35,7 @@ class Server{
         void sendData();
         void createNewClient();
         void checkConnections();
-        int setSockTimeOut(int fd);
+        bool setSockTimeOut(int fd);
 
     class FailSocketDeclarationException : public std::exception
     {
