@@ -29,14 +29,7 @@ Server::Server() : _timeOutRead(this->initializeTimeOutRead()), _timeOutWrite(th
     if(listen(this->_fd, MAXCLIENT) == -1)
         throw (Server::FailListenException());
     memset(this->pollfds, 0, sizeof (this->pollfds));
-    this->pollfds[0].fd = this->_fd;
-    this->pollfds[0].events = POLLIN;
-    for(int index = 1; index < MAXCLIENT; index++)
-    {
-        this->pollfds[index].fd = -1;
-        this->pollfds[index].events = 0;
-        this->pollfds[index].revents = 0;
-    }
+    this->clients.push(this->_fd, POLLIN);
 }
 
 Server::~Server(){}
@@ -57,7 +50,7 @@ timeval Server::initializeTimeOutWrite()
     return temp;
 }
 
-int Server::setSockTimeOut(int fd)
+bool Server::setSockTimeOut(int fd)
 {
     if (setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (const void *) &this->_timeOutRead, sizeof(this->_timeOutRead)) < 0)
     {
@@ -65,7 +58,7 @@ int Server::setSockTimeOut(int fd)
     }
     if (setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, (const void *) &this->_timeOutWrite, sizeof(this->_timeOutWrite)) < 0)
     {
-        return (false));
+        return (false);
     }
     return (true);
 }
@@ -74,7 +67,7 @@ void Server::run(void){
     int ret_poll;
 
     while(1){
-        ret_poll = poll(this->pollfds, MAXCLIENT + 1, 100);
+        ret_poll = poll(this->clients.pollData(), this->clients.size(), 100);
         // -1 Error
         if (ret_poll == -1)
             throw (Server::FailPollException());
@@ -87,7 +80,7 @@ void Server::run(void){
         // positive something to read
         else
         {
-            if (this->pollfds[0].revents & POLLIN)
+            if (this->clients.getPollFdByIndex(0)->revents & POLLIN)
                 this->createNewClient();
             this->checkConnections();
             this->readData();
@@ -97,13 +90,12 @@ void Server::run(void){
 }
 
 void Server::checkConnections(void){
-    for (int index = 1; index < MAXCLIENT; index++)
+    for (unsigned int index = 1; index < this->clients.size(); index++)
     {
-        if (this->pollfds[index].fd > 0 && (this->pollfds[index].revents & POLLHUP || this->pollfds[index].revents & POLLERR))
+        if (this->clients.getPollFdByIndex(index)->fd > 0 && (this->clients.getPollFdByIndex(index)->revents & POLLHUP || this->clients.getPollFdByIndex(index)->revents & POLLERR))
         {
-            close(this->pollfds[index].fd);
-            this->pollfds[index].fd = -1;
-            this->pollfds[index].events = 0;
+            close(this->clients.getPollFdByIndex(index)->fd);
+            this->clients.remove(index);
             std::cout << "Error ocurred on index " << index << std::endl;
             break ;
         }
@@ -116,20 +108,10 @@ void Server::createNewClient(void){
     int new_client;
     struct sockaddr_in client_address;
     socklen_t client_address_length = sizeof(client_address);
-    new_client = accept(this->pollfds[0].fd, (struct sockaddr *)&client_address, &client_address_length);
-    if (new_client > 0 this->setSockTimeOut(new_client) == true && fcntl (new_client, F_SETFL, O_NONBLOCK) == 0)
+    new_client = accept(this->clients.getPollFdByIndex(0)->fd, (struct sockaddr *)&client_address, &client_address_length);
+    if (new_client > 0 && this->setSockTimeOut(new_client) == true && fcntl (new_client, F_SETFL, O_NONBLOCK) == 0)
     {
-        for (int index = 1; index < MAXCLIENT; index++)
-    {
-        if (this->pollfds[index].fd < 1)
-        {
-            this->pollfds[index].fd = new_client;
-            this->pollfds[index].events = POLLIN | POLLERR | POLLHUP;
-            this->pollfds[index].revents = 0;
-            fcntl(this->pollfds[index].fd, F_SETFL, O_NONBLOCK);
-            break ;
-        }
-    }
+        this->clients.push(new_client, POLLIN | POLLERR | POLLHUP);
     }
     else
     {
@@ -138,23 +120,22 @@ void Server::createNewClient(void){
 }
 
 void Server::readData(void){
-    char buff[BUFFER_SIZE];
-    int ret_read;
+    char buff[BUFFER_SIZE + 1];
+    ssize_t ret_read;
     // Loop and reads from sockets and store the content into each client content
-    for (int index = 1; index < MAXCLIENT; index++)
+    for (unsigned int index = 1; index < this->clients.size(); index++)
     {
-        if ((this->pollfds[index].fd > 0) && (this->pollfds[index].revents & POLLIN))
-        {
-            ret_read = read(this->pollfds[index].fd, buff, BUFFER_SIZE);
-            this->pollfds[index].events |= POLLOUT;
-            if (ret_read < BUFFER_SIZE)
-            {
-                if(ret_read > 0)
-                    this->client_content[index].append(buff);
+        memset(buff, 0, BUFFER_SIZE + 1);
+        if ((this->clients.getPollFdByIndex(index)->fd > 0) && (this->clients.getPollFdByIndex(index)->revents & POLLIN)) {
+            ret_read = read(this->clients.getPollFdByIndex(index)->fd, buff, BUFFER_SIZE);
+            this->clients.setEvent(index, POLLOUT);
+            if (ret_read < BUFFER_SIZE) {
+                if (ret_read > 0) {
+                    this->clients.pushContentToIndex(index, buff);
+                }
+            } else {
+                this->clients.pushContentToIndex(index, buff);
             }
-            else
-                this->client_content[index].append(buff);
-            memset(buff, 0, BUFFER_SIZE + 1);
         }
     }
 }
@@ -165,18 +146,15 @@ void Server::sendData(void){
     static int responses = 0;
 
     // Loop until some socket is opened and is able to take output
-    for (int index = 1; index < MAXCLIENT; index++)
+    for (unsigned int index = 1; index < this->clients.size(); index++)
     {
-        if ((this->pollfds[index].revents & POLLOUT) && (this->pollfds[index].fd > 0) && !(this->pollfds[index].revents & POLLIN))
+        if ((this->clients.getPollFdByIndex(index)->revents & POLLOUT) && (this->clients.getPollFdByIndex(index)->fd > 0) && !(this->clients.getPollFdByIndex(index)->revents & POLLIN))
         {
             std::cout << std::endl << "RESPONSE NUMBER = " << responses++ << std::endl << std::endl;
-            std::cout << "Content was = " << this->client_content[index] << std::endl;
-            this->client_content[index].clear();
-            write(this->pollfds[index].fd, hello, helloRequest.length());
-            close(this->pollfds[index].fd);
-            this->pollfds[index].fd = -1;
-            this->pollfds[index].events = 0;
-            this->pollfds[index].revents = 0;
+            std::cout << "Content was = " << *(this->clients.getContentByIndex(index)) << std::endl;
+            write(this->clients.getPollFdByIndex(index)->fd, hello, helloRequest.length());
+            close(this->clients.getPollFdByIndex(index)->fd);
+            this->clients.remove(index);
         }
     }
 }

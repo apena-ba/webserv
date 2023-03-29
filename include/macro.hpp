@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
-# define PORT 8082
+# define PORT 8085
 
 # define TIMEOUT_POLL 100
 # define TIMEOUT_READING_SEC 5
@@ -33,6 +33,6 @@
 # define TIMEOUT_WRITING_SEC 5
 # define TIMEOUT_WRITING_USEC 0
 # define MAXCLIENT 10
-# define BUFFER_SIZE 1
+# define BUFFER_SIZE 1000
 
 #endif

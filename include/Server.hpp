@@ -13,11 +13,13 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "Client.hpp"
+#include "Clients.hpp"
 
 
 class Server{
     private:
+        pollfd pollfds[MAXCLIENT + 1];
+        std::string client_content[MAXCLIENT + 1];
         int _fd;
         struct sockaddr_in _address;
         socklen_t _addressLen;

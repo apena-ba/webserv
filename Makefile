@@ -2,13 +2,13 @@ NAME = webserv
 
 CXX = c++
 
-CXXFLAGS = -Wall -Wextra -Werror -Wno-unused -Wno-unused-parameter -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -Wno-unused -Wno-unused-parameter -std=c++98 -g
 
 INC = -I include
 
-SRC = src/main.cpp src/Server.cpp
+SRC = src/main.cpp src/Server.cpp src/Clients.cpp
 
-OBJ = obj/main.o obj/Server.o
+OBJ = obj/main.o obj/Server.o obj/Clients.o
 
 all: $(NAME)
 
