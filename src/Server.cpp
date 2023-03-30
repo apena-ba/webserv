@@ -152,6 +152,7 @@ void Server::sendData(void){
         {
             std::cout << std::endl << "RESPONSE NUMBER = " << responses++ << std::endl << std::endl;
             std::cout << "Content was = " << *(this->clients.getContentByIndex(index)) << std::endl;
+            std::cout << "Size ->" << this->clients.size() << std::endl;
             write(this->clients.getPollFdByIndex(index)->fd, hello, helloRequest.length());
             close(this->clients.getPollFdByIndex(index)->fd);
             this->clients.remove(index);
