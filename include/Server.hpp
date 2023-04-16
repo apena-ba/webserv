@@ -3,81 +3,67 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/03/21 19:31:53 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/28 21:42:13 by efournou         ###   ########.fr       */
+/*   Created: 2023/04/13 20:05:52 by apena-ba          #+#    #+#             */
+/*   Updated: 2023/04/16 16:26:57 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
-#include "Clients.hpp"
-
+#include "macro.hpp"
+#include "Configuration.hpp"
+#include <vector>
 
 class Server{
     private:
-        pollfd pollfds[MAXCLIENT + 1];
-        std::string client_content[MAXCLIENT + 1];
-        int _fd;
-        struct sockaddr_in _address;
-        socklen_t _addressLen;
-        Clients clients;
-        const struct timeval _timeOutRead;
-        const struct timeval _timeOutWrite;
-        static timeval initializeTimeOutRead();
-        static timeval initializeTimeOutWrite();
-        
+        int                         _serverFd;
+        std::vector<pollfd>         _pollFds;
+        std::vector<std::string>    _requests;
+        Configuration               _config;
+        struct sockaddr_in          _address;
+        socklen_t                   _addressLen;
+        const struct timeval        _timeOutRead;
+        const struct timeval        _timeOutWrite;
     public:
         Server();
+        Server(Configuration &config);
         ~Server();
-        void run();
-        void readData();
-        void sendData();
-        void createNewClient();
-        void checkConnections();
+        void run(void);
+        void updateFds(std::vector<pollfd> general_fds, unsigned int *index);
+        void createNewClient(void);
+        void closeClient(unsigned int index);
         bool setSockTimeOut(int fd);
+        pollfd getPollfdByIndex(int index);
+        unsigned int getPollfdsSize(void) const;
+        timeval initializeTimeOutRead(void);
+        timeval initializeTimeOutWrite(void);
 
-    class FailSocketDeclarationException : public std::exception
-    {
-        virtual const char* what() const throw()
+        class FailSocketDeclarationException : public std::exception
         {
-            return ("Problem setting timeout socket");
+            virtual const char* what() const throw()
+            {
+                return ("Problem setting socket");
+            };
         };
-    };
-    
-    class FailBindException : public std::exception
-    {
-        virtual const char* what() const throw()
+        
+        class FailBindException : public std::exception
         {
-            return ("Bind failed");
+            virtual const char* what() const throw()
+            {
+                return ("Bind failed");
+            };
         };
-    };
 
-    class FailListenException : public std::exception
-    {
-        virtual const char* what() const throw()
+        class FailListenException : public std::exception
         {
-            return ("Listen failed");
+            virtual const char* what() const throw()
+            {
+                return ("Listen failed");
+            };
         };
-    };
-
-    class FailAcceptException : public std::exception
-    {
-        virtual const char* what() const throw()
-        {
-            return ("Accept failed");
-        };
-    };
-    
-    class FailPollException : public std::exception
-    {
-        virtual const char* what() const throw()
-        {
-            return ("Poll failed");
-        };
-    };
 };
 
 #endif

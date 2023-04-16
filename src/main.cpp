@@ -3,18 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:49:10 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/28 21:48:24 by efournou         ###   ########.fr       */
+/*   Updated: 2023/04/16 16:43:53 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
+#include "Cluster.hpp"
 
-int main(int argc, char **argv){
+std::vector<Configuration> config_parser(int argc, char **argv)
+{
+    std::vector<Configuration> configs;
+    Configuration con1(8082);
+    Configuration con2(8083);
+    configs.push_back(con1);
+    configs.push_back(con2);
+    return(configs);
+}
 
-    if(argc != 2){
+int main(int argc, char **argv)
+{
+    if(argc != 2)
+    {
         std::cerr << "Wrong number of arguments" << std::endl;
         std::cerr << "USAGE: ./webserv [configuration file]" << std::endl;
         std::exit (1);
@@ -22,9 +33,10 @@ int main(int argc, char **argv){
 
     try
     {
-        Server  server;
+        std::vector<Configuration> configs = config_parser(argc, argv);
+        Cluster  cluster(configs);
         std::cout << "SERVER ON" << std::endl;
-        server.run();
+        cluster.run();
     } catch (std::exception &e)
     {
         std::cerr << e.what() << std::endl;
