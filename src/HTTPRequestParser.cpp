@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/17 18:11:46 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/17 19:46:43 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,14 @@ static bool	parsefirstline(const std::string &req, std::map<std::string, std::st
 	abs_path = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
 	uri += host + abs_path;
 	// Check the files accessibility to exit with 403 or 404:
-	/* std::ifstream	tempfd;
-	 * tempfd.open(abs_path);
-	 * if (tempfd.fail())
-	 * {
-	 *     status = 404;
-	 *     return false;
-	 * } */
+	std::ifstream	tempfd;
+	tempfd.open(abs_path);
+	if (tempfd.fail())
+	{
+		status = 404;
+		return false;
+	}
+	tempfd.close();
 	vals.insert(std::pair<std::string, std::string>("host", host));
 	vals.insert(std::pair<std::string, std::string>("path", abs_path));
 	vals.insert(std::pair<std::string, std::string>("uri", uri));
@@ -81,9 +82,6 @@ static bool	parsefirstline(const std::string &req, std::map<std::string, std::st
 	}
 	i += 2;
 
-	for (auto &pair: vals) {
-		std::cout << pair.first << ": " << pair.second << std::endl;
-	}
 	return true;
 }
 
@@ -107,9 +105,13 @@ HTTPRequestParser::HTTPRequestParser(const std::string &req)
 	{
 		if (parseheaders(req, _vals, _status, i))
 		{
-			parsebody(req, _vals, _status, i);
-			_status = 200;
+			if (parsebody(req, _vals, _status, i))
+				_status = 200;
 		}
+	}
+	// Delete this before uploading:
+	for (auto &pair: _vals) {
+		std::cout << pair.first << ": " << pair.second << std::endl;
 	}
 }
 
