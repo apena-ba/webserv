@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/14 17:47:06 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/17 15:34:03 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 static uint32_t	eatupsspaces(const std::string &str, uint32_t i)
 {
-	while (std::isspace(str[i]))
+	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\v' || str[i] == '\f')
 		i++;
 	return (i);
 }
@@ -33,8 +33,45 @@ static bool	parsefirstline(const std::string &req, std::map<std::string, std::st
 	i += method.size();
 
 	i = eatupsspaces(req, i);
-	std::cout << vals["type"] << std::endl;
 
+	std::string	uri, abs_path;
+	if (!req.compare(i, 6, "http:/"))
+	{
+		uri = "http:/";
+		i += 6;
+	}
+	if (req[i] != '/')
+	{
+		status = 400;
+		return false;
+	}
+	abs_path = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
+	uri += abs_path;
+	// Check the files accessibility to exit with 403 or 404 here?
+	vals.insert(std::pair<std::string, std::string>("uri", uri));
+	i += abs_path.size();
+
+	i = eatupsspaces(req, i);
+
+	std::string	version;
+	if (req.compare(i, 5, "HTTP/"))
+	{
+		status = 400;
+		return false;
+	}
+	version = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
+	// Check version number
+	vals.insert(std::pair<std::string, std::string>("version", version));
+	i += version.size();
+	if (req.compare(i, 2, "\r\n"))
+	{
+		status = 400;
+		return false;
+	}
+
+	for (auto &pair: vals) {
+		std::cout << pair.first << ": " << pair.second << std::endl;
+	}
 	return true;
 }
 
