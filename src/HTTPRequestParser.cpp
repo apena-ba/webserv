@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/17 15:34:03 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/17 17:34:32 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,20 +34,19 @@ static bool	parsefirstline(const std::string &req, std::map<std::string, std::st
 
 	i = eatupsspaces(req, i);
 
-	std::string	uri, abs_path;
-	if (!req.compare(i, 6, "http:/"))
+	std::string	uri, host, abs_path;
+	if (!req.compare(i, 7, "http://"))
 	{
-		uri = "http:/";
-		i += 6;
+		uri = "http://";
+		i += 7;
 	}
-	if (req[i] != '/')
-	{
-		status = 400;
-		return false;
-	}
+	host = req.substr(i, req.find("/", i) - i);
+	i += host.size();
 	abs_path = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
-	uri += abs_path;
+	uri += host + abs_path;
 	// Check the files accessibility to exit with 403 or 404 here?
+	vals.insert(std::pair<std::string, std::string>("host", host));
+	vals.insert(std::pair<std::string, std::string>("path", abs_path));
 	vals.insert(std::pair<std::string, std::string>("uri", uri));
 	i += abs_path.size();
 
