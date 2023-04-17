@@ -6,11 +6,12 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/17 17:34:32 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/17 18:11:46 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/HTTPRequestParser.hpp"
+#include <fstream>
 #include <iostream>
 
 static uint32_t	eatupsspaces(const std::string &str, uint32_t i)
@@ -44,7 +45,14 @@ static bool	parsefirstline(const std::string &req, std::map<std::string, std::st
 	i += host.size();
 	abs_path = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
 	uri += host + abs_path;
-	// Check the files accessibility to exit with 403 or 404 here?
+	// Check the files accessibility to exit with 403 or 404:
+	/* std::ifstream	tempfd;
+	 * tempfd.open(abs_path);
+	 * if (tempfd.fail())
+	 * {
+	 *     status = 404;
+	 *     return false;
+	 * } */
 	vals.insert(std::pair<std::string, std::string>("host", host));
 	vals.insert(std::pair<std::string, std::string>("path", abs_path));
 	vals.insert(std::pair<std::string, std::string>("uri", uri));
@@ -59,7 +67,11 @@ static bool	parsefirstline(const std::string &req, std::map<std::string, std::st
 		return false;
 	}
 	version = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
-	// Check version number
+	if (version.compare(5, 4, "1.0") && version.compare(5, 4, "1.1") && version.compare(5, 2, "2") && version.compare(5, 2, "3"))
+	{
+		status = 400;
+		return false;
+	}
 	vals.insert(std::pair<std::string, std::string>("version", version));
 	i += version.size();
 	if (req.compare(i, 2, "\r\n"))
@@ -67,6 +79,7 @@ static bool	parsefirstline(const std::string &req, std::map<std::string, std::st
 		status = 400;
 		return false;
 	}
+	i += 2;
 
 	for (auto &pair: vals) {
 		std::cout << pair.first << ": " << pair.second << std::endl;
