@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/18 16:17:15 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/18 16:28:50 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,13 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	return true;
 }
 
+// For each of the "\r\n" terminated lines (the header itself must end with "\r\n\r\n"):
+// - Get the key delimited by a ':'
+// - Check if the key is in the allowed list
+// - Parse characters until the beginning of the value is found
+// - Get the value delimited by the endline "\r\n"
+// - Attempt to insert the key value pair. Return with error if the field id already stored
+// - Skip until the end of line and check if it has the "\r\n"
 bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 {
 	// If any errors arise, status is set to indicate the corresponding HTTP status code and the constructor returns.
@@ -152,6 +159,7 @@ bool	HTTPRequestParser::parsebody(const std::string &req, uint32_t &i)
 	return true;
 }
 
+///Declaring the allowed header fields//////////////////////////////////////////
 std::vector<std::string>	HTTPRequestParser::fillrequestheaderfields()
 {
 	std::vector<std::string>	fields;
@@ -179,11 +187,13 @@ std::vector<std::string>	HTTPRequestParser::fillrequestheaderfields()
 }
 
 std::vector<std::string>	HTTPRequestParser::_requestHeaderFields = HTTPRequestParser::fillrequestheaderfields();
+////////////////////////////////////////////////////////////////////////////////
 
 HTTPRequestParser::HTTPRequestParser(const std::string &req)
 {
 	uint32_t	i = 0;
 
+	// Disclaimer: The following functions are really fucking obtuse and unreadable, but the seem to get the job done
 	if (parsefirstline(req, i))
 	{
 		if (parseheaders(req, i))
