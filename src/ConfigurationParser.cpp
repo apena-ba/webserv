@@ -7,6 +7,7 @@ bool ConfigurationParser::_checkFile(std::ifstream & file){
     line = "";
     while (line != "EOF") {
         _checkServer(file);
+        
         file >> line;
     }
     return true;
@@ -53,37 +54,62 @@ bool ConfigurationParser::_checkRoutes(std::ifstream & file){
     return true;
 }
 
+void _removeSpace(std::string & str){
+    std::string result;
+    for (unsigned int i = 0; i < str.size(); i++){
+        if (!std::isspace(str[i]))
+            result += str[i];
+    }
+    str = result;
+}
+
 bool ConfigurationParser::_checkServer(std::ifstream & file){
     std::string line;
     std::vector <std::string> splitted;
     for (unsigned int index = 0; index < 5; index++){
+        
+        _removeSpace(line);
+
         file >> line;
+        std::cout << line << std::endl;
         splitted = _split(line, ":");
-        if (splitted.size() != 2 || this->_vectorContainsSpace(splitted))
-        {throw BadFile();}
         switch (index){
             case 0:
-                if (splitted[0] != "port" || !this->_strIsDigit(splitted[1]) || std::stoi(splitted[1]) < 1024 || std::stoi(splitted[1]) > 65535)
-                    throw BadFile();
+                if (splitted.size() != 1 || line[line.size() - 1] != '{')
+                    {
+                        std::cout << line << std::endl;
+                        throw BadFile("problem name");
+                    }
                 break;
             case 1:
-                if (splitted[0] != "default_error_page")
-                    throw BadFile();
+                if (splitted[0] != "port" || splitted.size() != 2 ||
+                !this->_strIsDigit(splitted[1]) || std::stoi(splitted[1]) < 1024 || std::stoi(splitted[1]) > 65535)
+                    {
+                        throw BadFile("problem port");
+                    }
                 break;
             case 2:
-                if (splitted[0] != "client_body_size_max" || !this->_strIsDigit(splitted[1]))
-                    throw BadFile();
+                if (splitted[0] != "default_error_page" || splitted.size() != 2)
+                    throw BadFile("problem default error page");
                 break;
             case 3:
-                if (splitted[0] != "max_clients")
-                    throw BadFile();
+                if (splitted[0] != "client_body_size_max" || splitted.size() != 2 || !this->_strIsDigit(splitted[1]))
+                    throw BadFile("problem client body size max");
                 break;
             case 4:
-                if (splitted[0] != "routes" || !this->_checkRoutes(file))
-                    throw BadFile();
+                if (splitted[0] != "max_clients" || splitted.size() != 2)
+                    throw BadFile("problem max clients");
+                break;
+            case 5:
+                if (splitted[0] != "routes" || splitted.size() != 2 || !this->_checkRoutes(file))
+                    throw BadFile("problem routes");
+                break;
+            case 6:
+                if (splitted[0] != "}" || splitted.size() != 2)
+                    throw BadFile("problem }");
                 break;
             default:
-                throw BadFile();
+                throw BadFile("Unknown error");
         }
     }
     return true;
@@ -97,6 +123,6 @@ void ConfigurationParser::fromFile(std::string path){
         _checkFile(file);
     }
     else{
-        throw BadFile();
+        throw BadFile("Failed to open file");
     }
 }

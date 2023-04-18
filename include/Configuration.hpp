@@ -12,11 +12,16 @@
 
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP
+#include <vector>
+#include <iostream>
 
 class Configuration{
     private:
         int _port;
         unsigned int _maxClients;
+        unsigned int _defaultErrorPage;
+        unsigned int _clientBodyMaxSize;
+        //std::vector<route> _routes;
     public:
         Configuration();
         Configuration(unsigned int port);

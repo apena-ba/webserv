@@ -8,8 +8,10 @@ class ConfigurationParser{
     private:
         bool _checkFile(std::ifstream & file);
         bool _checkServer(std::ifstream & file);
-        bool ConfigurationParser::_strContainsSpace(std::string str);
-        bool ConfigurationParser::_vectorContainsSpace(std::vector <std::string> vec);
+        bool _strContainsSpace(std::string str);
+        bool _vectorContainsSpace(std::vector <std::string> vec);
+        bool _strIsDigit(std::string str);
+        bool _checkRoutes(std::ifstream & file);
     public:
         ConfigurationParser();
         ~ConfigurationParser();
@@ -18,9 +20,13 @@ class ConfigurationParser{
         void fromFile(std::string path);
         class BadFile : public std::exception
         {
+            private:
+            const char * _msg;
+            public:
+            BadFile(const char * msg) : _msg(msg) {};
             virtual const char* what() const throw()
             {
-                return ("File doesn't respect the expected format");
+                return (this->_msg);
             };
         };
 };
