@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/18 16:04:34 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/18 16:17:15 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,12 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 		i = eatupsspaces(req, i);
 
 		std::string	field = req.substr(i, req.find_first_of("\r\n", i) - i);
-		_vals.insert(std::pair<std::string, std::string>(key, field));
+		if (!_vals.insert(std::pair<std::string, std::string>(key, field)).second)
+		{
+			std::cerr << ">> Error: 400, duplicate field (" << key << ")." << std::endl;
+			_status = 400;
+			return false;
+		}
 		i += field.size();
 		if (req.compare(i, 2, "\r\n"))
 		{
