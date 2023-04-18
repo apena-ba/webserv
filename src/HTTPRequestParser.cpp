@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/18 16:28:50 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/18 17:03:53 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,12 +150,15 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 		_status = 400;
 		return false;
 	}
+	i += 2;
 	return true;
 }
 
 bool	HTTPRequestParser::parsebody(const std::string &req, uint32_t &i)
 {
 	// If any errors arise, status is set to indicate the corresponding HTTP status code and the constructor returns.
+	std::string	body = req.substr(i);
+	_vals.insert(std::pair<std::string, std::string>("body", body));
 	return true;
 }
 
