@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 18:31:06 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/13 20:01:55 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/18 16:00:53 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define HTTPREQUESTPARSER
 
 #include <map>
+#include <vector>
 #include <string>
 
 class HTTPRequestParser
@@ -23,8 +24,14 @@ class HTTPRequestParser
 		~HTTPRequestParser();
 
 	private:
+		static std::vector<std::string>	fillrequestheaderfields();
+		bool							parsefirstline(const std::string &req, uint32_t &i);
+		bool							parseheaders(const std::string &req, uint32_t &i);
+		bool							parsebody(const std::string &req, uint32_t &i);
+
 		int									_status;
 		std::map<std::string, std::string>	_vals;
+		static std::vector<std::string>		_requestHeaderFields;
 		/*
 			The name of the keys for the start line elements are:
 			type: (GET/POST/DELETE)
