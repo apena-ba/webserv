@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/19 09:55:56 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/19 16:45:05 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	if (method != "GET" && method != "POST" && method != "DELETE")
 	{
 		std::cerr << ">> Error: 400, bad method." << std::endl;
-		_status = 400;
+		this->_status = 400;
 		return false;
 	}
-	_vals.insert(std::pair<std::string, std::string>("type", method));
+	this->_vals.insert(std::pair<std::string, std::string>("type", method));
 	i += method.size();
 
 	i = eatupsspaces(req, i);
@@ -65,18 +65,18 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	if (access(abs_path.c_str(), F_OK))
 	{
 		std::cerr << ">> Error: 404, file '" << abs_path << "' not found." << std::endl;
-		_status = 404;
+		this->_status = 404;
 		return false;
 	}
 	if (access(abs_path.c_str(), R_OK))
 	{
 		std::cerr << ">> Error: 403, access to file '" << abs_path << "' if forbidden." << std::endl;
-		_status = 403;
+		this->_status = 403;
 		return false;
 	}
-	_vals.insert(std::pair<std::string, std::string>("host", host));
-	_vals.insert(std::pair<std::string, std::string>("path", abs_path));
-	_vals.insert(std::pair<std::string, std::string>("uri", uri));
+	this->_vals.insert(std::pair<std::string, std::string>("host", host));
+	this->_vals.insert(std::pair<std::string, std::string>("path", abs_path));
+	this->_vals.insert(std::pair<std::string, std::string>("uri", uri));
 	i += abs_path.size();
 
 	i = eatupsspaces(req, i);
@@ -85,22 +85,22 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	if (req.compare(i, 5, "HTTP/"))
 	{
 		std::cerr << ">> Error: 400, bad version specifyer." << std::endl;
-		_status = 400;
+		this->_status = 400;
 		return false;
 	}
 	version = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
 	if (version.compare(5, 4, "1.0") && version.compare(5, 4, "1.1") && version.compare(5, 2, "2") && version.compare(5, 2, "3"))
 	{
 		std::cerr << ">> Error: 400, bad version number." << std::endl;
-		_status = 400;
+		this->_status = 400;
 		return false;
 	}
-	_vals.insert(std::pair<std::string, std::string>("version", version));
+	this->_vals.insert(std::pair<std::string, std::string>("version", version));
 	i += version.size();
 	if (req.compare(i, 2, "\r\n"))
 	{
 		std::cerr << ">> Error: 400, bad end of line character pair." << std::endl;
-		_status = 400;
+		this->_status = 400;
 		return false;
 	}
 	i += 2;
@@ -122,10 +122,10 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 	{
 		std::string	key = req.substr(i, req.find(":", i) - i);
 		makeitlower(key);
-		if (!iskeygoodboi(key, _requestHeaderFields))
+		if (!iskeygoodboi(key, this->_requestHeaderFields))
 		{
 			std::cerr << ">> Error: 400, bad request header field (" << key << ")." << std::endl;
-			_status = 400;
+			this->_status = 400;
 			return false;
 		}
 		i += key.size() + 1; // Skip the ':' with that + 1
@@ -133,17 +133,17 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 		i = eatupsspaces(req, i);
 
 		std::string	field = req.substr(i, req.find_first_of("\r\n", i) - i);
-		if (!_vals.insert(std::pair<std::string, std::string>(key, field)).second)
+		if (!this->_vals.insert(std::pair<std::string, std::string>(key, field)).second)
 		{
 			std::cerr << ">> Error: 400, duplicate field (" << key << ")." << std::endl;
-			_status = 400;
+			this->_status = 400;
 			return false;
 		}
 		i += field.size();
 		if (req.compare(i, 2, "\r\n"))
 		{
 			std::cerr << ">> Error: 400, bad end of line character pair." << std::endl;
-			_status = 400;
+			this->_status = 400;
 			return false;
 		}
 		i += 2;
@@ -151,7 +151,7 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 	if (!req[i])
 	{
 		std::cerr << ">> Error: 400, bad end of headers pair." << std::endl;
-		_status = 400;
+		this->_status = 400;
 		return false;
 	}
 	i += 2;
@@ -162,7 +162,7 @@ bool	HTTPRequestParser::parsebody(const std::string &req, uint32_t &i)
 {
 	// If any errors arise, status is set to indicate the corresponding HTTP status code and the constructor returns.
 	std::string	body = req.substr(i);
-	_vals.insert(std::pair<std::string, std::string>("body", body));
+	this->_vals.insert(std::pair<std::string, std::string>("body", body));
 	return true;
 }
 
@@ -206,12 +206,12 @@ HTTPRequestParser::HTTPRequestParser(const std::string &req)
 		if (parseheaders(req, i))
 		{
 			if (parsebody(req, i))
-				_status = 200;
+				this->_status = 200;
 		}
 	}
 	// Delete this before uploading:
-	std::cout << "status: " << _status << std::endl;
-	for (auto &pair: _vals) {
+	std::cout << "status: " << this->_status << std::endl;
+	for (auto &pair: this->_vals) {
 		std::cout << pair.first << ": " << pair.second << std::endl;
 	}
 }
