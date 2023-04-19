@@ -6,13 +6,14 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/18 17:03:53 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/19 09:55:56 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/HTTPRequestParser.hpp"
 #include <fstream>
 #include <iostream>
+#include <unistd.h>
 
 static uint32_t	eatupsspaces(const std::string &str, uint32_t i)
 {
@@ -61,15 +62,18 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	abs_path = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
 	uri += host + abs_path;
 	// Check the files accessibility to exit with 403 or 404:
-	/* std::ifstream	tempfd(abs_path);
-	 * if (!tempfd.good())
-	 * {
-	 *     _status = 404;
-	 *     if (tempfd.fail())
-	 *         _status = 403;
-	 *     return false;
-	 * }
-	 * tempfd.close(); */
+	if (access(abs_path.c_str(), F_OK))
+	{
+		std::cerr << ">> Error: 404, file '" << abs_path << "' not found." << std::endl;
+		_status = 404;
+		return false;
+	}
+	if (access(abs_path.c_str(), R_OK))
+	{
+		std::cerr << ">> Error: 403, access to file '" << abs_path << "' if forbidden." << std::endl;
+		_status = 403;
+		return false;
+	}
 	_vals.insert(std::pair<std::string, std::string>("host", host));
 	_vals.insert(std::pair<std::string, std::string>("path", abs_path));
 	_vals.insert(std::pair<std::string, std::string>("uri", uri));
