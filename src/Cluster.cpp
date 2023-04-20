@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:08:07 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/19 20:53:10 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/20 20:40:34 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ Cluster::Cluster(std::vector<Configuration> configs)
         {
             std::map<int, int>::iterator it = portsNumbers.find(configs[i].getPorts()[x]);
             if(it != portsNumbers.end())
-                portsNumbers[configs[i].getPorts()[x]] = 1;
-            else
                 portsNumbers[configs[i].getPorts()[x]]++;
+            else
+                portsNumbers[configs[i].getPorts()[x]] = 1;
         }
     }
 
@@ -39,7 +39,7 @@ Cluster::Cluster(std::vector<Configuration> configs)
         this->_allServers[i] = Server(configs[i]);
 
     // Create ports
-    for(std::map<int, int>::iterator it = portsNumbers.begin(); it != portsNumbers.begin(); it++)
+    for(std::map<int, int>::iterator it = portsNumbers.begin(); it != portsNumbers.end(); it++)
     {
         std::vector<Server*> portServers;
         
@@ -58,12 +58,14 @@ Cluster::~Cluster(){}
 
 // METHODS
 
-void Cluster::updateServerFds(void)
+void Cluster::updatePortsFds(void)
 {
     unsigned int index = 0;
 
     for (unsigned int i = 0; i < this->_ports.size(); i++)
+    {
         this->_ports[i].updateFds(this->_fdsPoll, &index);
+    }
 }
 
 void Cluster::remakeFds(void)
@@ -71,8 +73,10 @@ void Cluster::remakeFds(void)
     this->_fdsPoll.clear();
     for (unsigned int i = 0; i < this->_ports.size(); i++)
     {
-        for(unsigned int x = 0; x < this->_ports[i].getPollfdsSize() ; x++)
+        for(unsigned int x = 0; x < this->_ports[i].getPollfdsSize(); x++)
+        {
             this->_fdsPoll.push_back(this->_ports[i].getPollfdByIndex(x));
+        }
     }
 }
 
@@ -84,12 +88,12 @@ void Cluster::run(void)
     {
         this->remakeFds();
         ret_poll = poll(this->_fdsPoll.data(), this->_fdsPoll.size(), 100);
-        this->updateServerFds();
+        this->updatePortsFds();
         // -1 Error
         if (ret_poll == -1)
             throw (Cluster::FailPollException());
         // If the return is ok, we run every server
-        for(unsigned int i = 0; i < this->_servers.size(); i++)
-            this->_servers[i].run();
+        for(unsigned int i = 0; i < this->_ports.size(); i++)
+            this->_ports[i].run();
     }
 }

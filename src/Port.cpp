@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:47:14 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/19 22:23:51 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/20 20:40:53 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ Port::Port(unsigned int portNumber, std::vector<Server*> servers) : _timeOutRead
 {
     this->_port = portNumber;
     this->_portFd = socket(AF_INET, SOCK_STREAM, 0);
-    if (this->_serverFd < 1)
+    if (this->_portFd < 1)
         throw (Port::FailSocketDeclarationException());
-    std::cout << "Port number" << portNumber << " fd = " << this->_portFd << std::endl;
-    if(this->setSockTimeOut(this->_portFd))
+    std::cout << "Port number " << portNumber << " fd = " << this->_portFd  << " is on" << std::endl;
+    if(this->setSockTimeOut(this->_portFd) == false)
         throw (Port::FailTimeOutException());
     this->_addressLen = sizeof(this->_address);
     this->_address.sin_family = AF_INET;
@@ -27,22 +27,40 @@ Port::Port(unsigned int portNumber, std::vector<Server*> servers) : _timeOutRead
     this->_address.sin_port = htons(portNumber);
     
     std::memset(this->_address.sin_zero, 0, this->_addressLen);
-    if(bind(this->_serverFd, (struct sockaddr *)&this->_address, sizeof(this->_address)) == -1)
+    if(bind(this->_portFd, (struct sockaddr *)&this->_address, sizeof(this->_address)) == -1)
         throw (Port::FailBindException());
-    if(listen(this->_serverFd, MAXCLIENT) == -1)
+    if(listen(this->_portFd, MAXCLIENT) == -1)
         throw (Port::FailListenException());
 
     pollfd port_pollfd;
     port_pollfd.fd = this->_portFd;
     port_pollfd.events = POLLIN | POLLERR | POLLHUP;
     port_pollfd.revents = 0;
-    this->_pollFds.clear();
     this->_pollFds.push_back(port_pollfd);
     this->_requests.push_back("");
     this->_servers = servers;
 }
 
-Port::~Port(){}
+Port::Port() : _timeOutRead(initializeTimeOutRead()), _timeOutWrite(initializeTimeOutWrite()){}
+
+unsigned int Port::getPollfdsSize(void) const
+{
+    return this->_pollFds.size();
+}
+
+Port::Port(Port const &to_copy) : _timeOutRead(initializeTimeOutRead()), _timeOutWrite(initializeTimeOutWrite())
+{
+    this->_port = to_copy._port;
+    this->_portFd = to_copy._portFd;
+    this->_pollFds = to_copy._pollFds;
+    this->_requests = to_copy._requests;
+    this->_servers = to_copy._servers;
+    this->_address = to_copy._address;
+    this->_addressLen = to_copy._addressLen;
+}
+
+Port::~Port(){
+}
 
 // METHODS
 
@@ -62,6 +80,12 @@ void Port::closeClient(unsigned int index, bool closer)
     this->_pollFds.erase(this->_pollFds.begin() + index);
     this->_requests.erase(this->_requests.begin() + index);
 }
+
+unsigned int Port::getPort(void) const
+{
+    return this->_port;
+}
+
 
 bool Port::setSockTimeOut(int fd)
 {
@@ -92,28 +116,40 @@ void Port::createNewClient(void)
     }
 }
 
+pollfd Port::getPollfdByIndex(int index)
+{
+    return this->_pollFds[index];
+}
+
+std::string extractHost(std::string &request)
+{
+    HTTPRequestParser parser(request);
+
+    return(parser.get("host"));
+}
+
 void Port::selectServer(unsigned int i)
 {
     bool    sent = false;
 
-    for(unsigned int x = 0; x < this->_servers->size(); x++)
+    for(unsigned int x = 0; x < this->_servers.size(); x++)
     {
-        if(extractHost(this->_request[i]) == this->_servers[x]->getHost())
+        if(extractHost(this->_requests[i]) == this->_servers[x]->getHost())
         {
             sent = true;
-            this->_servers[x]->handleRequest(this->_request[i], this->_pollFds[i].fd);
+            this->_servers[x]->handleRequest(this->_requests[i], this->_pollFds[i].fd);
             this->closeClient(i, false);
             break;
         }
     }
     if(sent == false)
     {
-        for(unsigned int x = 0; x < this->_servers->size(); x++)
+        for(unsigned int x = 0; x < this->_servers.size(); x++)
         {
             if(this->_servers[x]->getHost().size() == 0)
             {
                 sent = true;
-                this->_servers[x]->handleRequest(this->_request[i], this->_pollFds[i].fd);
+                this->_servers[x]->handleRequest(this->_requests[i], this->_pollFds[i].fd);
                 this->closeClient(i, false);
                 break;
             }
@@ -133,7 +169,6 @@ void Port::run(void)
     memset(buff, 0, BUFFER_SIZE + 1);
     for(unsigned int i = 1; i < this->_pollFds.size(); i++)
     {
-        sent = false;
         if(this->_pollFds[i].fd > 0 && this->_pollFds[i].revents & POLLIN) // Check reading
         {
             ret_read = read(this->_pollFds[i].fd, buff, BUFFER_SIZE);

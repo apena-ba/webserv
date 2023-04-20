@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:24:53 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/19 22:21:02 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/20 16:58:15 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,13 @@
 class Server{
     private:
         Configuration           _config;
-        const struct timeval    _timeOutWrite;
+        struct timeval    _timeOutWrite;
 
     public:
         Server();
-        Server(Configuration &config);
+        Server(Configuration const &config);
         ~Server();
+        std::string getHost(void) const;
         void handleRequest(std::string &request, int client_socket);
 };
 

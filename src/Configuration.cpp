@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 22:10:19 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/16 01:08:02 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/20 17:14:33 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,26 @@
 
 Configuration::Configuration()
 {
-    this->_port = 8080;
+    this->_ports.push_back(8080);
 }
 
-Configuration::Configuration(std::vector<int> &ports)
+Configuration::Configuration(std::vector<int> &ports, std::string &host)
 {
     this->_ports = ports;
+    this->_host = host;
 }
 
 Configuration::~Configuration(){}
 
-Configuration &operator=(Configuration const &to_equal)
+Configuration &Configuration::operator=(Configuration const &to_equal)
 {
-    this->_ports = to_equal.ports();
+    this->_ports = to_equal._ports;
+    return(*this);
+}
+
+std::string Configuration::getHost() const
+{
+    return(this->_host);
 }
 
 std::vector<int> Configuration::getPorts() const

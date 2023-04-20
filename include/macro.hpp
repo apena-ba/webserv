@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 20:33:46 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/19 19:15:56 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/20 16:29:41 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <iostream>
 #include <algorithm>
 #include <list>
+#include <map>
+#include <vector>
 #include <fstream>
 #include <fcntl.h>
 #include <cstring>

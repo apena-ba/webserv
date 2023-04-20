@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:02:05 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/19 21:54:31 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/20 20:06:39 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define CLUSTER_HPP
 
 #include "Server.hpp"
+#include "Port.hpp"
 #include "Configuration.hpp"
 #include "macro.hpp"
 
@@ -30,7 +31,7 @@ class Cluster {
         
         // Methods
         void run(void);
-        void updateServerFds(void);
+        void updatePortsFds(void);
         void remakeFds(void);
 
         // Exceptions

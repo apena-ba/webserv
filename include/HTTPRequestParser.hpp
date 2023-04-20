@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HTTPRequestParser.hpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
+/*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 18:31:06 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/18 16:00:53 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/20 18:13:02 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ class HTTPRequestParser
 	public:
 		HTTPRequestParser(const std::string &req);
 		~HTTPRequestParser();
+
+		std::string	get(const std::string &key);
 
 	private:
 		static std::vector<std::string>	fillrequestheaderfields();
