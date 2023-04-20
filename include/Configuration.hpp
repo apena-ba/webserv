@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:22:01 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/15 22:31:32 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/20 17:14:06 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,17 @@
 #include <iostream>
 
 class Configuration{
-    private:
-        int _port;
-        unsigned int _maxClients;
-        unsigned int _defaultErrorPage;
-        unsigned int _clientBodyMaxSize;
-        //std::vector<route> _routes;
-    public:
-        Configuration();
-        Configuration(unsigned int port);
-        ~Configuration();
-        int getPort() const;
-        unsigned int getMaxClients() const;
+        private:
+                std::vector<int>        _ports;
+                std::string             _host;
+        public:
+                Configuration();
+                Configuration(std::vector<int> &ports, std::string &host);
+                ~Configuration();
+                std::string getHost(void) const;
+                std::vector<int> getPorts(void) const;
+
+                Configuration &operator=(Configuration const &to_equal);
 };
 
 #endif

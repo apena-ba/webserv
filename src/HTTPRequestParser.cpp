@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   HTTPRequestParser.cpp                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
+/*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/20 18:15:54 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/20 20:43:21 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	std::string	method = req.substr(0, req.find_first_of(" \t\v\r\n\f"));
 	if (method != "GET" && method != "POST" && method != "DELETE")
 	{
-		std::cerr << ">> Error: 400, bad method." << std::endl;
+		//std::cerr << ">> Error: 400, bad method." << std::endl;
 		this->_status = 400;
 		return false;
 	}
@@ -84,14 +84,14 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	std::string	version;
 	if (req.compare(i, 5, "HTTP/"))
 	{
-		std::cerr << ">> Error: 400, bad version specifyer." << std::endl;
+		//std::cerr << ">> Error: 400, bad version specifyer." << std::endl;
 		this->_status = 400;
 		return false;
 	}
 	version = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
 	if (version.compare(5, 4, "1.0") && version.compare(5, 4, "1.1") && version.compare(5, 2, "2") && version.compare(5, 2, "3"))
 	{
-		std::cerr << ">> Error: 400, bad version number." << std::endl;
+		//std::cerr << ">> Error: 400, bad version number." << std::endl;
 		this->_status = 400;
 		return false;
 	}
@@ -99,7 +99,7 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	i += version.size();
 	if (req.compare(i, 2, "\r\n"))
 	{
-		std::cerr << ">> Error: 400, bad end of line character pair." << std::endl;
+		//std::cerr << ">> Error: 400, bad end of line character pair." << std::endl;
 		this->_status = 400;
 		return false;
 	}
@@ -124,7 +124,7 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 		makeitlower(key);
 		if (!iskeygoodboi(key, this->_requestHeaderFields))
 		{
-			std::cerr << ">> Error: 400, bad request header field (" << key << ")." << std::endl;
+			//std::cerr << ">> Error: 400, bad request header field (" << key << ")." << std::endl;
 			this->_status = 400;
 			return false;
 		}
@@ -135,14 +135,14 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 		std::string	field = req.substr(i, req.find_first_of("\r\n", i) - i);
 		if (!this->_vals.insert(std::pair<std::string, std::string>(key, field)).second)
 		{
-			std::cerr << ">> Error: 400, duplicate field (" << key << ")." << std::endl;
+			//std::cerr << ">> Error: 400, duplicate field (" << key << ")." << std::endl;
 			this->_status = 400;
 			return false;
 		}
 		i += field.size();
 		if (req.compare(i, 2, "\r\n"))
 		{
-			std::cerr << ">> Error: 400, bad end of line character pair." << std::endl;
+			//std::cerr << ">> Error: 400, bad end of line character pair." << std::endl;
 			this->_status = 400;
 			return false;
 		}
@@ -150,7 +150,7 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 	}
 	if (!req[i])
 	{
-		std::cerr << ">> Error: 400, bad end of headers pair." << std::endl;
+		//std::cerr << ">> Error: 400, bad end of headers pair." << std::endl;
 		this->_status = 400;
 		return false;
 	}
@@ -209,11 +209,6 @@ HTTPRequestParser::HTTPRequestParser(const std::string &req)
 				this->_status = 200;
 		}
 	}
-	// Delete this before uploading:
-	std::cout << "status: " << this->_status << std::endl;
-	for (auto &pair: this->_vals) {
-		std::cout << pair.first << ": " << pair.second << std::endl;
-	}
 }
 
 HTTPRequestParser::~HTTPRequestParser() {}
@@ -222,7 +217,7 @@ std::string	HTTPRequestParser::get(const std::string &key)
 {
 	if (this->_vals.find(key) == this->_vals.end())
 	{
-		std::cerr << ">> Error: key '" << key << "' couldn't be found." << std::endl;
+		//std::cerr << ">> Error: key '" << key << "' couldn't be found." << std::endl;
 		return ("");
 	}
 	return (this->_vals[key]);
