@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/19 16:45:05 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/20 18:06:20 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,3 +217,13 @@ HTTPRequestParser::HTTPRequestParser(const std::string &req)
 }
 
 HTTPRequestParser::~HTTPRequestParser() {}
+
+std::string	HTTPRequestParser::get(const std::string &key)
+{
+	if (this->_vals.find(key) == this->_vals.end())
+	{
+		std::cerr << ">> Error: key '" << key << "' couldn't be found." << std::endl;
+		return ("");
+	}
+	return (this->_vals[key]);
+}
