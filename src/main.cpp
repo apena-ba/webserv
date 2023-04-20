@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:49:10 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/16 16:43:53 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/19 21:53:36 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,13 @@
 std::vector<Configuration> config_parser(int argc, char **argv)
 {
     std::vector<Configuration> configs;
-    Configuration con1(8082);
-    Configuration con2(8083);
+    std::vector<int> ports;
+
+    ports.push_back(8080);
+    ports.push_back(8081);
+
+    Configuration con1(ports);
     configs.push_back(con1);
-    configs.push_back(con2);
     return(configs);
 }
 
@@ -28,7 +31,7 @@ int main(int argc, char **argv)
     {
         std::cerr << "Wrong number of arguments" << std::endl;
         std::cerr << "USAGE: ./webserv [configuration file]" << std::endl;
-        std::exit (1);
+        return (1);
     }
 
     try
@@ -40,7 +43,7 @@ int main(int argc, char **argv)
     } catch (std::exception &e)
     {
         std::cerr << e.what() << std::endl;
-        std::exit(1);
+        return (1);
     }
     return(0);
 }

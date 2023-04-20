@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   macro.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: efournou <efournou@student.42.fr>          +#+  +:+       +#+        */
+/*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 20:33:46 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/03/28 21:29:08 by efournou         ###   ########.fr       */
+/*   Updated: 2023/04/19 19:15:56 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <sys/socket.h>
 #include <iostream>
+#include <algorithm>
 #include <list>
 #include <fstream>
 #include <fcntl.h>

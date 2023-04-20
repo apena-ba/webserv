@@ -15,23 +15,21 @@
 Configuration::Configuration()
 {
     this->_port = 8080;
-    this->_maxClients = 10;
 }
 
-Configuration::Configuration(unsigned int port)
+Configuration::Configuration(std::vector<int> &ports)
 {
-    this->_port = port;
-    this->_maxClients = 10;
+    this->_ports = ports;
 }
 
 Configuration::~Configuration(){}
 
-int Configuration::getPort() const
+Configuration &operator=(Configuration const &to_equal)
 {
-    return(this->_port);
+    this->_ports = to_equal.ports();
 }
 
-unsigned int Configuration::getMaxClients() const
+std::vector<int> Configuration::getPorts() const
 {
-    return(this->_maxClients);
+    return(this->_ports);
 }
