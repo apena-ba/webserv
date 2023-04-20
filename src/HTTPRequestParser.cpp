@@ -222,3 +222,8 @@ std::string	HTTPRequestParser::get(const std::string &key)
 	}
 	return (this->_vals[key]);
 }
+
+int	HTTPRequestParser::status() const
+{
+	return (_status);
+}

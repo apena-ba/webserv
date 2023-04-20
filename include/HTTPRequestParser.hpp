@@ -24,6 +24,7 @@ class HTTPRequestParser
 		~HTTPRequestParser();
 
 		std::string	get(const std::string &key);
+		int			status() const;
 
 	private:
 		static std::vector<std::string>	fillrequestheaderfields();

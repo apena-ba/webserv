@@ -8,6 +8,7 @@ class ConfigurationParser{
     private:
         bool _checkFile(std::ifstream & file);
         bool _checkServer(std::ifstream & file);
+        bool _checkTitle(std::ifstream & file);
         bool _strContainsSpace(std::string str);
         bool _vectorContainsSpace(std::vector <std::string> vec);
         bool _strIsDigit(std::string str);
