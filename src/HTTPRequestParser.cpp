@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/20 18:06:20 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/20 18:15:54 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,4 +226,9 @@ std::string	HTTPRequestParser::get(const std::string &key)
 		return ("");
 	}
 	return (this->_vals[key]);
+}
+
+int	HTTPRequestParser::status() const
+{
+	return (_status);
 }

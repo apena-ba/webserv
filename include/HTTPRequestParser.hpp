@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 18:31:06 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/20 18:01:48 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/20 18:16:01 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class HTTPRequestParser
 		~HTTPRequestParser();
 
 		std::string	get(const std::string &key);
+		int			status() const;
 
 	private:
 		static std::vector<std::string>	fillrequestheaderfields();
