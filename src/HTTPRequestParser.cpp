@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/20 20:43:21 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/21 11:07:54 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,5 +225,5 @@ std::string	HTTPRequestParser::get(const std::string &key)
 
 int	HTTPRequestParser::status() const
 {
-	return (_status);
+	return (this->_status);
 }
