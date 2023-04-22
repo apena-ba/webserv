@@ -11,6 +11,14 @@ public:
 
     ~ParsingUtils();
 
+    static bool strContainsChar(std::string str, char c) {
+        for (unsigned int i = 0; i < str.size(); i++) {
+            if (str[i] == c)
+                return true;
+        }
+        return false;
+    }
+
     static bool strContainsSpace(std::string str) {
         for (unsigned int i = 0; i < str.size(); i++) {
             if (std::isspace(str[i]))
@@ -48,6 +56,39 @@ public:
         return true;
     }
 
+    class ErrorParsing : public std::exception {
+    private:
+        const char *_msg;
+    public:
+        ErrorParsing(const char *msg) : _msg(msg) {};
+
+        virtual const char *what() const throw() {
+            return (this->_msg);
+        };
+    };
+
+    static bool checkLimiter(std::vector<std::string> &server,
+                             std::string open_limiter, std::string close_limiter) {
+        int openLimiterNumber = 0;
+        int closeLimiterNumber = 0;
+        for (unsigned int i = 0; i < server.size(); i++) {
+            for (unsigned int j = 0; j < server[i].size(); j++) {
+                if (server[j] == open_limiter) {
+                    openLimiterNumber++;
+                } else if (server[j] == close_limiter) {
+                    closeLimiterNumber++;
+                    if (closeLimiterNumber > openLimiterNumber) {
+                        throw ErrorParsing("Error: Bad server format: More close limiter than open limiter");
+                    }
+                }
+            }
+        }
+        if (openLimiterNumber != closeLimiterNumber) {
+            throw ErrorParsing("Error: Bad server format: Not same number of open and close limiter");
+        }
+        return true;
+    }
+
     static std::string fileToString(std::string filePath) {
         std::ifstream file(filePath);
         std::string str((std::istreambuf_iterator<char>(file)),
@@ -62,6 +103,15 @@ public:
                 result.push_back(file[i]);
         }
         return result;
+    }
+
+    static void removeAllSpace(std::string &str) {
+        for (unsigned int i = 0; i < str.size(); i++) {
+            if (str[i] == ' ') {
+                str.erase(i, 1);
+                i--;
+            }
+        }
     }
 };
 

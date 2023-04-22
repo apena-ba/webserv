@@ -4,32 +4,34 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-class ConfigurationParser{
-    private:
-        bool _checkFile(std::ifstream & file);
-        bool _checkServer(std::ifstream & file);
-        bool _checkTitle(std::ifstream & file);
-        bool _strContainsSpace(std::string str);
-        bool _vectorContainsSpace(std::vector <std::string> vec);
-        bool _strIsDigit(std::string str);
-        bool _checkRoutes(std::ifstream & file);
-    public:
-        ConfigurationParser();
-        ~ConfigurationParser();
 
-        std::vector <std::string> _split(std::string str, std::string delimiter);
-        void fromFile(std::string path);
-        class BadFile : public std::exception
-        {
-            private:
-            const char * _msg;
-            public:
-            BadFile(const char * msg) : _msg(msg) {};
-            virtual const char* what() const throw()
-            {
-                return (this->_msg);
-            };
+class ConfigurationParser {
+private:
+    bool _checkServer(std::vector<std::string> &server);
+
+public:
+    ConfigurationParser();
+
+    ~ConfigurationParser();
+
+    std::vector<std::vector<std::string> > splitServers(std::vector<std::string> &file);
+
+    bool checkServers(std::vector<std::vector<std::string> > &server);
+
+    bool checkBraces(std::vector<std::string> &server);
+
+    void fromFile(std::string path);
+
+    class BadFile : public std::exception {
+    private:
+        const char *_msg;
+    public:
+        BadFile(const char *msg) : _msg(msg) {};
+
+        virtual const char *what() const throw() {
+            return (this->_msg);
         };
+    };
 };
 
 #endif
