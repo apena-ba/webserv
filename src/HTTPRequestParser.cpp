@@ -51,7 +51,7 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 
 	i = eatupsspaces(req, i);
 
-	std::string	uri, host, abs_path;
+	std::string	uri, host, port, abs_path;
 	if (!req.compare(i, 7, "http://"))
 	{
 		uri = "http://";
@@ -59,6 +59,13 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 		host = req.substr(i, req.find("/", i) - i);
 		i += host.size();
 		this->_vals.insert(std::pair<std::string, std::string>("host", host));
+		size_t	portPos = host.find(":");
+		if (portPos != std::string::npos)
+		{
+			port = host.substr(portPos);
+			host.erase(portPos);
+			this->_vals.insert(std::pair<std::string, std::string>("port", port));
+		}
 	}
 	else
 		host = "";
