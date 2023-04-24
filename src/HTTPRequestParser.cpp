@@ -176,6 +176,7 @@ std::vector<std::string>	HTTPRequestParser::fillrequestheaderfields()
 	fields.push_back("accept-language");
 	fields.push_back("authorization");
 	fields.push_back("expect");
+	fields.push_back("connection");
 	fields.push_back("from");
 	fields.push_back("host");
 	fields.push_back("if-match");
@@ -187,7 +188,12 @@ std::vector<std::string>	HTTPRequestParser::fillrequestheaderfields()
 	fields.push_back("proxy-authorization");
 	fields.push_back("range");
 	fields.push_back("referer");
+	fields.push_back("sec-fetch-dest");
+	fields.push_back("sec-fetch-mode");
+	fields.push_back("sec-fetch-site");
+	fields.push_back("sec-fetch-user");
 	fields.push_back("te");
+	fields.push_back("upgrade-insecure-requests");
 	fields.push_back("user-agent");
 	return (fields);
 }
