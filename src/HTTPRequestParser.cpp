@@ -45,7 +45,7 @@ static void	handlehost(std::string &host, std::map<std::string, std::string> &va
 	{
 		port = host.substr(portPos + 1);
 		host.erase(portPos);
-		this->_vals.insert(std::pair<std::string, std::string>("port", port));
+		vals.insert(std::pair<std::string, std::string>("port", port));
 	}
 }
 
