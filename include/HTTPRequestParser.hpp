@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 18:31:06 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/20 18:13:02 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/24 11:02:37 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class HTTPRequestParser
 		std::string	get(const std::string &key);
 		int			status() const;
 
-	private:
+	protected:
 		static std::vector<std::string>	fillrequestheaderfields();
 		bool							parsefirstline(const std::string &req, uint32_t &i);
 		bool							parseheaders(const std::string &req, uint32_t &i);
