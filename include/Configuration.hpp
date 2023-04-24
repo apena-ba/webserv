@@ -18,7 +18,7 @@
 
 #define DEFAULT_PORT 80
 #define DEFAULT_MAX_CLIENTS 100
-#define DEFAULT_ERROR_PAGE 404
+#define DEFAULT_ERROR_PAGE "error.html"
 #define DEFAULT_CLIENT_BODY_MAX_SIZE 1000000
 
 class Configuration {
@@ -28,7 +28,7 @@ public:
                       clientBodyMaxSize(DEFAULT_CLIENT_BODY_MAX_SIZE) {}
 
 
-    Configuration(unsigned int port, unsigned int maxClients, unsigned int defaultErrorPage,
+    Configuration(unsigned int port, unsigned int maxClients, std::string defaultErrorPage,
                   unsigned int clientBodyMaxSize) : port(port), maxClients(maxClients),
                                                     defaultErrorPage(defaultErrorPage),
                                                     clientBodyMaxSize(clientBodyMaxSize) {}
@@ -51,7 +51,7 @@ public:
 
     const unsigned int maxClients;
 
-    const unsigned int defaultErrorPage;
+    const std::string defaultErrorPage;
 
     const unsigned int clientBodyMaxSize;
 };

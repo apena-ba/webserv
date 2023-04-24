@@ -23,8 +23,8 @@ std::vector<Configuration> config_parser(int argc, char **argv) {
     return (configs);
 }
 
-int main(int argc, char **argv) {
-    std::string extract_file = ParsingUtils::fileToString("test");
+/*
+ * std::string extract_file = ParsingUtils::fileToString("test");
     ParsingUtils::removeAllSpace(extract_file);
     std::vector<std::string> file = ParsingUtils::split(extract_file, "\n");
     std::vector<std::string> file2 = ParsingUtils::removeEmptyLine(file);
@@ -32,22 +32,8 @@ int main(int argc, char **argv) {
     try {
         ParsingUtils::checkLimiter(file2, '{', '}');
         ParsingUtils::checkLimiter(file2, '[', ']');
-        std::vector<std::vector<std::string> > servers = parser.splitServers(file2);
+        std::vector<std::vector<std::string> > servers = parser._splitServers(file2);
         parser._splitAllArgs(servers);
-        for (unsigned int i = 0; i < servers.size(); i++) {
-            for (unsigned int j = 0; j < servers[i].size(); j++) {
-                std::cout << servers[i][j] << std::endl;
-            }
-            std::cout << "----------------" << std::endl;
-        }
-        /*std::vector<std::vector<std::string> > file3 = parser.splitServers(file2);
-        for (unsigned int i = 0; i < file3.size(); i++) {
-            for (unsigned int j = 0; j < file3[i].size(); j++) {
-                std::cout << file3[i][j] << std::endl;
-            }
-            std::cout << "----------------" << std::endl;
-        }*/
-        //parser._splitAllArgs(file3);
     }
     catch (ConfigurationParser::BadFile &e) {
         std::cerr << e.what() << std::endl;
@@ -56,6 +42,25 @@ int main(int argc, char **argv) {
     catch (ParsingUtils::ErrorParsing &e) {
         std::cerr << e.what() << std::endl;
         std::exit(1);
+    }
+    catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        std::exit(1);
+    }
+    exit(1);
+ */
+int main(int argc, char **argv) {
+    try {
+        ConfigurationParser parser;
+        std::vector<Configuration> configs = parser.parse("test");
+
+        for (unsigned long i = 0; i < configs.size(); ++i) {
+            std::cout << "port: " << configs[i].port << std::endl;
+            std::cout << "max_clients: " << configs[i].maxClients << std::endl;
+            std::cout << "default_error_page: " << configs[i].defaultErrorPage << std::endl;
+            std::cout << "client_body_max_size: " << configs[i].clientBodyMaxSize << std::endl;
+            std::cout << "--------------" << std::endl;
+        }
     }
     catch (std::exception &e) {
         std::cerr << e.what() << std::endl;

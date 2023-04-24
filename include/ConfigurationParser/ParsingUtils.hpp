@@ -11,7 +11,6 @@ public:
 
     ~ParsingUtils();
 
-
     static unsigned int strContainsChar(std::string str, char c) {
         unsigned int count = 0;
         for (unsigned int i = 0; i < str.size(); i++) {

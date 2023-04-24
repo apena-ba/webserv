@@ -5,103 +5,128 @@
 #include <fstream>
 #include <vector>
 #include <unistd.h>
+#include "Configuration.hpp"
+#include "ParsingUtils.hpp"
 
 class ConfigurationParser {
 private:
     class _TempConfiguration {
     private:
-        unsigned int *_port;
-        unsigned int *_maxClients;
-        std::string *_defaultErrorPage;
-        unsigned int *_clientBodyMaxSize;
+        unsigned int _port;
+        bool _port_is_set;
+        unsigned int _maxClients;
+        bool _maxClients_is_set;
+        std::string _defaultErrorPage;
+        bool _defaultErrorPage_is_set;
+        unsigned int _clientBodyMaxSize;
+        bool _clientBodyMaxSize_is_set;
 
-        void _setPort(int port) {
-            if (this->_port != nullptr) {
+        void _setPort(std::string port) {
+            int num;
+            if (this->_port_is_set == true) {
                 throw ErrorParsing("Error: Port already set");
             }
-            this->_port = new unsigned int(port);
+            this->_port_is_set = true;
+            num = _strToPositiveInteger(port);
+            this->_port = num;
         }
 
-        void _setMaxClients(unsigned int maxClients) {
-            if (this->_maxClients != nullptr) {
+        void _setMaxClients(std::string maxClients) {
+            int num;
+            if (this->_maxClients_is_set == true) {
                 throw ErrorParsing("Error: Max clients already set");
             }
-            this->_maxClients = new unsigned int(maxClients);
+            this->_maxClients_is_set = true;
+            num = _strToPositiveInteger(maxClients);
+            this->_maxClients = num;
         }
 
         void _setDefaultErrorPage(std::string defaultErrorPage) {
             if (access(defaultErrorPage.c_str(), F_OK) == -1) {
                 throw ErrorParsing("Error: Canno't access file default error page");
             }
-            if (this->_defaultErrorPage != nullptr) {
+            if (this->_defaultErrorPage_is_set == true) {
                 throw ErrorParsing("Error: Default error page already set");
             }
-            this->_defaultErrorPage = new std::string(defaultErrorPage);
+            this->_defaultErrorPage_is_set = true;
+            this->_defaultErrorPage = defaultErrorPage;
         }
 
-        void _setClientBodyMaxSize(unsigned int clientBodyMaxSize) {
-            if (this->_clientBodyMaxSize != nullptr) {
+        void _setClientBodyMaxSize(std::string clientBodyMaxSize) {
+            int num;
+            if (this->_clientBodyMaxSize_is_set == true) {
                 throw ErrorParsing("Error: Client body max size already set");
             }
-            this->_clientBodyMaxSize = new unsigned int(clientBodyMaxSize);
+            this->_clientBodyMaxSize_is_set = true;
+            num = _strToPositiveInteger(clientBodyMaxSize);
+            this->_clientBodyMaxSize = num;
         }
 
-        void _setUnsignedIntField(unsigned int *field, std::string value) {
+        int _strToPositiveInteger(std::string value) {
             int num;
-            if (field != nullptr) {
-                throw ErrorParsing("Error: Field already set");
-            }
             try {
                 num = std::stoi(value);
                 if (num < 0) {
-                    throw std::exception();
+                    throw ErrorParsing("Error: Negative value for field ");
                 }
-                field = new unsigned int(num);
+                return num;
             } catch (std::exception &e) {
-                throw ErrorParsing("Error: Invalid value for field: ");
+                throw ErrorParsing("Error: Field is not a positive integer");
             }
         }
         //std::vector<route> _routes;
     public:
         _TempConfiguration() {
-            this->_port = nullptr;
-            this->_maxClients = nullptr;
-            this->_defaultErrorPage = nullptr;
-            this->_clientBodyMaxSize = nullptr;
+            this->_port_is_set = false;
+            this->_maxClients_is_set = false;
+            this->_defaultErrorPage_is_set = false;
+            this->_clientBodyMaxSize_is_set = false;
         }
 
         ~_TempConfiguration() {
-            if (this->_port != nullptr) { delete this->_port; }
-            if (this->_maxClients != nullptr) { delete this->_maxClients; }
-            if (this->_defaultErrorPage != nullptr) { delete this->_defaultErrorPage; }
-            if (this->_clientBodyMaxSize != nullptr) { delete this->_clientBodyMaxSize; }
-        };
+        }
 
-        unsigned int *getPort() const {
+        unsigned int getPort() const {
             return this->_port;
-        };
+        }
 
-        unsigned int *getMaxClients() const {
+        bool isPortSet() const {
+            return this->_port_is_set;
+        }
+
+        unsigned int getMaxClients() const {
             return this->_maxClients;
         }
 
-        std::string *getDefaultErrorPage() const {
+        bool isMaxClientsSet() const {
+            return this->_maxClients_is_set;
+        }
+
+        std::string getDefaultErrorPage() const {
             return this->_defaultErrorPage;
         }
 
-        unsigned int *getClientBodyMaxSize() const {
+        bool isDefaultErrorPageSet() const {
+            return this->_defaultErrorPage_is_set;
+        }
+
+        unsigned int getClientBodyMaxSize() const {
             return this->_clientBodyMaxSize;
+        }
+
+        bool isClientBodyMaxSizeSet() const {
+            return this->_clientBodyMaxSize_is_set;
         }
 
         void setFields(std::string field, std::string value) {
             if (field == "port") {
-                _setUnsignedIntField(this->_port, value);
+                this->_setPort(value);
             } else if (field == "max_clients") {
-                _setUnsignedIntField(this->_maxClients, value);
+                this->_setMaxClients(value);
             } else if (field == "default_error_page") {
                 _setDefaultErrorPage(value);
             } else if (field == "client_body_max_size") {
-                _setUnsignedIntField(this->_clientBodyMaxSize, value);
+                this->_setClientBodyMaxSize(value);
             } else {
                 throw ErrorParsing("Error: Invalid field");
             }
@@ -115,30 +140,54 @@ private:
 
             virtual const char *what() const throw() {
                 return (this->_msg);
-            };
+            }
         };
     };
 
     _TempConfiguration _splitArgs(std::vector<std::string> &server);
+
+    std::vector<std::vector<std::string> > _splitServers(std::vector<std::string> &file);
+
+    std::vector<std::string>::iterator _findServerCloseBraceLine(std::vector<std::string> &file,
+                                                                 std::vector<std::string>::iterator it);
+
+    std::pair<std::string, std::string> _lineToPair(std::string line);
+
+    std::vector<ConfigurationParser::_TempConfiguration> _splitAllArgs(std::vector<std::vector<std::string> > &server);
+
+    Configuration _toConfiguration(_TempConfiguration &server) {
+        Configuration conf(server.getPort(), server.getMaxClients(), server.getDefaultErrorPage(),
+                           server.getClientBodyMaxSize());
+        return conf;
+    }
+
+    std::vector<Configuration> _toVectorConfiguration(std::vector<_TempConfiguration> &servers) {
+        std::vector<Configuration> confs;
+        for (std::vector<_TempConfiguration>::iterator it = servers.begin(); it != servers.end(); it++) {
+            confs.push_back(this->_toConfiguration(*it));
+        }
+        return confs;
+    }
 
 public:
     ConfigurationParser();
 
     ~ConfigurationParser();
 
-    std::vector<std::vector<std::string> > splitServers(std::vector<std::string> &file);
+    std::vector<Configuration> parse(std::string config_file) {
+        std::string extract_file = ParsingUtils::fileToString(config_file);
 
-    std::vector<std::string>::iterator findServerCloseBraceLine(std::vector<std::string> &file,
-                                                                std::vector<std::string>::iterator it);
+        ParsingUtils::removeAllSpace(extract_file);
+        std::vector<std::string> file = ParsingUtils::split(extract_file, "\n");
+        std::vector<std::string> file2 = ParsingUtils::removeEmptyLine(file);
+        ParsingUtils::checkLimiter(file2, '{', '}');
+        ParsingUtils::checkLimiter(file2, '[', ']');
+        std::vector<std::vector<std::string> > servers = _splitServers(file2);
+        std::vector<_TempConfiguration> tmp_vec = _splitAllArgs(servers);
+        return _toVectorConfiguration(tmp_vec);
+    }
 
-    std::pair<std::string, std::string> lineToPair(std::string line);
-
-    bool _splitAllArgs(std::vector<std::vector<std::string> > &server);
-
-    bool checkBraces(std::vector<std::string> &server);
-
-    void fromFile(std::string path);
-
+    bool checkAllFieldsSet(_TempConfiguration tmp);
 
     class BadFile : public std::exception {
     private:
@@ -150,6 +199,7 @@ public:
             return (this->_msg);
         };
     };
+
 };
 
 #endif
