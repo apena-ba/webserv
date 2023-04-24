@@ -36,6 +36,19 @@ static bool	iskeygoodboi(const std::string &key, const std::vector<std::string> 
 	return false;
 }
 
+static void	handlehost(std::string &host, std::map<std::string, std::string> &vals)
+{
+	std::string	port;
+	size_t		portPos = host.find(":");
+	
+	if (portPos != std::string::npos)
+	{
+		port = host.substr(portPos + 1);
+		host.erase(portPos);
+		this->_vals.insert(std::pair<std::string, std::string>("port", port));
+	}
+}
+
 bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 {
 	// If any errors arise, status is set to indicate the corresponding HTTP status code and the constructor returns.
@@ -51,20 +64,14 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 
 	i = eatupsspaces(req, i);
 
-	std::string	uri, host, port, abs_path;
+	std::string	uri, host, abs_path;
 	if (!req.compare(i, 7, "http://"))
 	{
 		uri = "http://";
 		i += 7;
 		host = req.substr(i, req.find("/", i) - i);
 		i += host.size();
-		size_t	portPos = host.find(":");
-		if (portPos != std::string::npos)
-		{
-			port = host.substr(portPos + 1);
-			host.erase(portPos);
-			this->_vals.insert(std::pair<std::string, std::string>("port", port));
-		}
+		handlehost(host, _vals);
 		this->_vals.insert(std::pair<std::string, std::string>("host", host));
 	}
 	else
@@ -140,6 +147,8 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 		i = eatupsspaces(req, i);
 
 		std::string	field = req.substr(i, req.find_first_of("\r\n", i) - i);
+		if (key == "host")
+			handlehost(field, _vals);
 		this->_vals.insert(std::pair<std::string, std::string>(key, field));
 		/*if (!this->_vals.insert(std::pair<std::string, std::string>(key, field)).second)
 		{
