@@ -36,3 +36,7 @@ webserv
 *.exe
 *.out
 *.app
+
+.idea/
+templateConf.json
+test

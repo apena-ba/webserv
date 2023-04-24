@@ -12,22 +12,48 @@
 
 #ifndef CONFIGURATION_HPP
 #define CONFIGURATION_HPP
+
 #include <vector>
 #include <iostream>
 
-class Configuration{
-    private:
-        int _port;
-        unsigned int _maxClients;
-        unsigned int _defaultErrorPage;
-        unsigned int _clientBodyMaxSize;
-        //std::vector<route> _routes;
-    public:
-        Configuration();
-        Configuration(unsigned int port);
-        ~Configuration();
-        int getPort() const;
-        unsigned int getMaxClients() const;
+#define DEFAULT_PORT 80
+#define DEFAULT_MAX_CLIENTS 100
+#define DEFAULT_ERROR_PAGE 404
+#define DEFAULT_CLIENT_BODY_MAX_SIZE 1000000
+
+class Configuration {
+public:
+    Configuration() : port(DEFAULT_PORT), maxClients(DEFAULT_MAX_CLIENTS),
+                      defaultErrorPage(DEFAULT_ERROR_PAGE),
+                      clientBodyMaxSize(DEFAULT_CLIENT_BODY_MAX_SIZE) {}
+
+
+    Configuration(unsigned int port, unsigned int maxClients, unsigned int defaultErrorPage,
+                  unsigned int clientBodyMaxSize) : port(port), maxClients(maxClients),
+                                                    defaultErrorPage(defaultErrorPage),
+                                                    clientBodyMaxSize(clientBodyMaxSize) {}
+
+    Configuration(unsigned int port) : port(port), maxClients(DEFAULT_MAX_CLIENTS),
+                                       defaultErrorPage(DEFAULT_ERROR_PAGE),
+                                       clientBodyMaxSize(DEFAULT_CLIENT_BODY_MAX_SIZE) {}
+
+    ~Configuration() {}
+
+    unsigned int getMaxClients() const { return maxClients; }
+
+    unsigned int getPort() const { return port; }
+
+    Configuration operator=(const Configuration &rhs) {
+        return *this;
+    }
+
+    const unsigned int port;
+
+    const unsigned int maxClients;
+
+    const unsigned int defaultErrorPage;
+
+    const unsigned int clientBodyMaxSize;
 };
 
 #endif

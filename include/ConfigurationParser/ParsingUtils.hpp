@@ -11,12 +11,15 @@ public:
 
     ~ParsingUtils();
 
-    static bool strContainsChar(std::string str, char c) {
+
+    static unsigned int strContainsChar(std::string str, char c) {
+        unsigned int count = 0;
         for (unsigned int i = 0; i < str.size(); i++) {
-            if (str[i] == c)
-                return true;
+            if (str[i] == c) {
+                count++;
+            }
         }
-        return false;
+        return count;
     }
 
     static bool strContainsSpace(std::string str) {
@@ -68,14 +71,14 @@ public:
     };
 
     static bool checkLimiter(std::vector<std::string> &server,
-                             std::string open_limiter, std::string close_limiter) {
+                             char open_limiter, char close_limiter) {
         int openLimiterNumber = 0;
         int closeLimiterNumber = 0;
         for (unsigned int i = 0; i < server.size(); i++) {
             for (unsigned int j = 0; j < server[i].size(); j++) {
-                if (server[j] == open_limiter) {
+                if (server[i][j] == open_limiter) {
                     openLimiterNumber++;
-                } else if (server[j] == close_limiter) {
+                } else if (server[i][j] == close_limiter) {
                     closeLimiterNumber++;
                     if (closeLimiterNumber > openLimiterNumber) {
                         throw ErrorParsing("Error: Bad server format: More close limiter than open limiter");
