@@ -59,14 +59,14 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 		i += 7;
 		host = req.substr(i, req.find("/", i) - i);
 		i += host.size();
-		this->_vals.insert(std::pair<std::string, std::string>("host", host));
 		size_t	portPos = host.find(":");
 		if (portPos != std::string::npos)
 		{
-			port = host.substr(portPos);
+			port = host.substr(portPos + 1);
 			host.erase(portPos);
 			this->_vals.insert(std::pair<std::string, std::string>("port", port));
 		}
+		this->_vals.insert(std::pair<std::string, std::string>("host", host));
 	}
 	else
 		host = "";
