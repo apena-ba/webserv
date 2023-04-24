@@ -132,12 +132,12 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 		i = eatupsspaces(req, i);
 
 		std::string	field = req.substr(i, req.find_first_of("\r\n", i) - i);
-		if (!this->_vals.insert(std::pair<std::string, std::string>(key, field)).second)
+		/*if (!this->_vals.insert(std::pair<std::string, std::string>(key, field)).second)
 		{
 			std::cerr << ">> Error: 400, duplicate field (" << key << ")." << std::endl;
 			this->_status = 400;
 			return false;
-		}
+		}*/
 		i += field.size();
 		if (req.compare(i, 2, "\r\n"))
 		{
