@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:47:14 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/20 20:40:53 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/24 17:38:11 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,33 +130,28 @@ std::string extractHost(std::string &request)
 
 void Port::selectServer(unsigned int i)
 {
-    bool    sent = false;
-
     for(unsigned int x = 0; x < this->_servers.size(); x++)
     {
-        if(extractHost(this->_requests[i]) == this->_servers[x]->getHost())
+        std::string one = extractHost(this->_requests[i]);
+        std::string two = this->_servers[x]->getHost();
+        std::cout << "One = " << one << " and two = " << two << std::endl;
+        if(one == this->_servers[x]->getHost())
         {
-            sent = true;
             this->_servers[x]->handleRequest(this->_requests[i], this->_pollFds[i].fd);
             this->closeClient(i, false);
-            break;
+            return;
         }
     }
-    if(sent == false)
+    for(unsigned int x = 0; x < this->_servers.size(); x++)
     {
-        for(unsigned int x = 0; x < this->_servers.size(); x++)
+        if(this->_servers[x]->getHost().size() == 0)
         {
-            if(this->_servers[x]->getHost().size() == 0)
-            {
-                sent = true;
-                this->_servers[x]->handleRequest(this->_requests[i], this->_pollFds[i].fd);
-                this->closeClient(i, false);
-                break;
-            }
+            this->_servers[x]->handleRequest(this->_requests[i], this->_pollFds[i].fd);
+            this->closeClient(i, false);
+            return;
         }
-        if(sent == false)
-            this->closeClient(i, true); // This only happens when no server host is available, maybe we shuld send a status code?
     }
+    this->closeClient(i, true); // This only happens when no server host is available, maybe we shuld send a status code?
 }
 
 void Port::run(void)

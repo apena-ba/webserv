@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:22:01 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/20 17:14:06 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/24 17:52:19 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ class Configuration{
                 std::string             _host;
         public:
                 Configuration();
+                Configuration(Configuration const &to_copy);
                 Configuration(std::vector<int> &ports, std::string &host);
                 ~Configuration();
                 std::string getHost(void) const;
