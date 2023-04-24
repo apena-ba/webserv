@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/21 11:07:54 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/24 11:59:12 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	std::string	method = req.substr(0, req.find_first_of(" \t\v\r\n\f"));
 	if (method != "GET" && method != "POST" && method != "DELETE")
 	{
-		//std::cerr << ">> Error: 400, bad method." << std::endl;
+		std::cerr << ">> Error: 400, bad method." << std::endl;
 		this->_status = 400;
 		return false;
 	}
@@ -66,13 +66,11 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	{
 		std::cerr << ">> Error: 404, file '" << abs_path << "' not found." << std::endl;
 		this->_status = 404;
-		return false;
 	}
-	if (access(abs_path.c_str(), R_OK))
+	else if (access(abs_path.c_str(), R_OK))
 	{
 		std::cerr << ">> Error: 403, access to file '" << abs_path << "' if forbidden." << std::endl;
 		this->_status = 403;
-		return false;
 	}
 	this->_vals.insert(std::pair<std::string, std::string>("host", host));
 	this->_vals.insert(std::pair<std::string, std::string>("path", abs_path));
@@ -84,14 +82,14 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	std::string	version;
 	if (req.compare(i, 5, "HTTP/"))
 	{
-		//std::cerr << ">> Error: 400, bad version specifyer." << std::endl;
+		std::cerr << ">> Error: 400, bad version specifyer." << std::endl;
 		this->_status = 400;
 		return false;
 	}
 	version = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
 	if (version.compare(5, 4, "1.0") && version.compare(5, 4, "1.1") && version.compare(5, 2, "2") && version.compare(5, 2, "3"))
 	{
-		//std::cerr << ">> Error: 400, bad version number." << std::endl;
+		std::cerr << ">> Error: 400, bad version number." << std::endl;
 		this->_status = 400;
 		return false;
 	}
@@ -99,7 +97,7 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	i += version.size();
 	if (req.compare(i, 2, "\r\n"))
 	{
-		//std::cerr << ">> Error: 400, bad end of line character pair." << std::endl;
+		std::cerr << ">> Error: 400, bad end of line character pair in '" << version << "' line." << std::endl;
 		this->_status = 400;
 		return false;
 	}
@@ -124,7 +122,7 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 		makeitlower(key);
 		if (!iskeygoodboi(key, this->_requestHeaderFields))
 		{
-			//std::cerr << ">> Error: 400, bad request header field (" << key << ")." << std::endl;
+			std::cerr << ">> Error: 400, bad request header field (" << key << ")." << std::endl;
 			this->_status = 400;
 			return false;
 		}
@@ -135,14 +133,14 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 		std::string	field = req.substr(i, req.find_first_of("\r\n", i) - i);
 		if (!this->_vals.insert(std::pair<std::string, std::string>(key, field)).second)
 		{
-			//std::cerr << ">> Error: 400, duplicate field (" << key << ")." << std::endl;
+			std::cerr << ">> Error: 400, duplicate field (" << key << ")." << std::endl;
 			this->_status = 400;
 			return false;
 		}
 		i += field.size();
 		if (req.compare(i, 2, "\r\n"))
 		{
-			//std::cerr << ">> Error: 400, bad end of line character pair." << std::endl;
+			std::cerr << ">> Error: 400, bad end of line character pair in '" << key << "' line." << std::endl;
 			this->_status = 400;
 			return false;
 		}
@@ -150,7 +148,7 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 	}
 	if (!req[i])
 	{
-		//std::cerr << ">> Error: 400, bad end of headers pair." << std::endl;
+		std::cerr << ">> Error: 400, bad end of headers pair." << std::endl;
 		this->_status = 400;
 		return false;
 	}
@@ -200,13 +198,13 @@ HTTPRequestParser::HTTPRequestParser(const std::string &req)
 {
 	uint32_t	i = 0;
 
+	this->_status = 200;
 	// Disclaimer: The following functions are really fucking obtuse and unreadable, but the seem to get the job done
 	if (parsefirstline(req, i))
 	{
 		if (parseheaders(req, i))
 		{
-			if (parsebody(req, i))
-				this->_status = 200;
+			parsebody(req, i);
 		}
 	}
 }
@@ -217,7 +215,7 @@ std::string	HTTPRequestParser::get(const std::string &key)
 {
 	if (this->_vals.find(key) == this->_vals.end())
 	{
-		//std::cerr << ">> Error: key '" << key << "' couldn't be found." << std::endl;
+		std::cerr << ">> Error: key '" << key << "' couldn't be found." << std::endl;
 		return ("");
 	}
 	return (this->_vals[key]);
