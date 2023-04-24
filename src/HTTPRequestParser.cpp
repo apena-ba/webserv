@@ -57,9 +57,12 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	{
 		uri = "http://";
 		i += 7;
+		host = req.substr(i, req.find("/", i) - i);
+		i += host.size();
+		this->_vals.insert(std::pair<std::string, std::string>("host", host));
 	}
-	host = req.substr(i, req.find("/", i) - i);
-	i += host.size();
+	else
+		host = "";
 	abs_path = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
 	uri += host + abs_path;
 	// Check the files accessibility to exit with 403 or 404:
@@ -73,7 +76,6 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 		std::cerr << ">> Error: 403, access to file '" << abs_path << "' if forbidden." << std::endl;
 		this->_status = 403;
 	}
-	this->_vals.insert(std::pair<std::string, std::string>("host", host));
 	this->_vals.insert(std::pair<std::string, std::string>("path", abs_path));
 	this->_vals.insert(std::pair<std::string, std::string>("uri", uri));
 	i += abs_path.size();
