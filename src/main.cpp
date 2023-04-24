@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:49:10 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/24 17:33:38 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/24 20:31:41 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ std::vector<Configuration> config_parser(int argc, char **argv)
     std::vector<Configuration> configs;
     std::vector<int> ports;
 
-    ports.push_back(8080);
+    ports.push_back(80);
     ports.push_back(8081);
     std::string host("127.0.0.1");
 
