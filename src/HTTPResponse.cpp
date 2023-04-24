@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/24 11:32:13 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/24 12:10:12 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,25 @@ std::map<std::string, std::string>	HTTPResponse::_statusMessages = HTTPResponse:
 ////////////////////////////////////////////////////////////////////////////////
 
 // First the internal, inherited request parser is constructed to have direct access to the map.
-// Then the status is converted to a string in order to use it as a key.
-// The first line of the response is then built by concatenation.
+// [1]Then the status is converted to a string in order to use it as a key.
+// [2]The first line of the response is then built by concatenation.
+// [3]Iterate the map, building the header lines as simple '<key>: <value>\r\n' strings.
 HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest) : HTTPRequestParser(givenRequest)
 {
+	// Build the body if the method requires it, try access again and update status accordingly
+
+	// 1:
 	this->_strStatus = tostr(this->_status);
 
-	this->_response = this->_vals["version"];
-	this->_response += " " + this->_strStatus + " " + this->_statusMessages[this->_strStatus] + "\r\n";
+	// 2:
+	this->_response = this->_vals["version"] + " " + this->_strStatus + " " + this->_statusMessages[this->_strStatus] + "\r\n";
+
+	// Write only the required headers, avoid repetition.
+	// 3:
+	for (std::map<std::string, std::string>::iterator it = this->_vals.begin(); it != this->_vals.end(); ++it)
+	{
+		this->_response += it->first + ": " + it->second + "\r\n";
+	}
 }
 
 HTTPResponse::~HTTPResponse() {}
