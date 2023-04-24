@@ -62,7 +62,7 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 		size_t	portPos = host.find(":");
 		if (portPos != std::string::npos)
 		{
-			port = host.substr(portPos);
+			port = host.substr(portPos + 1);
 			host.erase(portPos);
 			this->_vals.insert(std::pair<std::string, std::string>("port", port));
 		}
