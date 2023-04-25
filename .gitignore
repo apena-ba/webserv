@@ -37,6 +37,7 @@ webserv
 *.out
 *.app
 
+*.swp
 .idea/
 templateConf.json
 test

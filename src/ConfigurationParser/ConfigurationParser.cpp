@@ -1,10 +1,8 @@
 #include "ConfigurationParser/ConfigurationParser.hpp"
 #include "ConfigurationParser/ParsingUtils.hpp"
+#include "Route.hpp"
 
 bool ConfigurationParser::checkAllFieldsSet(_TempConfiguration tmp) {
-    if (tmp.isPortSet() == false) {
-        throw BadFile("Error: Port not set");
-    }
     if (tmp.isMaxClientsSet() == false) {
         throw BadFile("Error: Max clients not set");
     }
@@ -17,15 +15,87 @@ bool ConfigurationParser::checkAllFieldsSet(_TempConfiguration tmp) {
     return true;
 }
 
+std::vector<std::string>::iterator
+ConfigurationParser::_findField(std::string field_name, std::vector<std::string> &server) {
+    std::vector<std::string>::iterator field_it;
+    unsigned int number_field = 0;
+    for (std::vector<std::string>::iterator it = server.begin() + 1; it != server.end() - 1; ++it) {
+        if ((*it).compare(0, field_name.size(), field_name) == 0) {
+            number_field++;
+            field_it = it;
+        }
+    }
+    if (number_field != 1) { throw BadFile("Error: Server should contain 1 field port"); }
+    //std::cout << "field: " << *field_it << std::endl;
+    return field_it;
+}
+
+/*
+bool ConfigurationParser::checkRoutes(std::string routes) {
+    if (ParsingUtils::strContainsChar(routes, ':') == false) {
+        throw BadFile("Error: Routes not set");
+    }
+    return true;
+}
+
+bool ConfigurationParser::checkPort(std::string port) {
+    if (ParsingUtils::strContainsChar(port, ':') == false) {
+        throw BadFile("Error: Port not set");
+    }
+    return true;
+}*/
+
+std::vector<std::string>
+ConfigurationParser::_extractArrayField(std::vector<std::string> &server, std::string to_find) {
+    std::vector<std::string>::iterator field_begin_it;
+    std::vector<std::string>::iterator field_end_it;
+    std::vector<std::string> array_field;
+
+    field_begin_it = _findField(to_find, server);
+    field_end_it = _findCloseDelimiter(server, '[', ']', field_begin_it);
+    for (unsigned int dis = 0; dis <= std::distance(field_begin_it, field_end_it); dis++) {
+        array_field.push_back(*field_begin_it);
+        server.erase(field_begin_it);
+    }
+    return array_field;
+}
+
+void ConfigurationParser::_splitExtractRoutes(std::vector<std::string> &server) {
+    std::vector<std::string>::iterator field_it;
+    std::vector<std::string> routes;
+
+    routes = _extractArrayField(server, "routes:");
+    if (routes[0][7] != '[') {
+        throw BadFile("Error: Bad server format: routes: must be followed by [");
+    }
+    if (routes[0].size() != 8) {
+        throw BadFile("Error: Bad server format: routes: put new line for every field");
+    }
+}
+
+void ConfigurationParser::_splitExtractPort(std::vector<std::string> &server) {
+    std::vector<std::string>::iterator field_it;
+    std::vector<std::string> ports;
+
+    ports = _extractArrayField(server, "ports:");
+    if (ports[0][6] != '[') {
+        throw BadFile("Error: Bad server format: ports: must be followed by [");
+    }
+}
+
 std::vector<ConfigurationParser::_TempConfiguration>
-ConfigurationParser::_splitAllArgs(std::vector<std::vector<std::string> > &server) {
+ConfigurationParser::_splitAllArgs(std::vector<std::vector<std::string> > &servers) {
     std::vector<_TempConfiguration> result;
     _TempConfiguration tmp;
+    unsigned int *port;
+    Route *routes;
 
-    for (unsigned int i = 0; i < server.size(); i++) {
-        tmp = _splitArgs(server[i]);
+    for (unsigned int i = 0; i < servers.size(); i++) {
+        _splitExtractPort(servers[i]);
+        _splitExtractRoutes(servers[i]);
+        /*tmp = _splitArgs(servers[i]);
         checkAllFieldsSet(tmp);
-        result.push_back(tmp);
+        result.push_back(tmp);*/
     }
     return result;
 }
@@ -75,22 +145,24 @@ ConfigurationParser::_TempConfiguration ConfigurationParser::_splitArgs(std::vec
     return tmp_config;
 }
 
-std::vector<std::string>::iterator ConfigurationParser::_findServerCloseBraceLine(std::vector<std::string> &file,
-                                                                                  std::vector<std::string>::iterator it) {
-    unsigned int openBraces = 0;
-    unsigned int closeBraces = 0;
+
+std::vector<std::string>::iterator ConfigurationParser::_findCloseDelimiter(std::vector<std::string> &file,
+                                                                            char open_limiter, char close_limiter,
+                                                                            std::vector<std::string>::iterator it) {
+    unsigned int open_limiter_number = 0;
+    unsigned int close_limiter_number = 0;
 
     for (; it != file.end(); ++it) {
         for (unsigned long j = 0; j < (*it).size(); ++j) {
-            if ((*it)[j] == '{') {
-                openBraces++;
-            } else if ((*it)[j] == '}') {
-                closeBraces++;
+            if ((*it)[j] == open_limiter) {
+                open_limiter_number++;
+            } else if ((*it)[j] == close_limiter) {
+                close_limiter_number++;
             }
-            if (openBraces == closeBraces && openBraces != 0 && closeBraces != 0) {
+            if (open_limiter_number == close_limiter_number && open_limiter_number != 0 && close_limiter_number != 0) {
                 if ((*it).size() - 1 != j) {
                     throw ParsingUtils::ErrorParsing("Error: Bad server format: "
-                                                     "Put a new line after closing brace, line ");
+                                                     "Put a new line after closing delimiter");
                 }
                 return it;
             }
@@ -103,7 +175,7 @@ std::vector<std::vector<std::string> > ConfigurationParser::_splitServers(std::v
     std::vector<std::string>::iterator iterator_close_brace;
     std::vector<std::vector<std::string> > servers;
     for (std::vector<std::string>::iterator it = file.begin(); it != file.end(); ++it) {
-        iterator_close_brace = _findServerCloseBraceLine(file, it);
+        iterator_close_brace = _findCloseDelimiter(file, '{', '}', it);
         std::vector<std::string> server;
         server = std::vector<std::string>(it, iterator_close_brace + 1);
         servers.push_back(server);
@@ -115,3 +187,4 @@ std::vector<std::vector<std::string> > ConfigurationParser::_splitServers(std::v
 ConfigurationParser::ConfigurationParser() {}
 
 ConfigurationParser::~ConfigurationParser() {}
+

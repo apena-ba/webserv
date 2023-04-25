@@ -7,13 +7,12 @@
 #include <unistd.h>
 #include "Configuration.hpp"
 #include "ParsingUtils.hpp"
+#include "Route.hpp"
 
 class ConfigurationParser {
 private:
     class _TempConfiguration {
     private:
-        unsigned int _port;
-        bool _port_is_set;
         unsigned int _maxClients;
         bool _maxClients_is_set;
         std::string _defaultErrorPage;
@@ -21,23 +20,13 @@ private:
         unsigned int _clientBodyMaxSize;
         bool _clientBodyMaxSize_is_set;
 
-        void _setPort(std::string port) {
-            int num;
-            if (this->_port_is_set == true) {
-                throw ErrorParsing("Error: Port already set");
-            }
-            this->_port_is_set = true;
-            num = _strToPositiveInteger(port);
-            this->_port = num;
-        }
-
         void _setMaxClients(std::string maxClients) {
             int num;
             if (this->_maxClients_is_set == true) {
                 throw ErrorParsing("Error: Max clients already set");
             }
             this->_maxClients_is_set = true;
-            num = _strToPositiveInteger(maxClients);
+            num = ParsingUtils::strToPositiveInteger(maxClients);
             this->_maxClients = num;
         }
 
@@ -58,40 +47,19 @@ private:
                 throw ErrorParsing("Error: Client body max size already set");
             }
             this->_clientBodyMaxSize_is_set = true;
-            num = _strToPositiveInteger(clientBodyMaxSize);
+            num = ParsingUtils::strToPositiveInteger(clientBodyMaxSize);
             this->_clientBodyMaxSize = num;
         }
 
-        int _strToPositiveInteger(std::string value) {
-            int num;
-            try {
-                num = std::stoi(value);
-                if (num < 0) {
-                    throw ErrorParsing("Error: Negative value for field ");
-                }
-                return num;
-            } catch (std::exception &e) {
-                throw ErrorParsing("Error: Field is not a positive integer");
-            }
-        }
         //std::vector<route> _routes;
     public:
         _TempConfiguration() {
-            this->_port_is_set = false;
             this->_maxClients_is_set = false;
             this->_defaultErrorPage_is_set = false;
             this->_clientBodyMaxSize_is_set = false;
         }
 
         ~_TempConfiguration() {
-        }
-
-        unsigned int getPort() const {
-            return this->_port;
-        }
-
-        bool isPortSet() const {
-            return this->_port_is_set;
         }
 
         unsigned int getMaxClients() const {
@@ -119,9 +87,7 @@ private:
         }
 
         void setFields(std::string field, std::string value) {
-            if (field == "port") {
-                this->_setPort(value);
-            } else if (field == "max_clients") {
+            if (field == "max_clients") {
                 this->_setMaxClients(value);
             } else if (field == "default_error_page") {
                 _setDefaultErrorPage(value);
@@ -148,15 +114,16 @@ private:
 
     std::vector<std::vector<std::string> > _splitServers(std::vector<std::string> &file);
 
-    std::vector<std::string>::iterator _findServerCloseBraceLine(std::vector<std::string> &file,
-                                                                 std::vector<std::string>::iterator it);
+    std::vector<std::string>::iterator _findCloseDelimiter(std::vector<std::string> &file,
+                                                           char open_limiter, char close_limiter,
+                                                           std::vector<std::string>::iterator it);
 
     std::pair<std::string, std::string> _lineToPair(std::string line);
 
-    std::vector<ConfigurationParser::_TempConfiguration> _splitAllArgs(std::vector<std::vector<std::string> > &server);
+    std::vector<ConfigurationParser::_TempConfiguration> _splitAllArgs(std::vector<std::vector<std::string> > &servers);
 
     Configuration _toConfiguration(_TempConfiguration &server) {
-        Configuration conf(server.getPort(), server.getMaxClients(), server.getDefaultErrorPage(),
+        Configuration conf(server.getMaxClients(), server.getDefaultErrorPage(),
                            server.getClientBodyMaxSize());
         return conf;
     }
@@ -183,6 +150,7 @@ public:
         ParsingUtils::checkLimiter(file2, '{', '}');
         ParsingUtils::checkLimiter(file2, '[', ']');
         std::vector<std::vector<std::string> > servers = _splitServers(file2);
+
         std::vector<_TempConfiguration> tmp_vec = _splitAllArgs(servers);
         return _toVectorConfiguration(tmp_vec);
     }
@@ -200,6 +168,15 @@ public:
         };
     };
 
+    std::vector<std::string> _extractArrayField(std::vector<std::string> &vector, std::string to_find);
+
+    void _splitExtractRoutes(std::vector<std::string> &server);
+
+    void _splitExtractPort(std::vector<std::string> &server);
+
+
+    std::vector<std::string, std::allocator<std::string> >::iterator
+    _findField(std::string field_name, std::vector<std::string> &server);
 };
 
 #endif

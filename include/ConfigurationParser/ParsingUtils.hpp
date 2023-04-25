@@ -37,6 +37,19 @@ public:
         return false;
     }
 
+    static int strToPositiveInteger(std::string value) {
+        int num;
+        try {
+            num = std::stoi(value);
+            if (num < 0) {
+                throw ErrorParsing("Error: Negative value for field ");
+            }
+            return num;
+        } catch (std::exception &e) {
+            throw ErrorParsing("Error: Field is not a positive integer");
+        }
+    }
+
     static std::vector<std::string> split(std::string str, std::string delimiter) {
         std::vector<std::string> result;
         size_t pos = 0;

@@ -16,38 +16,39 @@
 #include <vector>
 #include <iostream>
 
-#define DEFAULT_PORT 80
+#define DEFAULT_PORT [80]
 #define DEFAULT_MAX_CLIENTS 100
 #define DEFAULT_ERROR_PAGE "error.html"
 #define DEFAULT_CLIENT_BODY_MAX_SIZE 1000000
 
 class Configuration {
 public:
-    Configuration() : port(DEFAULT_PORT), maxClients(DEFAULT_MAX_CLIENTS),
+    Configuration() : port(), maxClients(DEFAULT_MAX_CLIENTS),
                       defaultErrorPage(DEFAULT_ERROR_PAGE),
                       clientBodyMaxSize(DEFAULT_CLIENT_BODY_MAX_SIZE) {}
 
+    Configuration(unsigned int i);
 
-    Configuration(unsigned int port, unsigned int maxClients, std::string defaultErrorPage,
-                  unsigned int clientBodyMaxSize) : port(port), maxClients(maxClients),
+    Configuration(unsigned int maxClients, std::string defaultErrorPage,
+                  unsigned int clientBodyMaxSize) : maxClients(maxClients),
                                                     defaultErrorPage(defaultErrorPage),
                                                     clientBodyMaxSize(clientBodyMaxSize) {}
 
-    Configuration(unsigned int port) : port(port), maxClients(DEFAULT_MAX_CLIENTS),
-                                       defaultErrorPage(DEFAULT_ERROR_PAGE),
-                                       clientBodyMaxSize(DEFAULT_CLIENT_BODY_MAX_SIZE) {}
+    Configuration(unsigned int *port) : port(port), maxClients(DEFAULT_MAX_CLIENTS),
+                                        defaultErrorPage(DEFAULT_ERROR_PAGE),
+                                        clientBodyMaxSize(DEFAULT_CLIENT_BODY_MAX_SIZE) {}
 
     ~Configuration() {}
 
     unsigned int getMaxClients() const { return maxClients; }
 
-    unsigned int getPort() const { return port; }
+    unsigned int getPort() const { return 1; }
 
     Configuration operator=(const Configuration &rhs) {
         return *this;
     }
 
-    const unsigned int port;
+    unsigned int *port;
 
     const unsigned int maxClients;
 
