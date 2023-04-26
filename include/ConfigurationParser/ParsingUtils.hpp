@@ -11,6 +11,16 @@ public:
 
     ~ParsingUtils();
 
+    static std::string removeIsSpace(std::string str) {
+        std::string ret;
+        for (unsigned int i = 0; i < str.size(); i++) {
+            if (!(std::isspace(str[i])) && !(str[i] == '\t') && !(str[i] == '\n')) {
+                ret += str[i];
+            }
+        }
+        return ret;
+    }
+
     static unsigned int strContainsChar(std::string str, char c) {
         unsigned int count = 0;
         for (unsigned int i = 0; i < str.size(); i++) {
@@ -37,6 +47,14 @@ public:
         return false;
     }
 
+    static std::string concatenateString(std::vector<std::string> vector) {
+        std::string result;
+        for (unsigned int i = 0; i < vector.size(); i++) {
+            result += vector[i];
+        }
+        return result;
+    }
+
     static int strToPositiveInteger(std::string value) {
         int num;
         try {
@@ -59,7 +77,7 @@ public:
             result.push_back(token);
             str.erase(0, pos + delimiter.length());
         }
-        result.push_back(str);
+        if (str.empty() == false) { result.push_back(str); }
         return result;
     }
 
@@ -81,6 +99,23 @@ public:
             return (this->_msg);
         };
     };
+
+    static bool checkLimiter(std::string str) {
+        int openLimiterNumber = 0;
+        int closeLimiterNumber = 0;
+
+        for (unsigned int i = 0; i < str.size(); i++) {
+            if (str[i] == '{') {
+                openLimiterNumber++;
+            } else if (str[i] == '}') {
+                closeLimiterNumber++;
+                if (closeLimiterNumber > openLimiterNumber) {
+                    throw ErrorParsing("Error: Bad server format: More close limiter than open limiter");
+                }
+            }
+        }
+        return true;
+    }
 
     static bool checkLimiter(std::vector<std::string> &server,
                              char open_limiter, char close_limiter) {

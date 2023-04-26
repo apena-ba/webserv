@@ -5,18 +5,26 @@
 
 class Route {
 private:
-    std::string _path;
-    std::vector<std::string> _methods;
-    std::string _location;
-    std::string _index;
-    bool _directory_listing;
-    std::string cgi;
+
+
 public:
-    Route();
+    Route(const std::string &_index,
+          const std::vector<std::string> &_methods,
+          const std::string &_path) : index(_index), methods(_methods),
+                                      path(_path) {}
 
-    ~Route();
+    Route(const Route &route) : index(route.index), methods(route.methods), path(route.path) {
+    }
 
+    Route() : index(), methods(), path() {}
 
+    ~Route() {};
+
+    Route(Route &route) : index(route.index), methods(route.methods), path(route.path) {}
+
+    const std::string index;
+    const std::vector<std::string> methods;
+    const std::string path;
 };
 
 #endif

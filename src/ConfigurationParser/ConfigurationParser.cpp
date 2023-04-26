@@ -2,19 +2,6 @@
 #include "ConfigurationParser/ParsingUtils.hpp"
 #include "Route.hpp"
 
-bool ConfigurationParser::checkAllFieldsSet(_TempConfiguration tmp) {
-    if (tmp.isMaxClientsSet() == false) {
-        throw BadFile("Error: Max clients not set");
-    }
-    if (tmp.isDefaultErrorPageSet() == false) {
-        throw BadFile("Error: Default error page not set");
-    }
-    if (tmp.isClientBodyMaxSizeSet() == false) {
-        throw BadFile("Error: Client body max size not set");
-    }
-    return true;
-}
-
 std::vector<std::string>::iterator
 ConfigurationParser::_findField(std::string field_name, std::vector<std::string> &server) {
     std::vector<std::string>::iterator field_it;
@@ -63,30 +50,63 @@ ConfigurationParser::_extractArrayField(std::vector<std::string> &server, std::s
 void ConfigurationParser::_splitExtractRoutes(std::vector<std::string> &server) {
     std::vector<std::string>::iterator field_it;
     std::vector<std::string> routes;
+    std::string route_str;
+    std::vector<std::vector<std::string> > splitted_routes;
 
     routes = _extractArrayField(server, "routes:");
-    if (routes[0][7] != '[') {
+    if (routes.size() == 0) {
+        throw BadFile("Error: Bad server format: routes: not set");
+    }
+    if (routes.back().back() != ']') {
+        throw BadFile("Error: Bad server format: routes: must be followed by ]");
+    }
+    if (routes[0].size() == 7 && (routes.size() == 1 || routes[1][0] != '[')) {
         throw BadFile("Error: Bad server format: routes: must be followed by [");
     }
-    if (routes[0].size() != 8) {
-        throw BadFile("Error: Bad server format: routes: put new line for every field");
+    if (routes[0].size() >= 8 && routes[0][7] != '[') {
+        throw BadFile("Error: Bad server format: routes: must be followed by [");
+    }
+    route_str = ParsingUtils::concatenateString(routes);
+    splitted_routes = _splitServers(routes, '{', '}');
+    for (unsigned int i = 0; i < splitted_routes.size(); i++) {
+        std::cout << "route: " << std::endl;
+        for (unsigned int j = 0; j < splitted_routes[i].size(); j++) {
+            std::cout << splitted_routes[i][j] << std::endl;
+        }
     }
 }
 
 void ConfigurationParser::_splitExtractPort(std::vector<std::string> &server) {
     std::vector<std::string>::iterator field_it;
     std::vector<std::string> ports;
+    std::string ports_str;
+    std::vector<std::string> splitted_ports;
 
     ports = _extractArrayField(server, "ports:");
-    if (ports[0][6] != '[') {
+    if (ports.size() == 0) {
+        throw BadFile("Error: Bad server format: ports: not set");
+    }
+    if (ports.back().back() != ']') {
+        throw BadFile("Error: Bad server format: ports: must be followed by ]");
+    }
+    if (ports[0].size() == 6 && (ports.size() == 1 || ports[1][0] != '[')) {
         throw BadFile("Error: Bad server format: ports: must be followed by [");
+    }
+    if (ports[0].size() >= 7 && ports[0][6] != '[') {
+        throw BadFile("Error: Bad server format: ports: must be followed by [");
+    }
+    ports_str = ParsingUtils::concatenateString(ports);
+    splitted_ports = ParsingUtils::split(ports_str, ",");
+    std::cout << "ports: " << std::endl;
+    for (unsigned int i = 0; i < splitted_ports.size(); i++) {
+        std::cout << splitted_ports[i] << std::endl;
     }
 }
 
-std::vector<ConfigurationParser::_TempConfiguration>
+std::vector<ConfigurationParser::_TmpConfiguration>
 ConfigurationParser::_splitAllArgs(std::vector<std::vector<std::string> > &servers) {
-    std::vector<_TempConfiguration> result;
-    _TempConfiguration tmp;
+    std::vector<_TmpConfiguration> result;
+    _TmpConfiguration tmp;
     unsigned int *port;
     Route *routes;
 
@@ -107,7 +127,7 @@ std::pair<std::string, std::string> ConfigurationParser::_lineToPair(std::string
     if (line.size() <= 1) {
         throw (BadFile("Error: Bad server format: Bad arguments"));
     }
-    line.erase(line.end() - 1);
+    line.erase(line.end());
     tmp = ParsingUtils::split(line, ":");
     if (tmp.size() != 2) {
         throw (BadFile("Error: Bad server format: Bad number of arguments"));
@@ -117,9 +137,9 @@ std::pair<std::string, std::string> ConfigurationParser::_lineToPair(std::string
     return result;
 }
 
-ConfigurationParser::_TempConfiguration ConfigurationParser::_splitArgs(std::vector<std::string> &server) {
+ConfigurationParser::_TmpConfiguration ConfigurationParser::_splitArgs(std::vector<std::string> &server) {
     std::pair<std::string, std::string> arg;
-    _TempConfiguration tmp_config;
+    _TmpConfiguration tmp_config;
 
     if (server[0].compare(0, 7, "server{") != 0 || server[0].size() != 7) {
         throw BadFile("Error: Bad server format: First line must be server{");
@@ -144,7 +164,6 @@ ConfigurationParser::_TempConfiguration ConfigurationParser::_splitArgs(std::vec
     tmp_config.setFields(arg.first, arg.second);
     return tmp_config;
 }
-
 
 std::vector<std::string>::iterator ConfigurationParser::_findCloseDelimiter(std::vector<std::string> &file,
                                                                             char open_limiter, char close_limiter,
@@ -171,11 +190,12 @@ std::vector<std::string>::iterator ConfigurationParser::_findCloseDelimiter(std:
     throw ParsingUtils::ErrorParsing("Error: Bad server format: No closing brace");
 }
 
-std::vector<std::vector<std::string> > ConfigurationParser::_splitServers(std::vector<std::string> &file) {
+std::vector<std::vector<std::string> >
+ConfigurationParser::_splitServers(std::vector<std::string> &file, char open_limiter, char close_limiter) {
     std::vector<std::string>::iterator iterator_close_brace;
     std::vector<std::vector<std::string> > servers;
     for (std::vector<std::string>::iterator it = file.begin(); it != file.end(); ++it) {
-        iterator_close_brace = _findCloseDelimiter(file, '{', '}', it);
+        iterator_close_brace = _findCloseDelimiter(file, open_limiter, close_limiter, it);
         std::vector<std::string> server;
         server = std::vector<std::string>(it, iterator_close_brace + 1);
         servers.push_back(server);

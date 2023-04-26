@@ -15,6 +15,7 @@
 
 #include <vector>
 #include <iostream>
+#include "Route.hpp"
 
 #define DEFAULT_PORT [80]
 #define DEFAULT_MAX_CLIENTS 100
@@ -22,21 +23,22 @@
 #define DEFAULT_CLIENT_BODY_MAX_SIZE 1000000
 
 class Configuration {
+private:
+
 public:
-    Configuration() : port(), maxClients(DEFAULT_MAX_CLIENTS),
+    Configuration() : ports(), maxClients(DEFAULT_MAX_CLIENTS),
                       defaultErrorPage(DEFAULT_ERROR_PAGE),
-                      clientBodyMaxSize(DEFAULT_CLIENT_BODY_MAX_SIZE) {}
+                      clientBodyMaxSize(DEFAULT_CLIENT_BODY_MAX_SIZE) {};
 
     Configuration(unsigned int i);
 
-    Configuration(unsigned int maxClients, std::string defaultErrorPage,
-                  unsigned int clientBodyMaxSize) : maxClients(maxClients),
-                                                    defaultErrorPage(defaultErrorPage),
-                                                    clientBodyMaxSize(clientBodyMaxSize) {}
-
-    Configuration(unsigned int *port) : port(port), maxClients(DEFAULT_MAX_CLIENTS),
-                                        defaultErrorPage(DEFAULT_ERROR_PAGE),
-                                        clientBodyMaxSize(DEFAULT_CLIENT_BODY_MAX_SIZE) {}
+    Configuration(unsigned int _maxClients, std::string _defaultErrorPage,
+                  std::vector<unsigned int> _ports,
+                  unsigned int _clientBodyMaxSize, std::vector<Route> _routes) : ports(_ports),
+                                                                                 maxClients(_maxClients),
+                                                                                 defaultErrorPage(_defaultErrorPage),
+                                                                                 clientBodyMaxSize(_clientBodyMaxSize),
+                                                                                 routes(_routes) {};
 
     ~Configuration() {}
 
@@ -48,13 +50,15 @@ public:
         return *this;
     }
 
-    unsigned int *port;
+    const std::vector<unsigned int> ports;
 
     const unsigned int maxClients;
 
     const std::string defaultErrorPage;
 
     const unsigned int clientBodyMaxSize;
+
+    const std::vector<Route> routes;
 };
 
 #endif

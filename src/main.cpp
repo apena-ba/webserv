@@ -42,22 +42,33 @@
     exit(1);
  */
 int main(int argc, char **argv) {
-    try {
-        ConfigurationParser parser;
-        std::vector<Configuration> configs = parser.parse("test");
 
-        for (unsigned long i = 0; i < configs.size(); ++i) {
-            std::cout << "port: " << configs[i].port << std::endl;
-            std::cout << "max_clients: " << configs[i].maxClients << std::endl;
-            std::cout << "default_error_page: " << configs[i].defaultErrorPage << std::endl;
-            std::cout << "client_body_max_size: " << configs[i].clientBodyMaxSize << std::endl;
-            std::cout << "--------------" << std::endl;
-        }
-    }
-    catch (std::exception &e) {
-        std::cerr << e.what() << std::endl;
-        std::exit(1);
+    ConfigurationParser parser;
+    std::vector<Configuration> configs = parser.parse("test2");
+    for (unsigned int i = 0; i < configs.size(); i++) {
+        std::cout << "ports: " << configs[i].ports[0] << std::endl;
+        std::cout << "maxClients: " << configs[i].maxClients << std::endl;
+        std::cout << "defaultErrorPage: " << configs[i].defaultErrorPage << std::endl;
+        std::cout << "clientBodyMaxSize: " << configs[i].clientBodyMaxSize << std::endl;
+        std::cout << "routes: " << configs[i].routes[0].methods[1] << std::endl;
     }
     exit(1);
+    /* try {
+         ConfigurationParser parser;
+         std::vector<Configuration> configs = parser.parse("test");
+
+         for (unsigned long i = 0; i < configs.size(); ++i) {
+             std::cout << "port: " << configs[i].port << std::endl;
+             std::cout << "max_clients: " << configs[i].maxClients << std::endl;
+             std::cout << "default_error_page: " << configs[i].defaultErrorPage << std::endl;
+             std::cout << "client_body_max_size: " << configs[i].clientBodyMaxSize << std::endl;
+             std::cout << "--------------" << std::endl;
+         }
+     }
+     catch (std::exception &e) {
+         std::cerr << e.what() << std::endl;
+         std::exit(1);
+     }
+     exit(1);*/
 
 }
