@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:47:14 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/24 19:27:27 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/26 11:47:55 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,6 @@ std::string extractHost(std::string &request)
 {
     HTTPRequestParser parser(request);
 
-    std::cout << "getHost = " << parser.get("host") << std::endl;
     return(parser.get("host"));
 }
 

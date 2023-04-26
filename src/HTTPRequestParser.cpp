@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/26 11:59:19 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/26 12:01:07 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ static void	handlehost(std::string &host, std::map<std::string, std::string> &va
 	{
 		port = host.substr(portPos + 1, host.find_first_of("\r\n"));
 		host.erase(portPos, port.size() + 1);
-		std::cout << "Port: " << port << std::endl;
-		std::cout << "Host: " << host << std::endl;
 		vals.insert(std::pair<std::string, std::string>("port", port));
 	}
 }
