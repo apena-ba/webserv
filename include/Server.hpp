@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:24:53 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/20 16:58:15 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/26 13:01:51 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "macro.hpp"
 #include "Configuration.hpp"
+#include "HTTPRequestParser.hpp"
 #include <vector>
 
 class Server{
@@ -27,7 +28,7 @@ class Server{
         Server(Configuration const &config);
         ~Server();
         std::string getHost(void) const;
-        void handleRequest(std::string &request, int client_socket);
+        void handleRequest(HTTPRequestParser &parser, int client_socket);
 };
 
 timeval initializeTimeOutWrite(void);

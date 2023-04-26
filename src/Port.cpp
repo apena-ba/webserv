@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:47:14 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/26 11:47:55 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/26 13:00:22 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,35 +121,27 @@ pollfd Port::getPollfdByIndex(int index)
     return this->_pollFds[index];
 }
 
-std::string extractHost(std::string &request)
-{
-    HTTPRequestParser parser(request);
-
-    return(parser.get("host"));
-}
-
 void Port::selectServer(unsigned int i)
 {
+    int anywhere_index = -1;
     for(unsigned int x = 0; x < this->_servers.size(); x++)
     {
-        std::string one = extractHost(this->_requests[i]);
-        std::string two = this->_servers[x]->getHost();
-        std::cout << "One = " << one << " and two = " << two << std::endl;
-        if(one == this->_servers[x]->getHost())
+        HTTPRequestParser parser(this->_requests[i]);
+        if(this->_servers[x]->getHost() == "0.0.0.0")
+            anywhere_index = i;
+        if(parser.get("host") == this->_servers[x]->getHost())
         {
-            this->_servers[x]->handleRequest(this->_requests[i], this->_pollFds[i].fd);
+            this->_servers[x]->handleRequest(parser, this->_pollFds[i].fd);
             this->closeClient(i, false);
             return;
         }
     }
-    for(unsigned int x = 0; x < this->_servers.size(); x++)
+    if(anywhere_index != -1)
     {
-        if(this->_servers[x]->getHost().size() == 0)
-        {
-            this->_servers[x]->handleRequest(this->_requests[i], this->_pollFds[i].fd);
-            this->closeClient(i, false);
-            return;
-        }
+        HTTPRequestParser parser(this->_requests[i]);
+        this->_servers[anywhere_index]->handleRequest(parser, this->_pollFds[i].fd);
+        this->closeClient(i, false);
+        return;
     }
     this->closeClient(i, true); // This only happens when no server host is available, maybe we shuld send a status code?
 }
