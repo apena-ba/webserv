@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/26 12:01:07 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/26 13:01:54 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,12 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 		i += host.size();
 		handlehost(host, _vals);
 		this->_vals.insert(std::pair<std::string, std::string>("host", host));
+	}
+	else if (req.compare(i, 1, "/"))
+	{
+		std::cerr << ">> Error: 400, bad absolute path." << std::endl;
+		this->_status = 400;
+		return false;
 	}
 	else
 		host = "";
