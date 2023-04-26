@@ -8,6 +8,7 @@ INC = -I include -I include/ConfigurationParser
 
 SRC = src/main.cpp src/Cluster.cpp src/Server.cpp src/ConfigurationParser/ConfigurationParser.cpp
 
+
 OBJ = obj/main.o obj/Cluster.o obj/Server.o obj/ConfigurationParser.o
 
 all: $(NAME)

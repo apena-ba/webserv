@@ -12,7 +12,7 @@
 
 class ConfigurationParser {
 private:
-    class _TmpConfiguration {
+    class _TempConfiguration {
     private:
         unsigned int _maxClients;
         bool _maxClients_is_set;
@@ -66,14 +66,14 @@ private:
         }
 
     public:
-        _TmpConfiguration() {
+        _TempConfiguration() {
             this->_maxClients_is_set = false;
             this->_defaultErrorPage_is_set = false;
             this->_clientBodyMaxSize_is_set = false;
             this->_ports_is_set = false;
         }
 
-        ~_TmpConfiguration() {
+        ~_TempConfiguration() {
         }
 
         std::vector<unsigned int> getPorts() const {
@@ -194,7 +194,7 @@ private:
 
         void _setPath(std::string path) {
             if (this->_path_is_set == true) {
-                throw ErrorParsing("Error: path already set");
+                throw ErrorParsing("Error: route: path already set");
             }
             this->_path_is_set = true;
             this->_path = path;
@@ -259,172 +259,37 @@ private:
         };
     };
 
-    _TmpConfiguration _splitArgs(std::vector<std::string> &server);
-
-    std::vector<std::vector<std::string> >
-    _splitServers(std::vector<std::string> &file, char open_limiter, char close_limiter);
-
-    std::vector<std::string>::iterator _findCloseDelimiter(std::vector<std::string> &file,
-                                                           char open_limiter, char close_limiter,
-                                                           std::vector<std::string>::iterator it);
-
     std::pair<std::string, std::string> _lineToPair(std::string line);
 
-    std::vector<ConfigurationParser::_TmpConfiguration> _splitAllArgs(std::vector<std::vector<std::string> > &servers);
+    Configuration _toConfiguration(_TempConfiguration &server, std::vector<Route> routes);
 
-    Configuration _toConfiguration(_TmpConfiguration &server, std::vector<Route> routes) {
-        Configuration conf(server.getMaxClients(), server.getDefaultErrorPage(), server.getPorts(),
-                           server.getClientBodyMaxSize(), routes);
-        return conf;
-    }
+    std::vector<Configuration> _modelToConfiguration(std::vector<std::pair<_TempConfiguration,
+            std::vector<Route> > > model);
 
-    std::vector<Configuration>
-    _toVectorConfiguration(std::vector<_TmpConfiguration> &servers, std::vector<Route> routes) {
-        std::vector<Configuration> confs;
-        for (std::vector<_TmpConfiguration>::iterator it = servers.begin(); it != servers.end(); it++) {
-            confs.push_back(this->_toConfiguration(*it, routes));
-        }
-        return confs;
-    }
+    std::vector<std::pair<std::string, std::string> > _fieldExtractor(std::string line, std::string opener);
+
+    std::vector<Route> _tmpToRoute(std::vector<_TempRoute> data);
+
+    std::vector<Route> _dataToRoute(std::vector<std::string> data);
+
+    _TempConfiguration
+    _dataToConfiguration(std::string data);
+
+    std::vector<std::pair<_TempConfiguration, std::vector<Route> > >
+    _dataToModel(std::vector<std::pair<std::string, std::vector<std::string> > > data);
+
+    std::vector<std::pair<std::string, std::vector<std::string> > > _extractRoute(std::vector<std::string> servers);
+
+    int _findCloseBrace(std::string str);
+
+    std::vector<std::string> _serverSplitter(std::string file);
 
 public:
     ConfigurationParser();
 
     ~ConfigurationParser();
 
-    std::vector<Configuration> parse(std::string path) {
-        std::string file = ParsingUtils::fileToString(path);
-        ParsingUtils::checkLimiter(file);
-        ParsingUtils::removeAllSpace(file);
-        std::string new_str = ParsingUtils::removeIsSpace(file);
-        std::vector<std::string> servers = serverSplitter(new_str);
-        std::vector<std::pair<std::string, std::vector<std::string> > >
-                pair = extractRoute(servers);
-
-        std::vector<std::pair<_TmpConfiguration,
-                std::vector<Route> > > modele = dataToModele(pair);
-        std::vector<Configuration> configs = modelToConfiguration(modele);
-        return configs;
-    }
-
-    std::vector<Configuration> modelToConfiguration(std::vector<std::pair<_TmpConfiguration,
-            std::vector<Route> > > modele) {
-        std::vector<Configuration> confs;
-        for (unsigned int i = 0; i < modele.size(); i++) {
-            confs.push_back(_toConfiguration(modele[i].first, modele[i].second));
-        }
-        return confs;
-    }
-
-    std::vector<std::pair<std::string, std::string> > fieldExtractor(std::string line, std::string opener) {
-        std::string removed_limiter_line;
-        std::vector<std::string> splitted;
-        std::vector<std::pair<std::string, std::string> > fields;
-        if (line.find(opener) != 0) {
-            throw BadFile("Error: Bad limiters");
-        }
-        removed_limiter_line = line.substr(opener.length(), line.length() - opener.length() - 1);
-        splitted = ParsingUtils::split(removed_limiter_line, ";");
-        for (unsigned int i = 0; i < splitted.size(); i++) {
-            fields.push_back(this->_lineToPair(splitted[i]));
-        }
-        return fields;
-    }
-
-    std::vector<Route> tmpToRoute(std::vector<_TempRoute> data) {
-        std::vector<Route> routes;
-        for (unsigned int i = 0; i < data.size(); i++) {
-            routes.push_back(Route(data[i].getIndex(), data[i].getMethods(), data[i].getPath()));
-        }
-
-        return routes;
-    }
-
-    std::vector<Route> dataToRoute(std::vector<std::string> data) {
-        std::vector<_TempRoute> tmp_routes;
-        std::vector<std::pair<std::string, std::string> > fields;
-
-        for (unsigned int i = 0; i < data.size(); i++) {
-            fields = fieldExtractor(data[i], "route{");
-            tmp_routes.push_back(_TempRoute());
-            for (unsigned int j = 0; j < fields.size(); j++) {
-                tmp_routes[i].setFields(fields[j].first, fields[j].second);
-            }
-            tmp_routes[i].checkAllFieldsSet();
-        }
-        std::vector<Route> routes = std::vector<Route>(tmpToRoute(tmp_routes));
-        return routes;
-    }
-
-    _TmpConfiguration
-    dataToConfiguration(std::string data) {
-        _TmpConfiguration confs;
-        std::vector<std::pair<std::string, std::string> > fields;
-        fields = fieldExtractor(data, "server{");
-        for (unsigned int i = 0; i < fields.size(); i++) {
-            confs.setFields(fields[i].first, fields[i].second);
-        }
-        confs.checkAllFieldsSet();
-        return confs;
-    }
-
-    std::vector<std::pair<_TmpConfiguration, std::vector<Route> > >
-    dataToModele(std::vector<std::pair<std::string, std::vector<std::string> > > data) {
-        std::vector<std::pair<_TmpConfiguration, std::vector<Route> > > modele;
-        for (unsigned int i = 0; i < data.size(); i++) {
-            _TmpConfiguration confs = dataToConfiguration(data[i].first);
-            std::vector<Route> routes = dataToRoute(data[i].second);
-            modele.push_back(std::make_pair(confs, routes));
-        }
-        return modele;
-    }
-
-    std::vector<std::pair<std::string, std::vector<std::string> > > extractRoute(std::vector<std::string> servers) {
-        int close_route_brace = 0;
-        unsigned int open_route_brace = 0;
-        std::vector<std::string> routes;
-        std::vector<std::pair<std::string, std::vector<std::string> > > return_pair;
-
-        for (unsigned int i = 0; i < servers.size(); i++) {
-            routes.clear();
-            while (servers[i].find("route{") != servers[i].npos) {
-                open_route_brace = servers[i].find("route{");
-                close_route_brace = findCloseBrace(servers[i].substr(open_route_brace));
-                routes.push_back(servers[i].substr(open_route_brace, close_route_brace + 1));
-                servers[i].erase(open_route_brace, close_route_brace + 1);
-            }
-            return_pair.push_back(std::make_pair(servers[i], routes));
-        }
-        return return_pair;
-    }
-
-    int findCloseBrace(std::string str) {
-        unsigned int open_brace = 0;
-        unsigned int close_brace = 0;
-        for (unsigned int i = 0; i < str.size(); i++) {
-            if (str[i] == '{') {
-                open_brace++;
-            } else if (str[i] == '}') {
-                close_brace++;
-            }
-            if (open_brace == close_brace && open_brace != 0 && close_brace != 0) {
-                return i;
-            }
-        }
-        throw BadFile("Error: not the same number of open and close brace");
-    }
-
-    std::vector<std::string> serverSplitter(std::string file) {
-        std::vector<std::string> servers;
-        if (file.substr(0, 7) != "server{") {
-            throw BadFile("Error: first line is not server{");
-        }
-        for (unsigned int i = 0; i < file.size(); i++) {
-            servers.push_back(file.substr(i, findCloseBrace(file.substr(i)) + 1));
-            i += findCloseBrace(file.substr(i));
-        }
-        return servers;
-    }
+    std::vector<Configuration> parse(std::string path);
 
     class BadFile : public std::exception {
     private:
@@ -436,16 +301,6 @@ public:
             return (this->_msg);
         };
     };
-
-    std::vector<std::string> _extractArrayField(std::vector<std::string> &vector, std::string to_find);
-
-    void _splitExtractRoutes(std::vector<std::string> &server);
-
-    void _splitExtractPort(std::vector<std::string> &server);
-
-
-    std::vector<std::string, std::allocator<std::string> >::iterator
-    _findField(std::string field_name, std::vector<std::string> &server);
 };
 
 #endif

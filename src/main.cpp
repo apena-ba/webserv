@@ -42,15 +42,20 @@
     exit(1);
  */
 int main(int argc, char **argv) {
-
-    ConfigurationParser parser;
-    std::vector<Configuration> configs = parser.parse("test2");
-    for (unsigned int i = 0; i < configs.size(); i++) {
-        std::cout << "ports: " << configs[i].ports[0] << std::endl;
-        std::cout << "maxClients: " << configs[i].maxClients << std::endl;
-        std::cout << "defaultErrorPage: " << configs[i].defaultErrorPage << std::endl;
-        std::cout << "clientBodyMaxSize: " << configs[i].clientBodyMaxSize << std::endl;
-        std::cout << "routes: " << configs[i].routes[0].methods[1] << std::endl;
+    try {
+        ConfigurationParser parser;
+        std::vector<Configuration> configs = parser.parse("test2");
+        for (unsigned int i = 0; i < configs.size(); i++) {
+            std::cout << "ports: " << configs[i].ports[0] << std::endl;
+            std::cout << "maxClients: " << configs[i].maxClients << std::endl;
+            std::cout << "defaultErrorPage: " << configs[i].defaultErrorPage << std::endl;
+            std::cout << "clientBodyMaxSize: " << configs[i].clientBodyMaxSize << std::endl;
+            std::cout << "routes: " << configs[i].routes[0].methods[1] << std::endl;
+        }
+    }
+    catch (std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        std::exit(1);
     }
     exit(1);
     /* try {
