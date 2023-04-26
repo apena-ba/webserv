@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/26 13:13:51 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/26 15:21:08 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ static void	handlehost(std::string &host, std::map<std::string, std::string> &va
 bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 {
 	// If any errors arise, status is set to indicate the corresponding HTTP status code and the constructor returns.
-	std::cout << "REQUEST IS " << std::endl << req << std::endl;
 	std::string	method = req.substr(0, req.find_first_of(" \t\v\r\n\f"));
 	if (method != "GET" && method != "POST" && method != "DELETE")
 	{
