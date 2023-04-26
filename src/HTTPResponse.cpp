@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/26 14:43:56 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/26 15:46:51 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,38 @@ std::map<std::string, std::string>	HTTPResponse::fillstatusmessages()
 std::map<std::string, std::string>	HTTPResponse::_statusMessages = HTTPResponse::fillstatusmessages();
 ////////////////////////////////////////////////////////////////////////////////
 
+void	get_perform()
+{
+	// Try and open the requested file.
+	// Put the contents into the body if it exists, put the corresponding error page instead if it failed.
+	// Way of using the cgi to create the page?
+}
+
+void	HTTPResponse::bodybuilder()
+{
+	if (_status == 503) // Create the 503 error page.
+	{
+		_vals["body"] = "";
+		return;
+	}
+
+	if (_vals["type"] == "GET")
+		get_perform();
+	else if (_vals["type"] == "POST")
+		pos_perform();
+	else if (_vals["type"] == "DELETE")
+		del_perform();
+}
+
 // First the internal, inherited request parser is constructed to have direct access to the map.
+// The body is built following method specifications.
 // [1]Then the status is converted to a string in order to use it as a key.
 // [2]The first line of the response is then built by concatenation.
 // [3]Iterate the map, building the header lines as simple '<key>: <value>\r\n' strings.
 HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest) : HTTPRequestParser(givenRequest)
 {
 	// Build the body if the method requires it, try access again and update status accordingly
+	bodybuilder();
 
 	// 1:
 	this->_strStatus = tostr(this->_status);
