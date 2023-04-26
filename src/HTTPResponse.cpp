@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/24 12:10:12 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/26 13:43:22 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,9 @@ HTTPResponse::~HTTPResponse() {}
 std::string	HTTPResponse::getresponse() const
 {
 	return (this->_response);
+}
+
+std::string	HTTPResponse::getbody() const
+{
+	return (this->_body);
 }
