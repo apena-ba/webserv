@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/26 13:43:22 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/26 14:43:56 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ std::map<std::string, std::string>	HTTPResponse::fillstatusmessages()
 	msgs.insert(std::pair<std::string, std::string>("400", "Bad Request"));
 	msgs.insert(std::pair<std::string, std::string>("403", "Forbidden"));
 	msgs.insert(std::pair<std::string, std::string>("404", "Not Found"));
+	msgs.insert(std::pair<std::string, std::string>("503", "Service Unavailable"));
 	return (msgs);
 }
 
