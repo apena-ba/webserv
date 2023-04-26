@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/24 19:31:18 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/26 11:59:19 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,9 @@ static void	handlehost(std::string &host, std::map<std::string, std::string> &va
 	if (portPos != std::string::npos)
 	{
 		port = host.substr(portPos + 1, host.find_first_of("\r\n"));
-		host.erase(portPos, port.size());
+		host.erase(portPos, port.size() + 1);
+		std::cout << "Port: " << port << std::endl;
+		std::cout << "Host: " << host << std::endl;
 		vals.insert(std::pair<std::string, std::string>("port", port));
 	}
 }
@@ -156,7 +158,7 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 			this->_status = 400;
 			//return false;
 		}
-		i += field.size();
+		i = req.find_first_of("\r\n", i);
 		if (req.compare(i, 2, "\r\n"))
 		{
 			std::cerr << ">> Error: 400, bad end of line character pair in '" << key << "' line." << std::endl;
