@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/26 13:01:54 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/26 13:12:57 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	std::string	method = req.substr(0, req.find_first_of(" \t\v\r\n\f"));
 	if (method != "GET" && method != "POST" && method != "DELETE")
 	{
-		std::cerr << ">> Error: 400, bad method." << std::endl;
-		this->_status = 400;
+		std::cerr << ">> Error: 503, service unavailable." << std::endl;
+		this->_status = 503;
 		return false;
 	}
 	this->_vals.insert(std::pair<std::string, std::string>("type", method));
