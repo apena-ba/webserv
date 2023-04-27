@@ -36,14 +36,14 @@ public:
 
     static std::vector<std::string> split(std::string str, const std::string &delimiter) {
         std::vector<std::string> result;
-        size_t pos = 0;
+        size_t pos;
         std::string token;
         while ((pos = str.find(delimiter)) != std::string::npos) {
             token = str.substr(0, pos);
             result.push_back(token);
             str.erase(0, pos + delimiter.length());
         }
-        if (str.empty() == false) { result.push_back(str); }
+        if (!str.empty()) { result.push_back(str); }
         return result;
     }
 
@@ -64,7 +64,7 @@ public:
         return true;
     }
 
-    static std::string fileToString(std::string filePath) {
+    static std::string fileToString(const std::string &filePath) {
         std::ifstream file(filePath);
         std::string str((std::istreambuf_iterator<char>(file)),
                         std::istreambuf_iterator<char>());

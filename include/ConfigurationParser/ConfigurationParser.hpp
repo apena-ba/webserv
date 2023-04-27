@@ -34,9 +34,9 @@ private:
             }
         }
 
-        void _setMaxClients(std::string maxClients) {
+        void _setMaxClients(const std::string &maxClients) {
             int num;
-            if (this->_maxClients_is_set == true) {
+            if (this->_maxClients_is_set) {
                 throw ErrorParsing("Error: Max clients already set");
             }
             this->_maxClients_is_set = true;
@@ -44,20 +44,20 @@ private:
             this->_maxClients = num;
         }
 
-        void _setDefaultErrorPage(std::string defaultErrorPage) {
+        void _setDefaultErrorPage(const std::string &defaultErrorPage) {
             if (access(defaultErrorPage.c_str(), F_OK) == -1) {
                 throw ErrorParsing("Error: Canno't access file default error page");
             }
-            if (this->_defaultErrorPage_is_set == true) {
+            if (this->_defaultErrorPage_is_set) {
                 throw ErrorParsing("Error: Default error page already set");
             }
             this->_defaultErrorPage_is_set = true;
             this->_defaultErrorPage = defaultErrorPage;
         }
 
-        void _setClientBodyMaxSize(std::string clientBodyMaxSize) {
+        void _setClientBodyMaxSize(const std::string &clientBodyMaxSize) {
             int num;
-            if (this->_clientBodyMaxSize_is_set == true) {
+            if (this->_clientBodyMaxSize_is_set) {
                 throw ErrorParsing("Error: Client body max size already set");
             }
             this->_clientBodyMaxSize_is_set = true;
@@ -92,23 +92,23 @@ private:
             return this->_clientBodyMaxSize;
         }
 
-        bool checkAllFieldsSet() {
-            if (this->_maxClients_is_set == false) {
+        bool checkAllFieldsSet() const {
+            if (!this->_maxClients_is_set) {
                 throw BadFile("Error: Max clients not set");
             }
-            if (this->_defaultErrorPage_is_set == false) {
+            if (!this->_defaultErrorPage_is_set) {
                 throw BadFile("Error: Default error page not set");
             }
-            if (this->_clientBodyMaxSize_is_set == false) {
+            if (!this->_clientBodyMaxSize_is_set) {
                 throw BadFile("Error: Client body max size not set");
             }
-            if (this->_ports_is_set == false) {
+            if (!this->_ports_is_set) {
                 throw BadFile("Error: Port not set");
             }
             return true;
         }
 
-        void setFields(std::string field, std::string value) {
+        void setFields(const std::string &field, std::string value) {
             if (field == "max_clients") {
                 this->_setMaxClients(value);
             } else if (field == "default_error_page") {
@@ -145,11 +145,11 @@ private:
         std::string _path;
         bool _path_is_set;
 
-        void _setIndex(std::string index) {
+        void _setIndex(const std::string &index) {
             if (access(index.c_str(), F_OK) == -1) {
                 throw ErrorParsing("Error: Canno't access file index");
             }
-            if (this->_index_is_set == true) {
+            if (this->_index_is_set) {
                 throw ErrorParsing("Error: Index already set");
             }
             this->_index_is_set = true;
@@ -157,15 +157,15 @@ private:
         }
 
 
-        void _setMethods(std::string methods_input) {
+        void _setMethods(const std::string &methods_input) {
             int number_get = 0;
             int number_post = 0;
             int number_delete = 0;
             std::vector<std::string> methods = ParsingUtils::split(methods_input, ",");
-            if (this->_methods_is_set == true) {
+            if (this->_methods_is_set) {
                 throw ErrorParsing("Error: Methods already set");
             }
-            if (methods.size() == 0) {
+            if (methods.empty()) {
                 throw ErrorParsing("Error: No method provided");
             }
             if (methods.size() > 3) {
@@ -192,8 +192,8 @@ private:
             this->_methods = methods;
         }
 
-        void _setPath(std::string path) {
-            if (this->_path_is_set == true) {
+        void _setPath(const std::string &path) {
+            if (this->_path_is_set) {
                 throw ErrorParsing("Error: route: path already set");
             }
             this->_path_is_set = true;
@@ -223,19 +223,19 @@ private:
         }
 
         bool checkAllFieldsSet() {
-            if (this->_path_is_set == false) {
+            if (!this->_path_is_set) {
                 throw BadFile("Error: Route: path is not set");
             }
-            if (this->_methods_is_set == false) {
+            if (!this->_methods_is_set) {
                 throw BadFile("Error: Route: methods is not set");
             }
-            if (this->_index_is_set == false) {
+            if (!this->_index_is_set) {
                 throw BadFile("Error: Route: index is not set");
             }
             return true;
         }
 
-        void setFields(std::string field, std::string value) {
+        void setFields(const std::string &field, const std::string &value) {
             if (field == "methods") {
                 _setMethods(value);
             } else if (field == "path") {
@@ -259,37 +259,39 @@ private:
         };
     };
 
-    std::pair<std::string, std::string> _lineToPair(std::string line);
+    static std::pair<std::string, std::string> _lineToPair(std::string line);
 
-    static Configuration _toConfiguration(_TempConfiguration &server, std::vector<Route> routes);
+    static Configuration _toConfiguration(_TempConfiguration &server, const std::vector<Route> &routes);
 
-    std::vector<Configuration> _modelToConfiguration(std::vector<std::pair<_TempConfiguration,
+    static std::vector<Configuration> _modelToConfiguration(std::vector<std::pair<_TempConfiguration,
             std::vector<Route> > > model);
 
-    std::vector<std::pair<std::string, std::string> > _fieldExtractor(std::string line, std::string opener);
+    std::vector<std::pair<std::string, std::string> >
+    _fieldExtractor(const std::string &line, const std::string &opener);
 
-    std::vector<Route> _tmpToRoute(std::vector<_TempRoute> data);
+    static std::vector<Route> _tmpToRoute(std::vector<_TempRoute> data);
 
     std::vector<Route> _dataToRoute(std::vector<std::string> data);
 
     _TempConfiguration
-    _dataToConfiguration(std::string data);
+    _dataToConfiguration(const std::string &data);
 
     std::vector<std::pair<_TempConfiguration, std::vector<Route> > >
     _dataToModel(std::vector<std::pair<std::string, std::vector<std::string> > > data);
 
-    std::vector<std::pair<std::string, std::vector<std::string> > > _extractRoute(std::vector<std::string> servers);
+    static std::vector<std::pair<std::string, std::vector<std::string> > >
+    _extractRoute(std::vector<std::string> servers);
 
-    int _findCloseBrace(std::string str);
+    static unsigned int _findCloseBrace(std::string str);
 
-    std::vector<std::string> _serverSplitter(std::string file);
+    static std::vector<std::string> _serverSplitter(const std::string &file);
 
 public:
     ConfigurationParser();
 
     ~ConfigurationParser();
 
-    std::vector<Configuration> parse(std::string path);
+    std::vector<Configuration> parse(const std::string &path);
 
     class BadFile : public std::exception {
     private:

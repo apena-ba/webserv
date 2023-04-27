@@ -3,7 +3,8 @@
 #include "Route.hpp"
 
 Configuration
-ConfigurationParser::_toConfiguration(ConfigurationParser::_TempConfiguration &server, std::vector<Route> routes) {
+ConfigurationParser::_toConfiguration(ConfigurationParser::_TempConfiguration &server,
+                                      const std::vector<Route> &routes) {
     Configuration conf(server.getMaxClients(), server.getDefaultErrorPage(), server.getPorts(),
                        server.getClientBodyMaxSize(), routes);
     return conf;
@@ -37,7 +38,7 @@ ConfigurationParser::_modelToConfiguration(std::vector<std::pair<ConfigurationPa
 }
 
 std::vector<std::pair<std::string, std::string> >
-ConfigurationParser::_fieldExtractor(std::string line, std::string opener) {
+ConfigurationParser::_fieldExtractor(const std::string &line, const std::string &opener) {
     std::string removed_limiter_line;
     std::vector<std::string> splitted;
     std::vector<std::pair<std::string, std::string> > fields;
@@ -78,7 +79,7 @@ std::vector<Route> ConfigurationParser::_dataToRoute(std::vector<std::string> da
 }
 
 ConfigurationParser::ConfigurationParser::_TempConfiguration
-ConfigurationParser::_dataToConfiguration(std::string data) {
+ConfigurationParser::_dataToConfiguration(const std::string &data) {
     ConfigurationParser::_TempConfiguration confs;
     std::vector<std::pair<std::string, std::string> > fields;
     fields = _fieldExtractor(data, "server{");
@@ -100,7 +101,7 @@ ConfigurationParser::_dataToModel(std::vector<std::pair<std::string, std::vector
     return model;
 }
 
-int ConfigurationParser::_findCloseBrace(std::string str) {
+unsigned int ConfigurationParser::_findCloseBrace(std::string str) {
     unsigned int open_brace = 0;
     unsigned int close_brace = 0;
     for (unsigned int i = 0; i < str.size(); i++) {
@@ -118,8 +119,8 @@ int ConfigurationParser::_findCloseBrace(std::string str) {
 
 std::vector<std::pair<std::string, std::vector<std::string> > >
 ConfigurationParser::_extractRoute(std::vector<std::string> servers) {
-    int close_route_brace = 0;
-    unsigned int open_route_brace = 0;
+    unsigned int close_route_brace;
+    unsigned int open_route_brace;
     std::vector<std::string> routes;
     std::vector<std::pair<std::string, std::vector<std::string> > > return_pair;
 
@@ -136,7 +137,7 @@ ConfigurationParser::_extractRoute(std::vector<std::string> servers) {
     return return_pair;
 }
 
-std::vector<std::string> ConfigurationParser::_serverSplitter(std::string file) {
+std::vector<std::string> ConfigurationParser::_serverSplitter(const std::string &file) {
     std::vector<std::string> servers;
     if (file.substr(0, 7) != "server{") {
         throw BadFile("Error: first line is not server{");
@@ -148,7 +149,7 @@ std::vector<std::string> ConfigurationParser::_serverSplitter(std::string file) 
     return servers;
 }
 
-std::vector<Configuration> ConfigurationParser::parse(std::string path) {
+std::vector<Configuration> ConfigurationParser::parse(const std::string &path) {
     std::string file = ParsingUtils::fileToString(path);
     ParsingUtils::checkLimiter(file);
     ParsingUtils::removeAllSpace(file);
