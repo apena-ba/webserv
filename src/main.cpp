@@ -18,7 +18,6 @@ int main(int argc, char **argv) {
     try {
         ConfigurationParser parser;
         std::vector<Configuration> configs = parser.parse("clean_conf");
-        }
     }
     catch (std::exception &e) {
         std::cerr << e.what() << std::endl;

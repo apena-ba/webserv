@@ -22,6 +22,16 @@ private:
         bool _clientBodyMaxSize_is_set;
         std::vector<unsigned int> _ports;
         bool _ports_is_set;
+        std::string _host;
+        bool _host_is_set;
+
+        void _setHost(const std::string &host) {
+            if (this->_host_is_set) {
+                throw ErrorParsing("Error: Host already set");
+            }
+            this->_host_is_set = true;
+            this->_host = host;
+        }
 
         void _setPorts(std::string &ports) {
             if (this->_ports_is_set) {
@@ -76,6 +86,10 @@ private:
         ~_TempConfiguration() {
         }
 
+        std::string getHost() const {
+            return this->_host;
+        }
+
         std::vector<unsigned int> getPorts() const {
             return this->_ports;
         }
@@ -109,7 +123,9 @@ private:
         }
 
         void setFields(const std::string &field, std::string value) {
-            if (field == "max_clients") {
+            if (field == "host") {
+                this->_setHost(value);
+            } else if (field == "max_clients") {
                 this->_setMaxClients(value);
             } else if (field == "default_error_page") {
                 _setDefaultErrorPage(value);

@@ -31,7 +31,7 @@ public:
 
     Configuration(unsigned int i);
 
-    Configuration(unsigned int _maxClients, const std::string &_defaultErrorPage,
+    Configuration(const std::string &_host, unsigned int _maxClients, const std::string &_defaultErrorPage,
                   const std::vector<unsigned int> &_ports,
                   unsigned int _clientBodyMaxSize, const std::vector<Route> &_routes) : ports(_ports),
                                                                                         maxClients(_maxClients),
@@ -39,7 +39,8 @@ public:
                                                                                                 _defaultErrorPage),
                                                                                         clientBodyMaxSize(
                                                                                                 _clientBodyMaxSize),
-                                                                                        routes(_routes) {};
+                                                                                        routes(_routes),
+                                                                                        host(_host) {};
 
     ~Configuration() {}
 
@@ -60,6 +61,8 @@ public:
     const unsigned int clientBodyMaxSize;
 
     const std::vector<Route> routes;
+
+    const std::string host;
 };
 
 #endif

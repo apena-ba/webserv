@@ -5,7 +5,7 @@
 Configuration
 ConfigurationParser::_toConfiguration(ConfigurationParser::_TempConfiguration &server,
                                       const std::vector<Route> &routes) {
-    Configuration conf(server.getMaxClients(), server.getDefaultErrorPage(), server.getPorts(),
+    Configuration conf(server.getHost(), server.getMaxClients(), server.getDefaultErrorPage(), server.getPorts(),
                        server.getClientBodyMaxSize(), routes);
     return conf;
 }
