@@ -41,6 +41,5 @@ webserv
 .idea/
 templateConf.json
 test
-dirty_conf
-clean_conf
+
 config_idea
