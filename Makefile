@@ -4,7 +4,7 @@ CXX = c++
 
 CXXFLAGS = -Wall -Wextra -Werror -Wno-unused -Wno-unused-parameter -std=c++98 -g
 
-INC = -I include
+INC = -I include -I include/ConfigurationParser
 
 SRC = src/main.cpp src/Cluster.cpp src/Configuration.cpp src/Server.cpp src/Port.cpp src/HTTPRequestParser.cpp
 

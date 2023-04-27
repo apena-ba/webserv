@@ -6,45 +6,23 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:49:10 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/26 12:37:33 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/04/27 18:36:23 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cluster.hpp"
+#include "ConfigurationParser/ParsingUtils.hpp"
+#include "ConfigurationParser/ConfigurationParser.hpp"
 
-std::vector<Configuration> config_parser(int argc, char **argv)
-{
-    std::vector<Configuration> configs;
-    std::vector<int> ports;
-
-    ports.push_back(80);
-    ports.push_back(8081);
-    std::string host("localhost");
-
-    Configuration con1(ports, host);
-    configs.push_back(con1);
-    return(configs);
-}
-
-int main(int argc, char **argv)
-{
-    if(argc != 2)
-    {
-        std::cerr << "Wrong number of arguments" << std::endl;
-        std::cerr << "USAGE: ./webserv [configuration file]" << std::endl;
-        return (1);
+int main(int argc, char **argv) {
+    try {
+        ConfigurationParser parser;
+        std::vector<Configuration> configs = parser.parse("clean_conf");
+        }
     }
-
-    try
-    {
-        std::vector<Configuration> configs = config_parser(argc, argv);
-        Cluster  cluster(configs);
-        std::cout << "SERVER ON" << std::endl;
-        cluster.run();
-    } catch (std::exception &e)
-    {
+    catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
-        return (1);
+        std::exit(1);
     }
-    return(0);
+    exit(1);
 }

@@ -36,3 +36,10 @@ webserv
 *.exe
 *.out
 *.app
+
+*.swp
+.idea/
+templateConf.json
+test
+
+config_idea
