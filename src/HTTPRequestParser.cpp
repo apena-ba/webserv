@@ -6,14 +6,12 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/26 15:21:08 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/27 12:01:12 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/HTTPRequestParser.hpp"
-#include <fstream>
 #include <iostream>
-#include <unistd.h>
 
 static uint32_t	eatupsspaces(const std::string &str, uint32_t i)
 {

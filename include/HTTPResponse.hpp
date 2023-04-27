@@ -6,15 +6,13 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 10:51:55 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/26 13:42:57 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/27 12:08:39 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef HTTPRESPONSE
 #define HTTPRESPONSE
 
-#include <map>
-#include <string>
 #include "HTTPRequestParser.hpp"
 
 class HTTPResponse : public HTTPRequestParser
@@ -28,11 +26,17 @@ class HTTPResponse : public HTTPRequestParser
 
 	private:
 		static std::map<std::string, std::string>	fillstatusmessages();
+		static std::map<uint, std::string>			fillerrorpages();
+		void										bodybuilder();
+		void										get_perform();
+		void										pos_perform();
+		void										del_perform();
 
 		std::string									_strStatus;
 		std::string									_response;
 		std::string									_body;
 		static std::map<std::string, std::string>	_statusMessages;
+		static std::map<uint, std::string>			_errorPages;
 };
 
 #endif

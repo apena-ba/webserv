@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/26 15:46:51 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/27 12:11:16 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static std::string	tostr(int num)
 	return (convert.str());
 }
 
-///Declaring the implemented status codes///////////////////////////////////////
+///Declaring the implemented status codes and default error pages///////////////
 std::map<std::string, std::string>	HTTPResponse::fillstatusmessages()
 {
 	std::map<std::string, std::string>	msgs;
@@ -36,11 +36,31 @@ std::map<std::string, std::string>	HTTPResponse::fillstatusmessages()
 }
 
 std::map<std::string, std::string>	HTTPResponse::_statusMessages = HTTPResponse::fillstatusmessages();
+
+std::map<uint, std::string>	HTTPResponse::fillerrorpages()
+{
+	std::map<uint, std::string>	pags;
+
+	pags.insert(std::pair<uint, std::string>(400, ""));
+	pags.insert(std::pair<uint, std::string>(403, ""));
+	pags.insert(std::pair<uint, std::string>(404, ""));
+	pags.insert(std::pair<uint, std::string>(503, ""));
+	return (pags);
+}
+
+std::map<uint, std::string>	HTTPResponse::_errorPages = HTTPResponse::fillerrorpages();
 ////////////////////////////////////////////////////////////////////////////////
 
-void	get_perform()
+void	HTTPResponse::get_perform()
 {
-	// Try and open the requested file.
+	// Check existance and try to open the requested file.
+	if (access(_vals["abs_path"].c_str(), F_OK))
+	{
+		_status = 404;
+		_body = _errorPages[_status];
+		return;
+	}
+
 	// Put the contents into the body if it exists, put the corresponding error page instead if it failed.
 	// Way of using the cgi to create the page?
 }

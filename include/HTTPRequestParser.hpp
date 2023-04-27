@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 18:31:06 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/24 11:02:37 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/27 11:59:44 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,8 @@
 
 #include <map>
 #include <vector>
-#include <string>
+#include <fstream>
+#include <unistd.h>
 
 class HTTPRequestParser
 {
