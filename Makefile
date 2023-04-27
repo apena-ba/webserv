@@ -6,9 +6,9 @@ CXXFLAGS = -Wall -Wextra -Werror -Wno-unused -Wno-unused-parameter -std=c++98 -g
 
 INC = -I include -I include/ConfigurationParser
 
-SRC = src/main.cpp src/Cluster.cpp src/Configuration.cpp src/Server.cpp src/Port.cpp src/HTTPRequestParser.cpp
+SRC = src/main.cpp src/Cluster.cpp src/Server.cpp src/Port.cpp src/HTTPRequestParser.cpp src/HTTPResponse.cpp
 
-OBJ = obj/main.o obj/Cluster.o obj/Configuration.o obj/Server.o obj/Port.o obj/HTTPRequestParser.o
+OBJ = obj/main.o obj/Cluster.o obj/Server.o obj/Port.o obj/HTTPRequestParser.o src/HTTPResponse.o
 
 all: $(NAME)
 
