@@ -44,13 +44,26 @@
 int main(int argc, char **argv) {
     try {
         ConfigurationParser parser;
-        std::vector<Configuration> configs = parser.parse("test2");
+        std::vector<Configuration> configs = parser.parse("clean_conf");
         for (unsigned int i = 0; i < configs.size(); i++) {
-            std::cout << "ports: " << configs[i].ports[0] << std::endl;
+            std::cout << "------" << "server " << i << "------" << std::endl;
+            for (unsigned int v = 0; v < configs[i].ports.size(); v++) {
+                std::cout << "ports: " << configs[i].ports[v] << std::endl;
+            }
             std::cout << "maxClients: " << configs[i].maxClients << std::endl;
             std::cout << "defaultErrorPage: " << configs[i].defaultErrorPage << std::endl;
             std::cout << "clientBodyMaxSize: " << configs[i].clientBodyMaxSize << std::endl;
-            std::cout << "routes: " << configs[i].routes[0].methods[1] << std::endl;
+            std::cout << "routes: ";
+            for (unsigned int x = 0; x < configs[i].routes.size(); x++) {
+                std::cout << "----" << std::endl;
+                std::cout << "  route :" << x << std::endl;
+                std::cout << "  path: " << configs[i].routes[x].path << std::endl;
+                std::cout << "  index: " << configs[i].routes[x].index << std::endl;
+                for (unsigned int y = 0; y < configs[i].routes[x].methods.size(); y++) {
+                    std::cout << "  methods: " << configs[i].routes[x].methods[y] << std::endl;
+                }
+            }
+            std::cout << "------------------------------" << std::endl;
         }
     }
     catch (std::exception &e) {

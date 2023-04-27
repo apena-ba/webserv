@@ -261,7 +261,7 @@ private:
 
     std::pair<std::string, std::string> _lineToPair(std::string line);
 
-    Configuration _toConfiguration(_TempConfiguration &server, std::vector<Route> routes);
+    static Configuration _toConfiguration(_TempConfiguration &server, std::vector<Route> routes);
 
     std::vector<Configuration> _modelToConfiguration(std::vector<std::pair<_TempConfiguration,
             std::vector<Route> > > model);

@@ -7,21 +7,21 @@
 
 class ParsingUtils {
 public:
-    ParsingUtils();
+    ParsingUtils() {}
 
-    ~ParsingUtils();
+    ~ParsingUtils() {}
 
     static std::string removeIsSpace(std::string str) {
         std::string ret;
         for (unsigned int i = 0; i < str.size(); i++) {
-            if (!(std::isspace(str[i])) && !(str[i] == '\t') && !(str[i] == '\n')) {
+            if (!(std::isspace(str[i])) && str[i] != '\t' && str[i] != '\n') {
                 ret += str[i];
             }
         }
         return ret;
     }
 
-    static int strToPositiveInteger(std::string value) {
+    static int strToPositiveInteger(const std::string &value) {
         int num;
         try {
             num = std::stoi(value);
@@ -34,7 +34,7 @@ public:
         }
     }
 
-    static std::vector<std::string> split(std::string str, std::string delimiter) {
+    static std::vector<std::string> split(std::string str, const std::string &delimiter) {
         std::vector<std::string> result;
         size_t pos = 0;
         std::string token;

@@ -100,6 +100,22 @@ ConfigurationParser::_dataToModel(std::vector<std::pair<std::string, std::vector
     return model;
 }
 
+int ConfigurationParser::_findCloseBrace(std::string str) {
+    unsigned int open_brace = 0;
+    unsigned int close_brace = 0;
+    for (unsigned int i = 0; i < str.size(); i++) {
+        if (str[i] == '{') {
+            open_brace++;
+        } else if (str[i] == '}') {
+            close_brace++;
+        }
+        if (open_brace == close_brace && open_brace != 0 && close_brace != 0) {
+            return i;
+        }
+    }
+    throw BadFile("Error: not the same number of open and close brace");
+}
+
 std::vector<std::pair<std::string, std::vector<std::string> > >
 ConfigurationParser::_extractRoute(std::vector<std::string> servers) {
     int close_route_brace = 0;
@@ -118,22 +134,6 @@ ConfigurationParser::_extractRoute(std::vector<std::string> servers) {
         return_pair.push_back(std::make_pair(servers[i], routes));
     }
     return return_pair;
-}
-
-int ConfigurationParser::_findCloseBrace(std::string str) {
-    unsigned int open_brace = 0;
-    unsigned int close_brace = 0;
-    for (unsigned int i = 0; i < str.size(); i++) {
-        if (str[i] == '{') {
-            open_brace++;
-        } else if (str[i] == '}') {
-            close_brace++;
-        }
-        if (open_brace == close_brace && open_brace != 0 && close_brace != 0) {
-            return i;
-        }
-    }
-    throw BadFile("Error: not the same number of open and close brace");
 }
 
 std::vector<std::string> ConfigurationParser::_serverSplitter(std::string file) {
@@ -156,7 +156,6 @@ std::vector<Configuration> ConfigurationParser::parse(std::string path) {
     std::vector<std::string> servers = _serverSplitter(new_str);
     std::vector<std::pair<std::string, std::vector<std::string> > >
             pair = _extractRoute(servers);
-
     std::vector<std::pair<ConfigurationParser::_TempConfiguration,
             std::vector<Route> > > model = _dataToModel(pair);
     std::vector<Configuration> configs = _modelToConfiguration(model);
