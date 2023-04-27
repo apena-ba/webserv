@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/27 12:01:12 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/27 12:15:11 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,8 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	version = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
 	if (version.compare(5, 4, "1.0") && version.compare(5, 4, "1.1") && version.compare(5, 2, "2") && version.compare(5, 2, "3"))
 	{
-		std::cerr << ">> Error: 400, bad version number." << std::endl;
-		this->_status = 400;
+		std::cerr << ">> Error: 505, unsupported version." << std::endl;
+		this->_status = 505;
 		return false;
 	}
 	this->_vals.insert(std::pair<std::string, std::string>("version", version));

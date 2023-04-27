@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/27 12:11:16 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/27 12:27:33 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ std::map<std::string, std::string>	HTTPResponse::fillstatusmessages()
 	msgs.insert(std::pair<std::string, std::string>("403", "Forbidden"));
 	msgs.insert(std::pair<std::string, std::string>("404", "Not Found"));
 	msgs.insert(std::pair<std::string, std::string>("503", "Service Unavailable"));
+	msgs.insert(std::pair<std::string, std::string>("505", "HTTP Version Not Supported"));
 	return (msgs);
 }
 
@@ -45,6 +46,7 @@ std::map<uint, std::string>	HTTPResponse::fillerrorpages()
 	pags.insert(std::pair<uint, std::string>(403, ""));
 	pags.insert(std::pair<uint, std::string>(404, ""));
 	pags.insert(std::pair<uint, std::string>(503, ""));
+	pags.insert(std::pair<uint, std::string>(505, ""));
 	return (pags);
 }
 
@@ -60,8 +62,16 @@ void	HTTPResponse::get_perform()
 		_body = _errorPages[_status];
 		return;
 	}
+	std::ifstream	file(_vals["abs_path"]);
+	if (file.bad())
+	{
+		_status = 403;
+		_body = _errorPages[_status];
+		return;
+	}
+	_body.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()); // Put the whole file into the body string.
+	file.close();
 
-	// Put the contents into the body if it exists, put the corresponding error page instead if it failed.
 	// Way of using the cgi to create the page?
 }
 
