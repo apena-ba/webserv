@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/27 12:27:33 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/27 12:39:38 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,20 +56,20 @@ std::map<uint, std::string>	HTTPResponse::_errorPages = HTTPResponse::fillerrorp
 void	HTTPResponse::get_perform()
 {
 	// Check existance and try to open the requested file.
-	if (access(_vals["abs_path"].c_str(), F_OK))
+	if (access(this->_vals["abs_path"].c_str(), F_OK))
 	{
-		_status = 404;
-		_body = _errorPages[_status];
+		this->_status = 404;
+		this->_body = this->_errorPages[this->_status];
 		return;
 	}
-	std::ifstream	file(_vals["abs_path"]);
+	std::ifstream	file(this->_vals["abs_path"]);
 	if (file.bad())
 	{
-		_status = 403;
-		_body = _errorPages[_status];
+		this->_status = 403;
+		this->_body = this->_errorPages[this->_status];
 		return;
 	}
-	_body.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()); // Put the whole file into the body string.
+	this->_body.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()); // Put the whole file into the body string.
 	file.close();
 
 	// Way of using the cgi to create the page?
@@ -77,17 +77,17 @@ void	HTTPResponse::get_perform()
 
 void	HTTPResponse::bodybuilder()
 {
-	if (_status == 503) // Create the 503 error page.
+	if (this->_status == 503) // Create the 503 error page.
 	{
-		_vals["body"] = "";
+		this->_body = this->_errorPages[this->_status];
 		return;
 	}
 
-	if (_vals["type"] == "GET")
+	if (this->_vals["type"] == "GET")
 		get_perform();
-	else if (_vals["type"] == "POST")
+	else if (this->_vals["type"] == "POST")
 		pos_perform();
-	else if (_vals["type"] == "DELETE")
+	else if (this->_vals["type"] == "DELETE")
 		del_perform();
 }
 
