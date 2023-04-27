@@ -17,7 +17,6 @@
 #include <iostream>
 #include "Route.hpp"
 
-#define DEFAULT_PORT [80]
 #define DEFAULT_MAX_CLIENTS 100
 #define DEFAULT_ERROR_PAGE "error.html"
 #define DEFAULT_CLIENT_BODY_MAX_SIZE 1000000
@@ -32,13 +31,15 @@ public:
 
     Configuration(unsigned int i);
 
-    Configuration(unsigned int _maxClients, std::string _defaultErrorPage,
-                  std::vector<unsigned int> _ports,
-                  unsigned int _clientBodyMaxSize, std::vector<Route> _routes) : ports(_ports),
-                                                                                 maxClients(_maxClients),
-                                                                                 defaultErrorPage(_defaultErrorPage),
-                                                                                 clientBodyMaxSize(_clientBodyMaxSize),
-                                                                                 routes(_routes) {};
+    Configuration(unsigned int _maxClients, const std::string &_defaultErrorPage,
+                  const std::vector<unsigned int> &_ports,
+                  unsigned int _clientBodyMaxSize, const std::vector<Route> &_routes) : ports(_ports),
+                                                                                        maxClients(_maxClients),
+                                                                                        defaultErrorPage(
+                                                                                                _defaultErrorPage),
+                                                                                        clientBodyMaxSize(
+                                                                                                _clientBodyMaxSize),
+                                                                                        routes(_routes) {};
 
     ~Configuration() {}
 

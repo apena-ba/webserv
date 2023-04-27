@@ -30,25 +30,25 @@ std::pair<std::string, std::string> ConfigurationParser::_lineToPair(std::string
 std::vector<Configuration>
 ConfigurationParser::_modelToConfiguration(std::vector<std::pair<ConfigurationParser::_TempConfiguration,
         std::vector<Route> > > model) {
-    std::vector<Configuration> confs;
+    std::vector<Configuration> config;
     for (unsigned int i = 0; i < model.size(); i++) {
-        confs.push_back(_toConfiguration(model[i].first, model[i].second));
+        config.push_back(_toConfiguration(model[i].first, model[i].second));
     }
-    return confs;
+    return config;
 }
 
 std::vector<std::pair<std::string, std::string> >
 ConfigurationParser::_fieldExtractor(const std::string &line, const std::string &opener) {
     std::string removed_limiter_line;
-    std::vector<std::string> splitted;
+    std::vector<std::string> splitted_line;
     std::vector<std::pair<std::string, std::string> > fields;
     if (line.find(opener) != 0) {
         throw BadFile("Error: Bad limiters");
     }
     removed_limiter_line = line.substr(opener.length(), line.length() - opener.length() - 1);
-    splitted = ParsingUtils::split(removed_limiter_line, ";");
-    for (unsigned int i = 0; i < splitted.size(); i++) {
-        fields.push_back(this->_lineToPair(splitted[i]));
+    splitted_line = ParsingUtils::split(removed_limiter_line, ";");
+    for (unsigned int i = 0; i < splitted_line.size(); i++) {
+        fields.push_back(this->_lineToPair(splitted_line[i]));
     }
     return fields;
 }
@@ -80,23 +80,23 @@ std::vector<Route> ConfigurationParser::_dataToRoute(std::vector<std::string> da
 
 ConfigurationParser::ConfigurationParser::_TempConfiguration
 ConfigurationParser::_dataToConfiguration(const std::string &data) {
-    ConfigurationParser::_TempConfiguration confs;
+    ConfigurationParser::_TempConfiguration config;
     std::vector<std::pair<std::string, std::string> > fields;
     fields = _fieldExtractor(data, "server{");
     for (unsigned int i = 0; i < fields.size(); i++) {
-        confs.setFields(fields[i].first, fields[i].second);
+        config.setFields(fields[i].first, fields[i].second);
     }
-    confs.checkAllFieldsSet();
-    return confs;
+    config.checkAllFieldsSet();
+    return config;
 }
 
 std::vector<std::pair<ConfigurationParser::_TempConfiguration, std::vector<Route> > >
 ConfigurationParser::_dataToModel(std::vector<std::pair<std::string, std::vector<std::string> > > data) {
     std::vector<std::pair<ConfigurationParser::_TempConfiguration, std::vector<Route> > > model;
     for (unsigned int i = 0; i < data.size(); i++) {
-        ConfigurationParser::_TempConfiguration confs = _dataToConfiguration(data[i].first);
+        ConfigurationParser::_TempConfiguration config = _dataToConfiguration(data[i].first);
         std::vector<Route> routes = _dataToRoute(data[i].second);
-        model.push_back(std::make_pair(confs, routes));
+        model.push_back(std::make_pair(config, routes));
     }
     return model;
 }
@@ -153,17 +153,16 @@ std::vector<Configuration> ConfigurationParser::parse(const std::string &path) {
     std::string file = ParsingUtils::fileToString(path);
     ParsingUtils::checkLimiter(file);
     ParsingUtils::removeAllSpace(file);
-    std::string new_str = ParsingUtils::removeIsSpace(file);
-    std::vector<std::string> servers = _serverSplitter(new_str);
+    std::string removed_space = ParsingUtils::removeIsSpace(file);
+    std::vector<std::string> servers = _serverSplitter(removed_space);
     std::vector<std::pair<std::string, std::vector<std::string> > >
-            pair = _extractRoute(servers);
+            pair_server_route = _extractRoute(servers);
     std::vector<std::pair<ConfigurationParser::_TempConfiguration,
-            std::vector<Route> > > model = _dataToModel(pair);
-    std::vector<Configuration> configs = _modelToConfiguration(model);
+            std::vector<Route> > > temp_model = _dataToModel(pair_server_route);
+    std::vector<Configuration> configs = _modelToConfiguration(temp_model);
     return configs;
 }
 
 ConfigurationParser::ConfigurationParser() {}
 
 ConfigurationParser::~ConfigurationParser() {}
-

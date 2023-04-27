@@ -46,7 +46,7 @@ private:
 
         void _setDefaultErrorPage(const std::string &defaultErrorPage) {
             if (access(defaultErrorPage.c_str(), F_OK) == -1) {
-                throw ErrorParsing("Error: Canno't access file default error page");
+                throw ErrorParsing("Error: Cannot access file default error page");
             }
             if (this->_defaultErrorPage_is_set) {
                 throw ErrorParsing("Error: Default error page already set");
@@ -147,7 +147,7 @@ private:
 
         void _setIndex(const std::string &index) {
             if (access(index.c_str(), F_OK) == -1) {
-                throw ErrorParsing("Error: Canno't access file index");
+                throw ErrorParsing("Error: Cannot access file index");
             }
             if (this->_index_is_set) {
                 throw ErrorParsing("Error: Index already set");
@@ -186,7 +186,7 @@ private:
                 }
             }
             if (number_get > 1 || number_post > 1 || number_delete > 1) {
-                throw ErrorParsing("Error: Doublon in methods");
+                throw ErrorParsing("Error: Doublons in methods");
             }
             this->_methods_is_set = true;
             this->_methods = methods;
