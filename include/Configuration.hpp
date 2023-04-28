@@ -44,6 +44,16 @@ public:
 
     ~Configuration() {}
 
+    std::vector<int> getPorts() const {
+        std::vector<int> vector;
+        return vector;
+    }
+
+    std::string getHost() const {
+        std::string host;
+        return host;
+    }
+
     unsigned int getMaxClients() const { return maxClients; }
 
     unsigned int getPort() const { return 1; }

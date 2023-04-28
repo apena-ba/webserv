@@ -38,6 +38,9 @@ private:
                 throw ErrorParsing("Error: Ports already set");
             }
             std::vector<std::string> ports_str = ParsingUtils::split(ports, ",");
+            if (ParsingUtils::checkDoubleValue(ports_str) == true) {
+                throw ErrorParsing("Error: Double value in ports");
+            }
             this->_ports_is_set = true;
             for (unsigned int i = 0; i < ports_str.size(); i++) {
                 this->_ports.push_back(ParsingUtils::strToPositiveInteger(ports_str[i]));
@@ -202,10 +205,10 @@ private:
                 }
             }
             if (number_get > 1 || number_post > 1 || number_delete > 1) {
-                throw ErrorParsing("Error: Doublons in methods");
+                throw ErrorParsing("Error: Double value in methods");
             }
             this->_methods_is_set = true;
-            this->_methods = methods;
+            this->_methods = ParsingUtils::toUpperVector(methods);
         }
 
         void _setPath(const std::string &path) {
@@ -284,6 +287,8 @@ private:
 
     std::vector<std::pair<std::string, std::string> >
     _fieldExtractor(const std::string &line, const std::string &opener);
+
+    static bool _checkDoubleRoute(std::vector<Route> &routes);
 
     static std::vector<Route> _tmpToRoute(std::vector<_TempRoute> data);
 

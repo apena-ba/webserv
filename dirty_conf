@@ -1,8 +1,8 @@
-server{
-    default_error_page:/Users/emilefournout/webservgit/test;
-    client_body_max_size:22;
-    max_clients : 10;
-    ports:1,1,2;
+server
+
+{
+    default_error_page:/Users/emilefournout/webservgit/test;client_body_max_size:22;
+    max_clients : 10;ports:1,1,2;
 
     route{methods:get,DELETE;
         path:/*.php;

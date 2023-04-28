@@ -18,6 +18,13 @@ int main(int argc, char **argv) {
     try {
         ConfigurationParser parser;
         std::vector<Configuration> configs = parser.parse("clean_conf");
+        for (unsigned int i = 0; i < configs.size(); i++) {
+            for (unsigned int j = 0; j < configs[i].routes.size(); j++) {
+                for (unsigned int k = 0; k < configs[i].routes[j].methods.size(); k++) {
+                    std::cout << configs[i].routes[j].methods[k] << std::endl;
+                }
+            }
+        }
     }
     catch (std::exception &e) {
         std::cerr << e.what() << std::endl;

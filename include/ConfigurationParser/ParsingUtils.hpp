@@ -11,6 +11,31 @@ public:
 
     ~ParsingUtils() {}
 
+    static bool checkDoubleValue(std::vector<std::string> vector) {
+        for (unsigned int i = 0; i < vector.size(); i++) {
+            for (unsigned int j = i + 1; j < vector.size(); j++) {
+                if (vector[i] == vector[j]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    static std::string toUpper(std::string str) {
+        for (unsigned int i = 0; i < str.size(); i++) {
+            str[i] = std::toupper(str[i]);
+        }
+        return str;
+    }
+
+    static std::vector<std::string> toUpperVector(std::vector<std::string> vec) {
+        for (unsigned int i = 0; i < vec.size(); i++) {
+            vec[i] = toUpper(vec[i]);
+        }
+        return vec;
+    }
+
     static std::string removeIsSpace(std::string str) {
         std::string ret;
         for (unsigned int i = 0; i < str.size(); i++) {
@@ -69,6 +94,14 @@ public:
         std::string str((std::istreambuf_iterator<char>(file)),
                         std::istreambuf_iterator<char>());
         return str;
+    }
+
+    static bool checkFileExtension(const std::string &filePath, const std::string &extension) {
+        std::string fileExtension = filePath.substr(filePath.find_last_of(".") + 1);
+        if (fileExtension != extension) {
+            throw ErrorParsing("Error: Bad file extension");
+        }
+        return true;
     }
 
     static void removeAllSpace(std::string &str) {
