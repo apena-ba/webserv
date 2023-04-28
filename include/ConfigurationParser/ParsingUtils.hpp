@@ -71,7 +71,7 @@ public:
     static std::string removeIsSpace(std::string str) {
         std::string ret;
         for (unsigned int i = 0; i < str.size(); i++) {
-            if ((!(std::isspace(str[i])) && str[i] != '\t' && str[i] != '\n')) {
+            if (!(std::isspace(str[i]))) {
                 ret += str[i];
             }
         }
@@ -114,7 +114,6 @@ public:
                         std::istreambuf_iterator<char>());
         return str;
     }
-
 
     class ErrorParsing : public std::exception {
     private:
