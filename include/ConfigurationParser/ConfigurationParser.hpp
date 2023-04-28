@@ -17,32 +17,27 @@ private:
         unsigned int _maxClients;
         bool _maxClients_is_set;
         std::string _defaultErrorPage;
-        bool _defaultErrorPage_is_set;
         unsigned int _clientBodyMaxSize;
         bool _clientBodyMaxSize_is_set;
         std::vector<unsigned int> _ports;
-        bool _ports_is_set;
         std::string _host;
-        bool _host_is_set;
 
         void _setHost(const std::string &host) {
-            if (this->_host_is_set) {
+            if (!this->_host.empty()) {
                 throw ErrorParsing("Error: Host already set");
             }
-            this->_host_is_set = true;
             this->_host = host;
         }
 
         void _setPorts(std::string &ports) {
             unsigned int num;
-            if (this->_ports_is_set) {
+            if (!this->_ports.empty()) {
                 throw ErrorParsing("Error: Ports already set");
             }
             std::vector<std::string> ports_str = ParsingUtils::split(ports, ",");
             if (ParsingUtils::checkDoubleValue(ports_str)) {
                 throw ErrorParsing("Error: Double value in ports");
             }
-            this->_ports_is_set = true;
             for (unsigned int i = 0; i < ports_str.size(); i++) {
                 if (!ParsingUtils::betteratoi(ports_str[i].c_str(), num)) {
                     throw ErrorParsing("Error: Port is not a unsigned integer");
@@ -67,10 +62,9 @@ private:
             if (access(defaultErrorPage.c_str(), F_OK) == -1) {
                 throw ErrorParsing("Error: Cannot access file default error page");
             }
-            if (this->_defaultErrorPage_is_set) {
+            if (!this->_defaultErrorPage.empty()) {
                 throw ErrorParsing("Error: Default error page already set");
             }
-            this->_defaultErrorPage_is_set = true;
             this->_defaultErrorPage = defaultErrorPage;
         }
 
@@ -89,9 +83,7 @@ private:
     public:
         _TempConfiguration() {
             this->_maxClients_is_set = false;
-            this->_defaultErrorPage_is_set = false;
             this->_clientBodyMaxSize_is_set = false;
-            this->_ports_is_set = false;
         }
 
         ~_TempConfiguration() {
@@ -121,13 +113,13 @@ private:
             if (!this->_maxClients_is_set) {
                 throw BadFile("Error: Max clients not set");
             }
-            if (!this->_defaultErrorPage_is_set) {
+            if (this->_defaultErrorPage.empty()) {
                 throw BadFile("Error: Default error page not set");
             }
             if (!this->_clientBodyMaxSize_is_set) {
                 throw BadFile("Error: Client body max size not set");
             }
-            if (!this->_ports_is_set) {
+            if (this->_ports.empty()) {
                 throw BadFile("Error: Port not set");
             }
             return true;
@@ -164,22 +156,18 @@ private:
     class _TempRoute {
     private:
         std::string _index;
-        bool _index_is_set;
 
         std::vector<std::string> _methods;
-        bool _methods_is_set;
 
         std::string _path;
-        bool _path_is_set;
 
         void _setIndex(const std::string &index) {
             if (access(index.c_str(), F_OK) == -1) {
                 throw ErrorParsing("Error: Cannot access file index");
             }
-            if (this->_index_is_set) {
+            if (!this->_index.empty()) {
                 throw ErrorParsing("Error: Index already set");
             }
-            this->_index_is_set = true;
             this->_index = index;
         }
 
@@ -189,7 +177,7 @@ private:
             int number_post = 0;
             int number_delete = 0;
             std::vector<std::string> methods = ParsingUtils::split(methods_input, ",");
-            if (this->_methods_is_set) {
+            if (!this->_methods.empty()) {
                 throw ErrorParsing("Error: Methods already set");
             }
             if (methods.empty()) {
@@ -215,24 +203,18 @@ private:
             if (number_get > 1 || number_post > 1 || number_delete > 1) {
                 throw ErrorParsing("Error: Double value in methods");
             }
-            this->_methods_is_set = true;
             this->_methods = ParsingUtils::toUpperVector(methods);
         }
 
         void _setPath(const std::string &path) {
-            if (this->_path_is_set) {
+            if (!this->_path.empty()) {
                 throw ErrorParsing("Error: route: path already set");
             }
-            this->_path_is_set = true;
             this->_path = path;
         }
 
     public:
-        _TempRoute() {
-            this->_path_is_set = false;
-            this->_methods_is_set = false;
-            this->_index_is_set = false;
-        }
+        _TempRoute() {}
 
         ~_TempRoute() {
         }
@@ -250,13 +232,13 @@ private:
         }
 
         bool checkAllFieldsSet() {
-            if (!this->_path_is_set) {
+            if (this->_path.empty()) {
                 throw BadFile("Error: Route: path is not set");
             }
-            if (!this->_methods_is_set) {
+            if (this->_methods.empty()) {
                 throw BadFile("Error: Route: methods is not set");
             }
-            if (!this->_index_is_set) {
+            if (this->_index.empty()) {
                 throw BadFile("Error: Route: index is not set");
             }
             return true;
