@@ -6,20 +6,26 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/28 16:01:11 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/28 18:05:12 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/HTTPResponse.hpp"
-#include <strstream>
 
 // The <<something>> to string conversion is done automatically by the string stream.
 template<typename T> static std::string	tostr(T thang)
 {
-	std::strstream	convert;
-	convert << thang;
+	std::string	ret;
 
-	return (convert.str());
+	if (!thang)
+		return ("0");
+	while (thang)
+	{
+		std::string	tmp(1, thang % 10 + '0');
+		thang /= 10;
+		ret = tmp + ret;
+	}
+	return (ret);
 }
 
 ///Declaring the implemented status codes and default error pages///////////////
@@ -60,17 +66,18 @@ std::map<uint, std::string>	HTTPResponse::_errorPages = HTTPResponse::fillerrorp
 void	HTTPResponse::get_perform(const Configuration &conf)
 {
 	// Check existance and try to open the requested file.
-	if (access(this->_vals["abs_path"].c_str(), F_OK))
+	if (access(this->_vals["path"].c_str(), F_OK))
 	{
 		this->_status = 404;
 		this->_body = this->_errorPages[this->_status];
 		return;
 	}
-	std::ifstream	file(this->_vals["abs_path"]);
+	std::ifstream	file(this->_vals["path"]);
 	if (file.bad())
 	{
 		this->_status = 403;
 		this->_body = this->_errorPages[this->_status];
+		file.close();
 		return;
 	}
 	this->_body.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()); // Put the whole file into the body string.
@@ -85,6 +92,10 @@ void	HTTPResponse::get_perform(const Configuration &conf)
 
 	// Way of using the cgi to create the page?
 }
+
+void	HTTPResponse::pos_perform(const Configuration &conf) {}
+
+void	HTTPResponse::del_perform(const Configuration &conf) {}
 
 void	HTTPResponse::bodybuilder(const Configuration &conf)
 {
@@ -127,7 +138,7 @@ HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configur
 	this->_response += "Content-Length: " + tostr(this->_body.size()) + "\r\n\r\n";
 
 	// 4:
-	this->_response += _body;
+	this->_response += this->_body;
 }
 
 HTTPResponse::~HTTPResponse() {}
