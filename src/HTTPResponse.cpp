@@ -6,18 +6,18 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/28 15:30:45 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/28 16:01:11 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/HTTPResponse.hpp"
 #include <strstream>
 
-// The number to string conversion is done automatically by the string stream.
-static std::string	tostr(int num)
+// The <<something>> to string conversion is done automatically by the string stream.
+template<typename T> static std::string	tostr(T thang)
 {
 	std::strstream	convert;
-	convert << num;
+	convert << thang;
 
 	return (convert.str());
 }
@@ -106,7 +106,8 @@ void	HTTPResponse::bodybuilder(const Configuration &conf)
 // The body is built following method specifications.
 // [1]Then the status is converted to a string in order to use it as a key.
 // [2]The first line of the response is then built by concatenation.
-// [3]Iterate the map, building the header lines as simple '<key>: <value>\r\n' strings.
+// [3]Build the header lines as simple '<key>: <value>\r\n' strings.
+// [4]Add the body and voilà, a hot served response!
 HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configuration &conf) : HTTPRequestParser(givenRequest)
 {
 	// Build the body if the method requires it, try access again and update status accordingly
@@ -120,10 +121,13 @@ HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configur
 
 	// Write only the required headers, avoid repetition.
 	// 3:
-	for (std::map<std::string, std::string>::iterator it = this->_vals.begin(); it != this->_vals.end(); ++it)
-	{
-		this->_response += it->first + ": " + it->second + "\r\n";
-	}
+	this->_response += "Server: Jam⍺ Rushers' Webserv\r\n";
+	/* if (this->_vals.find("connection") != this->_vals.end())
+	 *     this->_response += "Connection: " + this->_vals["connection"] + "\r\n"; */
+	this->_response += "Content-Length: " + tostr(this->_body.size()) + "\r\n\r\n";
+
+	// 4:
+	this->_response += _body;
 }
 
 HTTPResponse::~HTTPResponse() {}
