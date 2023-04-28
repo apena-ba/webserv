@@ -54,7 +54,7 @@ public:
                 return false;
             }
         }
-        num = static_cast<long long int>(tmp);
+        num = static_cast<int>(tmp);
         return true;
     }
 
