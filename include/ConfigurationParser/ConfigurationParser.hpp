@@ -34,16 +34,20 @@ private:
         }
 
         void _setPorts(std::string &ports) {
+            int num;
             if (this->_ports_is_set) {
                 throw ErrorParsing("Error: Ports already set");
             }
             std::vector<std::string> ports_str = ParsingUtils::split(ports, ",");
-            if (ParsingUtils::checkDoubleValue(ports_str) == true) {
+            if (ParsingUtils::checkDoubleValue(ports_str)) {
                 throw ErrorParsing("Error: Double value in ports");
             }
             this->_ports_is_set = true;
             for (unsigned int i = 0; i < ports_str.size(); i++) {
-                this->_ports.push_back(ParsingUtils::strToPositiveInteger(ports_str[i]));
+                if (!ParsingUtils::betteratoi(ports_str[i].c_str(), num)) {
+                    throw ErrorParsing("Error: Port is not a positive integer");
+                }
+                this->_ports.push_back(num);
             }
         }
 
@@ -53,7 +57,9 @@ private:
                 throw ErrorParsing("Error: Max clients already set");
             }
             this->_maxClients_is_set = true;
-            num = ParsingUtils::strToPositiveInteger(maxClients);
+            if (!ParsingUtils::betteratoi(maxClients.c_str(), num)) {
+                throw ErrorParsing("Error: Port is not a positive integer");
+            }
             this->_maxClients = num;
         }
 
@@ -74,7 +80,9 @@ private:
                 throw ErrorParsing("Error: Client body max size already set");
             }
             this->_clientBodyMaxSize_is_set = true;
-            num = ParsingUtils::strToPositiveInteger(clientBodyMaxSize);
+            if (!ParsingUtils::betteratoi(clientBodyMaxSize.c_str(), num)) {
+                throw ErrorParsing("Error: Port is not a positive integer");
+            }
             this->_clientBodyMaxSize = num;
         }
 

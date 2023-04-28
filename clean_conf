@@ -37,7 +37,7 @@ server{
 
 server{
     default_error_page : /Users/emilefournout/webservgit/test;
-    client_body_max_size : 22;
+    client_body_max_size : 2298;
     max_clients : 10;
     ports : 1,2,3;
     route {

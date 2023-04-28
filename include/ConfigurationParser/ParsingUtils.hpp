@@ -29,6 +29,35 @@ public:
         return str;
     }
 
+    static bool isNumber(std::string str) {
+        for (unsigned int i = 0; i < str.size(); i++) {
+            if (!std::isdigit(str[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static bool betteratoi(const char *str, int &num) {
+        long long int tmp;
+        if (!isNumber(str)) {
+            return false;
+        }
+        if (std::strlen(str) > 10) {
+            return false;
+        }
+        tmp = 0;
+        for (uint32_t i = 0; str[i]; i++) {
+            tmp *= 10;
+            tmp += str[i] - '0';
+            if (tmp > (long long int) std::numeric_limits<int>::max()) {
+                return false;
+            }
+        }
+        num = static_cast<long long int>(tmp);
+        return true;
+    }
+
     static std::vector<std::string> toUpperVector(std::vector<std::string> vec) {
         for (unsigned int i = 0; i < vec.size(); i++) {
             vec[i] = toUpper(vec[i]);
@@ -44,19 +73,6 @@ public:
             }
         }
         return ret;
-    }
-
-    static int strToPositiveInteger(const std::string &value) {
-        int num;
-        try {
-            num = std::stoi(value);
-            if (num < 0) {
-                throw ErrorParsing("Error: Negative value for field ");
-            }
-            return num;
-        } catch (std::exception &e) {
-            throw ErrorParsing("Error: Field is not a positive integer");
-        }
     }
 
     static std::vector<std::string> split(std::string str, const std::string &delimiter) {
