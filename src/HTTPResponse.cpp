@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/28 15:12:36 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/28 15:30:45 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ std::map<std::string, std::string>	HTTPResponse::fillstatusmessages()
 	msgs.insert(std::pair<std::string, std::string>("400", "Bad Request"));
 	msgs.insert(std::pair<std::string, std::string>("403", "Forbidden"));
 	msgs.insert(std::pair<std::string, std::string>("404", "Not Found"));
+	msgs.insert(std::pair<std::string, std::string>("405", "Method Not Allowed"));
 	msgs.insert(std::pair<std::string, std::string>("413", "Payload Too Large"));
 	msgs.insert(std::pair<std::string, std::string>("503", "Service Unavailable"));
 	msgs.insert(std::pair<std::string, std::string>("505", "HTTP Version Not Supported"));
@@ -46,6 +47,7 @@ std::map<uint, std::string>	HTTPResponse::fillerrorpages()
 	pags.insert(std::pair<uint, std::string>(400, ""));
 	pags.insert(std::pair<uint, std::string>(403, ""));
 	pags.insert(std::pair<uint, std::string>(404, ""));
+	pags.insert(std::pair<uint, std::string>(405, ""));
 	pags.insert(std::pair<uint, std::string>(413, ""));
 	pags.insert(std::pair<uint, std::string>(503, ""));
 	pags.insert(std::pair<uint, std::string>(505, ""));
