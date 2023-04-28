@@ -34,7 +34,7 @@ private:
         }
 
         void _setPorts(std::string &ports) {
-            int num;
+            unsigned int num;
             if (this->_ports_is_set) {
                 throw ErrorParsing("Error: Ports already set");
             }
@@ -45,20 +45,20 @@ private:
             this->_ports_is_set = true;
             for (unsigned int i = 0; i < ports_str.size(); i++) {
                 if (!ParsingUtils::betteratoi(ports_str[i].c_str(), num)) {
-                    throw ErrorParsing("Error: Port is not a positive integer");
+                    throw ErrorParsing("Error: Port is not a unsigned integer");
                 }
                 this->_ports.push_back(num);
             }
         }
 
         void _setMaxClients(const std::string &maxClients) {
-            int num;
+            unsigned int num;
             if (this->_maxClients_is_set) {
                 throw ErrorParsing("Error: Max clients already set");
             }
             this->_maxClients_is_set = true;
             if (!ParsingUtils::betteratoi(maxClients.c_str(), num)) {
-                throw ErrorParsing("Error: Port is not a positive integer");
+                throw ErrorParsing("Error: Port is not a unsigned integer");
             }
             this->_maxClients = num;
         }
@@ -75,13 +75,13 @@ private:
         }
 
         void _setClientBodyMaxSize(const std::string &clientBodyMaxSize) {
-            int num;
+            unsigned int num;
             if (this->_clientBodyMaxSize_is_set) {
                 throw ErrorParsing("Error: Client body max size already set");
             }
             this->_clientBodyMaxSize_is_set = true;
             if (!ParsingUtils::betteratoi(clientBodyMaxSize.c_str(), num)) {
-                throw ErrorParsing("Error: Port is not a positive integer");
+                throw ErrorParsing("Error: Port is not an unsigned integer");
             }
             this->_clientBodyMaxSize = num;
         }

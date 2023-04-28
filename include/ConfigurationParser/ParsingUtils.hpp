@@ -38,7 +38,7 @@ public:
         return true;
     }
 
-    static bool betteratoi(const char *str, int &num) {
+    static bool betteratoi(const char *str, unsigned int &num) {
         long long int tmp;
         if (!isNumber(str)) {
             return false;
@@ -50,9 +50,12 @@ public:
         for (uint32_t i = 0; str[i]; i++) {
             tmp *= 10;
             tmp += str[i] - '0';
-            if (tmp > (long long int) std::numeric_limits<int>::max()) {
+            if (tmp > (long long int) std::numeric_limits<unsigned int>::max()) {
                 return false;
             }
+        }
+        if (tmp <= 0) {
+            return false;
         }
         num = static_cast<int>(tmp);
         return true;
