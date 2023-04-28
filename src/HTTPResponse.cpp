@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/27 12:39:38 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/04/28 15:12:36 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ std::map<std::string, std::string>	HTTPResponse::fillstatusmessages()
 	msgs.insert(std::pair<std::string, std::string>("400", "Bad Request"));
 	msgs.insert(std::pair<std::string, std::string>("403", "Forbidden"));
 	msgs.insert(std::pair<std::string, std::string>("404", "Not Found"));
+	msgs.insert(std::pair<std::string, std::string>("413", "Payload Too Large"));
 	msgs.insert(std::pair<std::string, std::string>("503", "Service Unavailable"));
 	msgs.insert(std::pair<std::string, std::string>("505", "HTTP Version Not Supported"));
 	return (msgs);
@@ -45,6 +46,7 @@ std::map<uint, std::string>	HTTPResponse::fillerrorpages()
 	pags.insert(std::pair<uint, std::string>(400, ""));
 	pags.insert(std::pair<uint, std::string>(403, ""));
 	pags.insert(std::pair<uint, std::string>(404, ""));
+	pags.insert(std::pair<uint, std::string>(413, ""));
 	pags.insert(std::pair<uint, std::string>(503, ""));
 	pags.insert(std::pair<uint, std::string>(505, ""));
 	return (pags);
@@ -53,7 +55,7 @@ std::map<uint, std::string>	HTTPResponse::fillerrorpages()
 std::map<uint, std::string>	HTTPResponse::_errorPages = HTTPResponse::fillerrorpages();
 ////////////////////////////////////////////////////////////////////////////////
 
-void	HTTPResponse::get_perform()
+void	HTTPResponse::get_perform(const Configuration &conf)
 {
 	// Check existance and try to open the requested file.
 	if (access(this->_vals["abs_path"].c_str(), F_OK))
@@ -72,10 +74,17 @@ void	HTTPResponse::get_perform()
 	this->_body.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()); // Put the whole file into the body string.
 	file.close();
 
+	if (this->_body.size() > conf.clientBodyMaxSize)
+	{
+		this->_status = 413;
+		this->_body = this->_errorPages[this->_status];
+		return;
+	}
+
 	// Way of using the cgi to create the page?
 }
 
-void	HTTPResponse::bodybuilder()
+void	HTTPResponse::bodybuilder(const Configuration &conf)
 {
 	if (this->_status == 503) // Create the 503 error page.
 	{
@@ -84,11 +93,11 @@ void	HTTPResponse::bodybuilder()
 	}
 
 	if (this->_vals["type"] == "GET")
-		get_perform();
+		get_perform(conf);
 	else if (this->_vals["type"] == "POST")
-		pos_perform();
+		pos_perform(conf);
 	else if (this->_vals["type"] == "DELETE")
-		del_perform();
+		del_perform(conf);
 }
 
 // First the internal, inherited request parser is constructed to have direct access to the map.
@@ -96,10 +105,10 @@ void	HTTPResponse::bodybuilder()
 // [1]Then the status is converted to a string in order to use it as a key.
 // [2]The first line of the response is then built by concatenation.
 // [3]Iterate the map, building the header lines as simple '<key>: <value>\r\n' strings.
-HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest) : HTTPRequestParser(givenRequest)
+HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configuration &conf) : HTTPRequestParser(givenRequest)
 {
 	// Build the body if the method requires it, try access again and update status accordingly
-	bodybuilder();
+	bodybuilder(conf);
 
 	// 1:
 	this->_strStatus = tostr(this->_status);
