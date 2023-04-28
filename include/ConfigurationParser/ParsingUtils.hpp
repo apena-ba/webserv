@@ -71,7 +71,7 @@ public:
     static std::string removeIsSpace(std::string str) {
         std::string ret;
         for (unsigned int i = 0; i < str.size(); i++) {
-            if (!(std::isspace(str[i])) && str[i] != '\t' && str[i] != '\n') {
+            if ((!(std::isspace(str[i])) && str[i] != '\t' && str[i] != '\n')) {
                 ret += str[i];
             }
         }
@@ -115,22 +115,6 @@ public:
         return str;
     }
 
-    static bool checkFileExtension(const std::string &filePath, const std::string &extension) {
-        std::string fileExtension = filePath.substr(filePath.find_last_of(".") + 1);
-        if (fileExtension != extension) {
-            throw ErrorParsing("Error: Bad file extension");
-        }
-        return true;
-    }
-
-    static void removeAllSpace(std::string &str) {
-        for (unsigned int i = 0; i < str.size(); i++) {
-            if (str[i] == ' ') {
-                str.erase(i, 1);
-                i--;
-            }
-        }
-    }
 
     class ErrorParsing : public std::exception {
     private:

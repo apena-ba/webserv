@@ -165,7 +165,6 @@ std::vector<std::string> ConfigurationParser::_serverSplitter(const std::string 
 std::vector<Configuration> ConfigurationParser::parse(const std::string &path) {
     std::string file = ParsingUtils::fileToString(path);
     ParsingUtils::checkLimiter(file);
-    ParsingUtils::removeAllSpace(file);
     std::string removed_space = ParsingUtils::removeIsSpace(file);
     std::vector<std::string> servers = _serverSplitter(removed_space);
     std::vector<std::pair<std::string, std::vector<std::string> > >

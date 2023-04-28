@@ -25,6 +25,14 @@ public:
         this->_path = ParsingUtils::split(path, "/");
     }
 
+    static bool checkFileExtension(const std::string &filePath, const std::string &extension) {
+        std::string fileExtension = filePath.substr(filePath.find_last_of(".") + 1);
+        if (fileExtension != extension) {
+            throw PathCheckerException("Error: Bad file extension");
+        }
+        return true;
+    }
+
     static std::string getExtension(std::string &path) {
 
     }
