@@ -5,15 +5,15 @@ server
     max_clients : 10;ports:1,1,2;
 
     route{methods:get,DELETE;
-        path:/*.php;
+        location:/*.php;
         index:/Users/emilefournout/webservgit/test;}
 
         route{methods:get,DELETE;
-            path:/*.php;
+            location:/*.php;
             index:/Users/emilefournout/webservgit/test;}
 
             route{methods:get,DELETE;
-                path:/*.php;
+                location:/*.php;
                 index:/Users/emilefournout/webservgit/test;}
 }
 
@@ -22,6 +22,6 @@ server{
     client_body_max_size:22;
     max_clients:10;
     ports:2,2,3;
-    route{methods:get,post;path:/;index:/Users/emilefournout/webservgit/test;
+    route{methods:get,post;location:/;index:/Users/emilefournout/webservgit/test;
   }
 }

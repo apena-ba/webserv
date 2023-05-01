@@ -56,7 +56,7 @@ ConfigurationParser::_fieldExtractor(const std::string &line, const std::string 
 bool ConfigurationParser::_checkDoubleRoute(std::vector<Route> &routes) {
     for (unsigned int i = 0; i < routes.size(); i++) {
         for (unsigned int j = i + 1; j < routes.size(); j++) {
-            if (routes[i].path == routes[j].path) {
+            if (routes[i].location == routes[j].location) {
                 return true;
             }
         }
@@ -67,10 +67,10 @@ bool ConfigurationParser::_checkDoubleRoute(std::vector<Route> &routes) {
 std::vector<Route> ConfigurationParser::_tmpToRoute(std::vector<ConfigurationParser::_TempRoute> data) {
     std::vector<Route> routes;
     for (unsigned int i = 0; i < data.size(); i++) {
-        routes.push_back(Route(data[i].getIndex(), data[i].getMethods(), data[i].getPath()));
+        routes.push_back(Route(data[i].getIndex(), data[i].getMethods(), data[i].getLocation()));
     }
     if (_checkDoubleRoute(routes)) {
-        throw BadFile("Error: Bad route format: Both route have the same path");
+        throw BadFile("Error: Bad route format: Both route have the same location");
     }
     return routes;
 }

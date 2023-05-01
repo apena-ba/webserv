@@ -2,6 +2,7 @@
 #define CONFIGURATION_PARSER
 
 #include <iostream>
+#include <string>
 #include <fstream>
 #include <vector>
 #include <unistd.h>
@@ -159,7 +160,7 @@ private:
 
         std::vector<std::string> _methods;
 
-        std::string _path;
+        std::string _location;
 
         void _setIndex(const std::string &index) {
             if (access(index.c_str(), F_OK) == -1) {
@@ -206,11 +207,14 @@ private:
             this->_methods = ParsingUtils::toUpperVector(methods);
         }
 
-        void _setPath(const std::string &path) {
-            if (!this->_path.empty()) {
-                throw ErrorParsing("Error: route: path already set");
+        void _setLocation(std::string location) {
+            if (!this->_location.empty()) {
+                throw ErrorParsing("Error: route: location already set");
             }
-            this->_path = path;
+            if (location.back() == '/' && location.size() > 1) {
+                location.erase(location.end() - 1);
+            }
+            this->_location = location;
         }
 
     public:
@@ -223,8 +227,8 @@ private:
             return this->_index;
         }
 
-        std::string getPath() const {
-            return this->_path;
+        std::string getLocation() const {
+            return this->_location;
         }
 
         std::vector<std::string> getMethods() const {
@@ -232,8 +236,8 @@ private:
         }
 
         bool checkAllFieldsSet() {
-            if (this->_path.empty()) {
-                throw BadFile("Error: Route: path is not set");
+            if (this->_location.empty()) {
+                throw BadFile("Error: Route: location is not set");
             }
             if (this->_methods.empty()) {
                 throw BadFile("Error: Route: methods is not set");
@@ -244,11 +248,11 @@ private:
             return true;
         }
 
-        void setFields(const std::string &field, const std::string &value) {
+        void setFields(std::string &field, std::string &value) {
             if (field == "methods") {
                 _setMethods(value);
-            } else if (field == "path") {
-                this->_setPath(value);
+            } else if (field == "location") {
+                this->_setLocation(value);
             } else if (field == "index") {
                 this->_setIndex(value);
             } else {

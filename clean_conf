@@ -6,19 +6,19 @@ server {
 
     route{
         methods : get,DELETE;
-        path : /*.php;
+        location : /path1/path2/path3;
         index : /Users/emilefournout/webservgit/test;
     }
 
     route {
         methods : get,DELETE;
-        path : /*.ph;
+        location : /path1/path2/;
         index : /Users/emilefournout/webservgit/test;
     }
 
     route {
         methods : get,DELETE;
-        path : /*.p;
+        location : /path1/;
         index : /Users/emilefournout/webservgit/test;
     }
 }
@@ -29,8 +29,8 @@ server{
     max_clients : 10;
     ports : 1,2,3;
     route {
-        methods : get,post;
-        path : /;
+        methods : delete,get,post;
+        location : /;
         index : /Users/emilefournout/webservgit/test;
   }
 }
@@ -41,13 +41,13 @@ server{
     max_clients : 10;
     ports : 1,2,3;
     route {
-        methods : get,post;
-        path : /*.php;
+        methods : get,post,delete;
+        location : /*.php;
         index : /Users/emilefournout/webservgit/test;
-  }
+        }
   route {
-          methods : get,post;
-          path : /*.ph;
+          methods : get,delete,post;
+          location : /*.ph;
           index : /Users/emilefournout/webservgit/test;
     }
 }
