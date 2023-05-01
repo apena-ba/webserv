@@ -62,8 +62,8 @@ public:
         return *this;
     }
 
-    static std::string getExtension(std::string &path) {
-        std::string fileExtension = path.substr(path.find_last_of('.') + 1);
+    static std::string getExtension(const std::string &path) {
+        std::string fileExtension = path.substr(path.find_last_of('.'));
         if (fileExtension == ".py") {
             return ".py";
         }
