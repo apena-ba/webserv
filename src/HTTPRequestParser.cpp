@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/04/27 12:15:11 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/02 17:50:58 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 		std::cerr << ">> Error: 403, access to file '" << abs_path << "' if forbidden." << std::endl;
 		this->_status = 403;
 	}
-	this->_vals.insert(std::pair<std::string, std::string>("path", abs_path));
+	this->_vals.insert(std::pair<std::string, std::string>("location", abs_path));
 	this->_vals.insert(std::pair<std::string, std::string>("uri", uri));
 	i += abs_path.size();
 
