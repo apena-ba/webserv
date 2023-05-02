@@ -2,47 +2,52 @@ server {
     default_error_page : /Users/emilefournout/webservgit/test;
     client_body_max_size : 22;
     max_clients : 10;
-    ports : 1,1,2;
+    ports : 1,2,3;
 
-    route {
+    route{
         methods : get,DELETE;
-        path : /*.php;
+        location : /path1/path2/path3;
         index : /Users/emilefournout/webservgit/test;
     }
 
     route {
         methods : get,DELETE;
-        path : /*.php;
+        location : /path1/path2/;
         index : /Users/emilefournout/webservgit/test;
     }
 
     route {
         methods : get,DELETE;
-        path : /*.php;
+        location : /path1/;
         index : /Users/emilefournout/webservgit/test;
     }
 }
 
 server{
     default_error_page : /Users/emilefournout/webservgit/test;
-    client_body_max_size : 22;
+    client_body_max_size : 29848712;
     max_clients : 10;
-    ports : 2,2,3;
+    ports : 1,2,3;
     route {
-        methods : get,post;
-        path : /;
+        methods : delete,get,post;
+        location : /;
         index : /Users/emilefournout/webservgit/test;
   }
 }
 
 server{
     default_error_page : /Users/emilefournout/webservgit/test;
-    client_body_max_size : 22;
+    client_body_max_size : 2298;
     max_clients : 10;
-    ports : 2,2,3;
+    ports : 1,2,3;
     route {
-        methods : get,post;
-        path : /;
+        methods : get,post,delete;
+        location : /*.php;
         index : /Users/emilefournout/webservgit/test;
-  }
+        }
+  route {
+          methods : get,delete,post;
+          location : /*.ph;
+          index : /Users/emilefournout/webservgit/test;
+    }
 }

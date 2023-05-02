@@ -18,9 +18,9 @@ int main(int argc, char **argv) {
     try {
         ConfigurationParser parser;
         std::vector<Configuration> configs = parser.parse("clean_conf");
-        }
-    }
-    catch (std::exception &e) {
+
+        std::cout << Configuration::getExtension("hello.html") << std::endl;
+    } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
         std::exit(1);
     }

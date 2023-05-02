@@ -5,7 +5,7 @@
 Configuration
 ConfigurationParser::_toConfiguration(ConfigurationParser::_TempConfiguration &server,
                                       const std::vector<Route> &routes) {
-    Configuration conf(server.getMaxClients(), server.getDefaultErrorPage(), server.getPorts(),
+    Configuration conf(server.getHost(), server.getMaxClients(), server.getDefaultErrorPage(), server.getPorts(),
                        server.getClientBodyMaxSize(), routes);
     return conf;
 }
@@ -53,12 +53,25 @@ ConfigurationParser::_fieldExtractor(const std::string &line, const std::string 
     return fields;
 }
 
+bool ConfigurationParser::_checkDoubleRoute(std::vector<Route> &routes) {
+    for (unsigned int i = 0; i < routes.size(); i++) {
+        for (unsigned int j = i + 1; j < routes.size(); j++) {
+            if (routes[i].location == routes[j].location) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 std::vector<Route> ConfigurationParser::_tmpToRoute(std::vector<ConfigurationParser::_TempRoute> data) {
     std::vector<Route> routes;
     for (unsigned int i = 0; i < data.size(); i++) {
-        routes.push_back(Route(data[i].getIndex(), data[i].getMethods(), data[i].getPath()));
+        routes.push_back(Route(data[i].getIndex(), data[i].getMethods(), data[i].getLocation()));
     }
-
+    if (_checkDoubleRoute(routes)) {
+        throw BadFile("Error: Bad route format: Both route have the same location");
+    }
     return routes;
 }
 
@@ -152,7 +165,6 @@ std::vector<std::string> ConfigurationParser::_serverSplitter(const std::string 
 std::vector<Configuration> ConfigurationParser::parse(const std::string &path) {
     std::string file = ParsingUtils::fileToString(path);
     ParsingUtils::checkLimiter(file);
-    ParsingUtils::removeAllSpace(file);
     std::string removed_space = ParsingUtils::removeIsSpace(file);
     std::vector<std::string> servers = _serverSplitter(removed_space);
     std::vector<std::pair<std::string, std::vector<std::string> > >

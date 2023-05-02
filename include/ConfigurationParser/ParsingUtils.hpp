@@ -11,27 +11,71 @@ public:
 
     ~ParsingUtils() {}
 
+    static bool checkDoubleValue(std::vector<std::string> vector) {
+        for (unsigned int i = 0; i < vector.size(); i++) {
+            for (unsigned int j = i + 1; j < vector.size(); j++) {
+                if (vector[i] == vector[j]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    static std::string toUpper(std::string str) {
+        for (unsigned int i = 0; i < str.size(); i++) {
+            str[i] = std::toupper(str[i]);
+        }
+        return str;
+    }
+
+    static bool isNumber(std::string str) {
+        for (unsigned int i = 0; i < str.size(); i++) {
+            if (!std::isdigit(str[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static bool betteratoi(const char *str, unsigned int &num) {
+        long long int tmp;
+        if (!isNumber(str)) {
+            return false;
+        }
+        if (std::strlen(str) > 10) {
+            return false;
+        }
+        tmp = 0;
+        for (uint32_t i = 0; str[i]; i++) {
+            tmp *= 10;
+            tmp += str[i] - '0';
+            if (tmp > (long long int) std::numeric_limits<unsigned int>::max()) {
+                return false;
+            }
+        }
+        if (tmp <= 0) {
+            return false;
+        }
+        num = static_cast<int>(tmp);
+        return true;
+    }
+
+    static std::vector<std::string> toUpperVector(std::vector<std::string> vec) {
+        for (unsigned int i = 0; i < vec.size(); i++) {
+            vec[i] = toUpper(vec[i]);
+        }
+        return vec;
+    }
+
     static std::string removeIsSpace(std::string str) {
         std::string ret;
         for (unsigned int i = 0; i < str.size(); i++) {
-            if (!(std::isspace(str[i])) && str[i] != '\t' && str[i] != '\n') {
+            if (!(std::isspace(str[i]))) {
                 ret += str[i];
             }
         }
         return ret;
-    }
-
-    static int strToPositiveInteger(const std::string &value) {
-        int num;
-        try {
-            num = std::stoi(value);
-            if (num < 0) {
-                throw ErrorParsing("Error: Negative value for field ");
-            }
-            return num;
-        } catch (std::exception &e) {
-            throw ErrorParsing("Error: Field is not a positive integer");
-        }
     }
 
     static std::vector<std::string> split(std::string str, const std::string &delimiter) {
@@ -69,15 +113,6 @@ public:
         std::string str((std::istreambuf_iterator<char>(file)),
                         std::istreambuf_iterator<char>());
         return str;
-    }
-
-    static void removeAllSpace(std::string &str) {
-        for (unsigned int i = 0; i < str.size(); i++) {
-            if (str[i] == ' ') {
-                str.erase(i, 1);
-                i--;
-            }
-        }
     }
 
     class ErrorParsing : public std::exception {

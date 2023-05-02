@@ -31,7 +31,7 @@ public:
 
     Configuration(unsigned int i);
 
-    Configuration(unsigned int _maxClients, const std::string &_defaultErrorPage,
+    Configuration(const std::string &_host, unsigned int _maxClients, const std::string &_defaultErrorPage,
                   const std::vector<unsigned int> &_ports,
                   unsigned int _clientBodyMaxSize, const std::vector<Route> &_routes) : ports(_ports),
                                                                                         maxClients(_maxClients),
@@ -39,9 +39,20 @@ public:
                                                                                                 _defaultErrorPage),
                                                                                         clientBodyMaxSize(
                                                                                                 _clientBodyMaxSize),
-                                                                                        routes(_routes) {};
+                                                                                        routes(_routes),
+                                                                                        host(_host) {};
 
     ~Configuration() {}
+
+    std::vector<int> getPorts() const {
+        std::vector<int> vector;
+        return vector;
+    }
+
+    std::string getHost() const {
+        std::string host;
+        return host;
+    }
 
     unsigned int getMaxClients() const { return maxClients; }
 
@@ -49,6 +60,54 @@ public:
 
     Configuration operator=(const Configuration &rhs) {
         return *this;
+    }
+
+    static std::string getExtension(const std::string &path) {
+        std::string fileExtension = path.substr(path.find_last_of('.'));
+        if (fileExtension == ".py") {
+            return ".py";
+        }
+        if (fileExtension == ".php") {
+            return ".php";
+        }
+        if (fileExtension == ".html") {
+            return ".html";
+        }
+        return "";
+    }
+
+    unsigned int checkPath(std::string path) {
+        std::vector<std::string> vector;
+        std::vector<unsigned int> index_location_in_path;
+        unsigned int max_length_index;
+
+        if (path.empty()) {
+            throw ConfigurationException("Path is empty");
+        }
+        if (path[0] != '/') {
+            throw ConfigurationException("Path must start with a '/'");
+        }
+        if (path.back() == '/') {
+            path.erase(path.length() - 1, 1);
+        }
+        for (unsigned int i = 0; i < routes.size(); i++) {
+            if (routes[i].location.length() > path.length()) { continue; }
+            if (path.find(routes[i].location) == 0
+                && (path[routes[i].location.length()] == '/'
+                    || path.length() == routes[i].location.length())) {
+                index_location_in_path.push_back(i);
+            }
+        }
+        if (index_location_in_path.empty()) {
+            throw ConfigurationException("Path not found");
+        }
+        max_length_index = index_location_in_path[0];
+        for (unsigned int j = 0; j < index_location_in_path.size(); j++) {
+            if (routes[index_location_in_path[j]].location.length() > routes[max_length_index].location.length()) {
+                max_length_index = index_location_in_path[j];
+            }
+        }
+        return max_length_index;
     }
 
     const std::vector<unsigned int> ports;
@@ -60,6 +119,19 @@ public:
     const unsigned int clientBodyMaxSize;
 
     const std::vector<Route> routes;
+
+    const std::string host;
+
+    class ConfigurationException : public std::exception {
+    private:
+        const char *_msg;
+    public:
+        ConfigurationException(const char *msg) : _msg(msg) {};
+
+        virtual const char *what() const throw() {
+            return (this->_msg);
+        };
+    };
 };
 
 #endif
