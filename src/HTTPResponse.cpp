@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/02 17:46:36 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/02 18:17:12 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,27 @@ void	HTTPResponse::bodybuilder(const Configuration &conf)
 	{
 		this->_body = this->_errorPages[this->_status];
 		return;
+	}
+
+	// Check if the given method is allowed for the given path:
+	try
+	{
+		uint										pindex = conf.checkPath(this->_vals["location"]);
+		std::vector<std::string>::const_iterator	it = conf.routes[pindex].methods.begin();
+
+		for (; it != conf.routes[pindex].methods.end(); ++it)
+			if (this->_vals["type"] == *it)
+				break;
+		if (it == conf.routes[pindex].methods.end())
+		{
+			this->_status = 405;
+			this->_body = this->_errorPages[this->_status];
+			return;
+		}
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << e.what() << std::endl;
 	}
 
 	if (this->_vals["type"] == "GET")

@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:22:01 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/27 18:34:30 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/02 18:22:14 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ public:
         return "";
     }
 
-    unsigned int checkPath(std::string path) {
+    unsigned int checkPath(std::string path) const {
         std::vector<std::string> vector;
         std::vector<unsigned int> index_location_in_path;
         unsigned int max_length_index;
