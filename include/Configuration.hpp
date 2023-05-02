@@ -99,6 +99,11 @@ public:
             }
         }
         if (index_location_in_path.empty()) {
+            for (unsigned int i = 0; i < routes.size(); i++) {
+                if (routes[i].location == "/") {
+                    return (i);
+                }
+            }
             throw ConfigurationException("Path not found");
         }
         max_length_index = index_location_in_path[0];
