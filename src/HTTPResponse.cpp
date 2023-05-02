@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/02 18:17:12 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/02 18:27:17 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,9 @@ void	HTTPResponse::bodybuilder(const Configuration &conf)
 	}
 	catch (const std::exception &e)
 	{
-		std::cerr << e.what() << std::endl;
+		this->_status = 404;
+		this->_body = this->_errorPages[this->_status];
+		return;
 	}
 
 	if (this->_vals["type"] == "GET")
