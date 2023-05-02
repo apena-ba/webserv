@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 20:54:01 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/26 13:03:00 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/02 19:12:58 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,17 +32,23 @@ timeval initializeTimeOutWrite()
 
 // CONSTRUCTOR AND DESTRUCTOR
 
-Server::Server() : _timeOutWrite(initializeTimeOutWrite()){}
+//Server::Server() : _config(Configuration()), _timeOutWrite(initializeTimeOutWrite()){}
 Server::~Server(){}
 
-Server::Server(Configuration const &config) : _timeOutWrite(initializeTimeOutWrite())
+Server::Server(Configuration &config) : _config(config), _timeOutWrite(initializeTimeOutWrite())
 {
-    this->_config = config;
 }
+/*
+Server & Server::operator= (const Server & ref )
+{
+    this->_config = ref._config;
+    this->_timeOutWrite = ref._timeOutWrite;
+    return *this;
+}*/
 
 std::string Server::getHost(void) const
 {
-    return (this->_config.getHost());
+    return (this->_config.host);
 }
 
 void Server::handleRequest(HTTPRequestParser &parser, int client_socket)

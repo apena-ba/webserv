@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:47:14 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/26 13:00:22 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/02 19:06:03 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,7 @@ void Port::selectServer(unsigned int i)
     int anywhere_index = -1;
     for(unsigned int x = 0; x < this->_servers.size(); x++)
     {
+        std::cout << "Host es |" << this->_servers[x]->getHost() << "|" << std::endl;
         HTTPRequestParser parser(this->_requests[i]);
         if(this->_servers[x]->getHost() == "0.0.0.0")
             anywhere_index = i;

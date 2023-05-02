@@ -1,53 +1,56 @@
 server {
-    default_error_page : /Users/emilefournout/webservgit/test;
+    default_error_page : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
     client_body_max_size : 22;
     max_clients : 10;
-    ports : 1,2,3;
+    host : localhost;
+    ports : 8080,8081,8082;
 
     route{
         methods : get,DELETE;
         location : /path1/path2/path3;
-        index : /Users/emilefournout/webservgit/test;
+        index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
     }
 
     route {
         methods : get,DELETE;
         location : /path1/path2/;
-        index : /Users/emilefournout/webservgit/test;
+        index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
     }
 
     route {
         methods : get,DELETE;
         location : /path1/;
-        index : /Users/emilefournout/webservgit/test;
+        index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
     }
 }
 
 server{
-    default_error_page : /Users/emilefournout/webservgit/test;
+    default_error_page : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
     client_body_max_size : 29848712;
     max_clients : 10;
-    ports : 1,2,3;
+    host : 0.0.0.0;
+    ports : 8080,8081,8082;
     route {
         methods : delete,get,post;
         location : /;
-        index : /Users/emilefournout/webservgit/test;
+        index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
   }
 }
 
 server{
-    default_error_page : /Users/emilefournout/webservgit/test;
+    default_error_page : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
     client_body_max_size : 2298;
     max_clients : 10;
-    ports : 1,2,3;
+    host : 10.12.9.2;
+    ports : 8080,8081,8082;
     route {
         methods : get,post,delete;
         location : /*.php;
-        index : /Users/emilefournout/webservgit/test;
+        index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
         }
   route {
           methods : get,delete,post;
           location : /*.ph;
-          index : /Users/emilefournout/webservgit/test;
+          index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
     }
 }

@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:49:10 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/27 18:36:23 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/02 19:02:25 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,12 @@ int main(int argc, char **argv) {
     try {
         ConfigurationParser parser;
         std::vector<Configuration> configs = parser.parse("clean_conf");
-
         std::cout << Configuration::getExtension("hello.html") << std::endl;
+        Cluster cluster(configs);
+        cluster.run();
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
-        std::exit(1);
+        return(1);
     }
-    exit(1);
+    return(0);
 }

@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:08:07 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/24 17:36:01 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/02 19:01:26 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,30 +17,31 @@
 Cluster::Cluster() {}
 
 Cluster::Cluster(std::vector<Configuration> configs) {
-    std::map<int, int> portsNumbers;
+    std::map<unsigned int, int> portsNumbers;
 
     // Get ports and number of ports
     for (unsigned int i = 0; i < configs.size(); i++) {
-        for (unsigned int x = 0; x < configs[i].getPorts().size(); x++) {
-            std::map<int, int>::iterator it = portsNumbers.find(configs[i].getPorts()[x]);
+        std::vector<unsigned int> configPorts = configs[i].ports;
+        for (unsigned int x = 0; x < configPorts.size(); x++) {
+            std::map<unsigned int, int>::iterator it = portsNumbers.find(configPorts[x]);
             if (it != portsNumbers.end())
-                portsNumbers[configs[i].getPorts()[x]]++;
+                portsNumbers[configPorts[x]]++;
             else
-                portsNumbers[configs[i].getPorts()[x]] = 1;
+                portsNumbers[configPorts[x]] = 1;
         }
     }
     // Create servers
-    this->_allServers = new Server[configs.size()];
+    
     for (unsigned int i = 0; i < configs.size(); i++)
-        this->_allServers[i] = Server(configs[i]);
+        this->_allServers.push_back(Server(configs[i]));
 
     // Create ports
-    for (std::map<int, int>::iterator it = portsNumbers.begin(); it != portsNumbers.end(); it++) {
+    for (std::map<unsigned int, int>::iterator it = portsNumbers.begin(); it != portsNumbers.end(); it++) {
         std::vector<Server *> portServers;
 
         for (unsigned int x = 0; x < configs.size(); x++) {
-            std::vector<int> configPorts = configs[x].getPorts();
-            std::vector<int>::iterator port = std::find(configPorts.begin(), configPorts.end(), it->first);
+            std::vector<unsigned int> configPorts = configs[x].ports;
+            std::vector<unsigned int>::iterator port = std::find(configPorts.begin(), configPorts.end(), it->first);
             if (port != configPorts.end())
                 portServers.push_back(&this->_allServers[x]);
         }

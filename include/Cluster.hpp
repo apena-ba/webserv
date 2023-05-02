@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:02:05 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/20 20:06:39 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/02 19:29:50 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ class Cluster {
     private:
         std::vector<Port>       _ports;
         std::vector<pollfd>     _fdsPoll;
-        Server                  *_allServers;
+        std::vector<Server>     _allServers;
     public:
         Cluster();
         Cluster(std::vector<Configuration> configs);

@@ -41,6 +41,6 @@ webserv
 .idea/
 templateConf.json
 test
-
+.vscode
 config_idea
 .DS_Store
