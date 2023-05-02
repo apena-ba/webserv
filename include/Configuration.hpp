@@ -87,7 +87,7 @@ public:
         if (path[0] != '/') {
             throw ConfigurationException("Path must start with a '/'");
         }
-        if (path.back() == '/') {
+        if (path.back() == '/' && path.length() > 1) {
             path.erase(path.length() - 1, 1);
         }
         for (unsigned int i = 0; i < routes.size(); i++) {
