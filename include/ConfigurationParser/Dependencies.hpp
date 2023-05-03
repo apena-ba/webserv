@@ -21,11 +21,8 @@
 
 #define FIELDS_MODEL            std::vector<PAIR_STRING>
 
-#define EXTRACTED_ROUTE_MODEL   std::vector<std::pair<STRING,
-                                    VECTOR_STRING > >
+#define EXTRACTED_ROUTE_MODEL   std::vector<std::pair<STRING, VECTOR_STRING > >
 
-#define FINAL_MODEL             std::vector<std::pair<
-                                    TEMP_CONFIGURATION,
-                                    VECTOR_ROUTE > >
+#define FINAL_MODEL             std::vector<std::pair<TEMP_CONFIGURATION, VECTOR_ROUTE > >
 
 #endif
