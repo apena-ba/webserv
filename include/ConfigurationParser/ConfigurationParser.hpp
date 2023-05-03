@@ -1,388 +1,59 @@
 #ifndef CONFIGURATION_PARSER
 #define CONFIGURATION_PARSER
 
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <vector>
-#include <unistd.h>
-#include "Configuration.hpp"
-#include "ParsingUtils.hpp"
-#include "Route.hpp"
+#include "Dependencies.hpp"
 
+class ConfigurationParser {
+private:
+    class                           _TempConfiguration;
 
-class ConfigurationParser
-{
-	private:
-    	class _TempConfiguration
-	{
-    		private:
-        	unsigned int			_maxClients;
-        	bool 				_maxClients_is_set;
-        	std::string			_defaultErrorPage;
-        	unsigned int			_clientBodyMaxSize;
-        	bool				_clientBodyMaxSize_is_set;
-        	std::vector<unsigned int>	_ports;
-        	std::string			_host;
+    class                           _TempRoute;
 
-        void _setHost(const std::string &host)
-	{
-            if (!this->_host.empty()) 
-	    {
-		    throw ErrorParsing("Error: Host already set");
-            }
-	    this->_host = host;
-	}
-	
-	void _setPorts(std::string &ports)
-	{
-            unsigned int num;
+    static  PAIR_STRING              _lineToPair(
+                                        STRING line);
 
-            if (!this->_ports.empty())
-	    {
-                throw ErrorParsing("Error: Ports already set");
-            }
-            std::vector<std::string> ports_str = ParsingUtils::split(ports, ",");
-            if (ParsingUtils::checkDoubleValue(ports_str))
-	    {
-                throw ErrorParsing("Error: Double value in ports");
-            }
-            for (unsigned int i = 0; i < ports_str.size(); i++)
-	    {
-                if (!ParsingUtils::betteratoi(ports_str[i].c_str(), num))
-		{
-                    throw ErrorParsing("Error: Port is not a unsigned integer");
-                }
-                this->_ports.push_back(num);
-            }
-        }
+    static  Configuration           _toConfiguration(
+                                        TEMP_CONFIGURATION &server,
+                                        const VECTOR_ROUTE &routes);
 
-        void _setMaxClients(const std::string &maxClients)
-	{
-            unsigned int num;
+    static  VECTOR_CONFIGURATION    _modelToConfiguration(
+                                        FINAL_MODEL model);
 
-            if (this->_maxClients_is_set)
-	    {
-                throw ErrorParsing("Error: Max clients already set");
-            }
-            this->_maxClients_is_set = true;
-            if (!ParsingUtils::betteratoi(maxClients.c_str(), num))
-	    {
-                throw ErrorParsing("Error: Port is not a unsigned integer");
-            }
-            this->_maxClients = num;
-        }
+    FIELDS_MODEL                    _fieldExtractor(
+                                        const STRING &line,
+                                        const STRING &opener);
 
-        void _setDefaultErrorPage(const std::string &defaultErrorPage)
-	{
-            if (access(defaultErrorPage.c_str(), F_OK) == -1)
-	    {
-                throw ErrorParsing("Error: Cannot access file default error page");
-            }
-            if (!this->_defaultErrorPage.empty())
-	    {
-                throw ErrorParsing("Error: Default error page already set");
-            }
-            this->_defaultErrorPage = defaultErrorPage;
-        }
+    static  bool                    _checkDoubleRoute(
+                                        VECTOR_ROUTE &routes);
 
-        void _setClientBodyMaxSize(const std::string &clientBodyMaxSize)
-	{
-            unsigned int num;
+    static VECTOR_ROUTE             _tmpToRoute(
+                                        VECTOR_TEMP_ROUTE data);
 
-            if (this->_clientBodyMaxSize_is_set)
-	    {
-                throw ErrorParsing("Error: Client body max size already set");
-            }
-            this->_clientBodyMaxSize_is_set = true;
-            if (!ParsingUtils::betteratoi(clientBodyMaxSize.c_str(), num))
-	    {
-                throw ErrorParsing("Error: Port is not an unsigned integer");
-            }
-            this->_clientBodyMaxSize = num;
-        }
+    VECTOR_ROUTE                    _dataToRoute(
+                                        VECTOR_STRING data);
 
-    public:
-        _TempConfiguration()
-	{
-            this->_maxClients_is_set = false;
-            this->_clientBodyMaxSize_is_set = false;
-        }
+    TEMP_CONFIGURATION              _dataToConfiguration(
+                                        const STRING &data);
 
-        ~_TempConfiguration() {}
+    FINAL_MODEL                     _dataToModel(
+                                        EXTRACTED_ROUTE_MODEL data);
 
-        std::string getHost() const
-	{
-            return this->_host;
-        }
+    static EXTRACTED_ROUTE_MODEL    _extractRoute(
+                                        SPLITTED_FILE servers);
 
-        std::vector<unsigned int> getPorts() const
-	{
-            return this->_ports;
-        }
+    static unsigned int             _findCloseBrace
+                                        (STRING str);
 
-        unsigned int getMaxClients() const
-	{
-            return this->_maxClients;
-        }
-
-        std::string getDefaultErrorPage() const
-	{
-            return this->_defaultErrorPage;
-        }
-
-        unsigned int getClientBodyMaxSize() const
-	{
-            return this->_clientBodyMaxSize;
-        }
-
-        bool checkAllFieldsSet() const
-	{
-            if (!this->_maxClients_is_set)
-	    {
-                throw BadFile("Error: Max clients not set");
-            }
-            if (this->_defaultErrorPage.empty())
-	    {
-                throw BadFile("Error: Default error page not set");
-            }
-            if (!this->_clientBodyMaxSize_is_set)
-	    {
-                throw BadFile("Error: Client body max size not set");
-            }
-            if (this->_ports.empty())
-	    {
-                throw BadFile("Error: Port not set");
-            }
-            return true;
-        }
-
-        void setFields(const std::string &field, std::string value)
-	{
-            if (field == "host") 
-	    {
-                this->_setHost(value);
-            } 
-	    else if (field == "max_clients")
-	    {
-                this->_setMaxClients(value);
-            } 
-	    else if (field == "default_error_page")
-	    {
-                _setDefaultErrorPage(value);
-            } 
-	    else if (field == "client_body_max_size")
-	    {
-                this->_setClientBodyMaxSize(value);
-            } 
-	    else if (field == "ports")
-	    {
-                this->_setPorts(value);
-            }
-	    else
-	    {
-                throw ErrorParsing("Error: Invalid field");
-            }
-        }
-
-        class ErrorParsing : public std::exception
-	{
-        private:
-            const char *_msg;
-        public:
-            ErrorParsing(const char *msg) : _msg(msg) {};
-
-            virtual const char *what() const throw()
-	    {
-                return (this->_msg);
-            }
-        };
-    };
-
-    class _TempRoute
-    {
-    private:
-        std::string			_index;
-
-        std::vector<std::string>	_methods;
-
-        std::string			_location;
-
-        void _setIndex(const std::string &index)
-	{
-            if (access(index.c_str(), F_OK) == -1)
-	    {
-                throw ErrorParsing("Error: Cannot access file index");
-            }
-            if (!this->_index.empty())
-	    {
-                throw ErrorParsing("Error: Index already set");
-            }
-            this->_index = index;
-        }
-
-
-        void _setMethods(const std::string &methods_input)
-	{
-            int				number_get = 0;
-            int				number_post = 0;
-            int				number_delete = 0;
-            std::vector<std::string>	methods = ParsingUtils::split(methods_input, ",");
-
-            if (!this->_methods.empty())
-	    {
-                throw ErrorParsing("Error: Methods already set");
-            }
-            if (methods.empty())
-	    {
-                throw ErrorParsing("Error: No method provided");
-            }
-            if (methods.size() > 3)
-	    {
-                throw ErrorParsing("Error: Too many methods");
-            }
-            for (unsigned int i = 0; i < methods.size(); i++)
-	    {
-                if (methods[i] != "GET" && methods[i] != "get"
-                    && methods[i] != "POST" && methods[i] != "post"
-                    && methods[i] != "DELETE" && methods[i] != "delete")
-		{
-                    throw ErrorParsing("Error: Invalid method");
-                }
-                if (methods[i] == "GET" || methods[i] == "get")
-		{
-                    number_get++;
-                }
-		else if (methods[i] == "POST" || methods[i] == "post")
-		{
-                    number_post++;
-                } 
-		else if (methods[i] == "DELETE" || methods[i] == "delete")
-		{
-                    number_delete++;
-                }
-            }
-            if (number_get > 1 || number_post > 1 || number_delete > 1)
-	    {
-                throw ErrorParsing("Error: Double value in methods");
-            }
-            this->_methods = ParsingUtils::toUpperVector(methods);
-        }
-
-        void _setLocation(std::string location)
-	{
-            if (!this->_location.empty())
-	    {
-                throw ErrorParsing("Error: route: location already set");
-            }
-            if (location.back() == '/' && location.size() > 1)
-	    {
-                location.erase(location.end() - 1);
-            }
-            this->_location = location;
-        }
-
-    public:
-        _TempRoute() {}
-
-        ~_TempRoute() {}
-
-        std::string getIndex() const
-	{
-            return this->_index;
-        }
-
-        std::string getLocation() const
-	{
-            return this->_location;
-        }
-
-        std::vector<std::string> getMethods() const
-	{
-            return this->_methods;
-        }
-
-        bool checkAllFieldsSet()
-	{
-            if (this->_location.empty())
-	    {
-                throw BadFile("Error: Route: location is not set");
-            }
-            if (this->_methods.empty())
-	    {
-                throw BadFile("Error: Route: methods is not set");
-            }
-            if (this->_index.empty())
-	    {
-                throw BadFile("Error: Route: index is not set");
-            }
-            return true;
-        }
-
-        void setFields(std::string &field, std::string &value)
-	{
-            if (field == "methods")
-	    {
-                _setMethods(value);
-            } else if (field == "location")
-	    {
-                this->_setLocation(value);
-            } else if (field == "index")
-	    {
-                this->_setIndex(value);
-            } else
-	    {
-                throw ErrorParsing("Error: Invalid field");
-            }
-        }
-
-        class ErrorParsing : public std::exception
-	    {
-		    private:
-            		const char *_msg;
-		    public:
-            		ErrorParsing(const char *msg) : _msg(msg) {};
-
-            		virtual const char *what() const throw()
-			{
-                		return (this->_msg);
-            		}
-	    };
-    };
-
-    static std::pair<std::string, std::string>			_lineToPair(std::string line);
-
-    static Configuration					_toConfiguration(_TempConfiguration &server,
-		    								const std::vector<Route> &routes);
-
-    static std::vector<Configuration>				_modelToConfiguration(std::vector<std::pair<_TempConfiguration,
-		    						std::vector<Route> > > model);
-
-    std::vector<std::pair<std::string, std::string> >		_fieldExtractor(const std::string &line, const std::string &opener);
-
-    static bool							_checkDoubleRoute(std::vector<Route> &routes);
-
-    static std::vector<Route>					_tmpToRoute(std::vector<_TempRoute> data);
-
-    std::vector<Route>						_dataToRoute(std::vector<std::string> data);
-
-    _TempConfiguration						_dataToConfiguration(const std::string &data);
-
-    std::vector<std::pair<_TempConfiguration, std::vector<Route> > >	_dataToModel(std::vector<std::pair<std::string,
-		    								std::vector<std::string> > > data);
-
-    static std::vector<std::pair<std::string, std::vector<std::string> > >	_extractRoute(std::vector<std::string> servers);
-
-    static unsigned int								_findCloseBrace(std::string str);
-
-    static std::vector<std::string>						_serverSplitter(const std::string &file);
+    static SPLITTED_FILE            _serverSplitter(
+                                        const STRING &file);
 
 public:
     ConfigurationParser();
 
     ~ConfigurationParser();
 
-    std::vector<Configuration> parse(const std::string &path);
+    VECTOR_CONFIGURATION            parse(
+                                        const STRING &path);
 
     class BadFile : public std::exception {
     private:

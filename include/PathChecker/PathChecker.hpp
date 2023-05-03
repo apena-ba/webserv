@@ -5,7 +5,7 @@
 #include <vector>
 #include <fstream>
 #include "../Configuration.hpp"
-#include "../ConfigurationParser/ParsingUtils.hpp"
+#include "../ConfigurationParser/utils/ParsingUtils.hpp"
 
 class PathChecker {
 private:

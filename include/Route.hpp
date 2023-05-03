@@ -2,7 +2,7 @@
 #define R0UTE_HPP
 
 #include <iostream>
-#include "ConfigurationParser/ParsingUtils.hpp"
+#include "ConfigurationParser/utils/ParsingUtils.hpp"
 
 class Route {
 private:

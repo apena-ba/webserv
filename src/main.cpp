@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "Cluster.hpp"
-#include "ConfigurationParser/ParsingUtils.hpp"
+#include "ConfigurationParser/utils/ParsingUtils.hpp"
 #include "ConfigurationParser/ConfigurationParser.hpp"
 
 int main(int argc, char **argv) {
@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
         cluster.run();
     } catch (std::exception &e) {
         std::cerr << e.what() << std::endl;
-        return(1);
+        return (1);
     }
-    return(0);
+    return (0);
 }

@@ -28,14 +28,21 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
-# define PORT 8085
+# define    PORT                   8085
 
-# define TIMEOUT_POLL 100
-# define TIMEOUT_READING_SEC 5
-# define TIMEOUT_READING_USEC 0
-# define TIMEOUT_WRITING_SEC 5
-# define TIMEOUT_WRITING_USEC 0
-# define MAXCLIENT 10
-# define BUFFER_SIZE 1000
+# define    TIMEOUT_POLL           100
+# define    TIMEOUT_READING_SEC    5
+# define    TIMEOUT_READING_USEC   0
+# define    TIMEOUT_WRITING_SEC    5
+# define    TIMEOUT_WRITING_USEC   0
+# define    MAXCLIENT              10
+# define    BUFFER_SIZE            1000
+
+//types
+# define    STRING                 std::string
+# define    PAIR_STRING            std::pair<STRING, STRING>
+# define    VECTOR_STRING          std::vector<STRING>
+# define    VECTOR_ROUTE           std::vector<Route>
+# define    VECTOR_CONFIGURATION   std::vector<Configuration>
 
 #endif

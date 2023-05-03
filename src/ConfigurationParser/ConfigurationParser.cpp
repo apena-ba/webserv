@@ -1,18 +1,24 @@
 #include "ConfigurationParser/ConfigurationParser.hpp"
-#include "ConfigurationParser/ParsingUtils.hpp"
+#include "ConfigurationParser/utils/ParsingUtils.hpp"
+#include "ConfigurationParser/utils/_TempConfiguration.hpp"
+#include "ConfigurationParser/utils/_TempRoute.hpp"
 #include "Route.hpp"
 
-Configuration
-ConfigurationParser::_toConfiguration(ConfigurationParser::_TempConfiguration &server,
-                                      const std::vector<Route> &routes) {
-    Configuration conf(server.getHost(), server.getMaxClients(), server.getDefaultErrorPage(), server.getPorts(),
-                       server.getClientBodyMaxSize(), routes);
+Configuration ConfigurationParser::_toConfiguration
+		(TEMP_CONFIGURATION &server,
+		 const VECTOR_ROUTE &routes) {
+    Configuration conf(server.getHost(),
+		    server.getMaxClients(),
+		    server.getDefaultErrorPage(),
+		    server.getPorts(),
+		    server.getClientBodyMaxSize(),
+		    routes);
     return conf;
 }
 
-std::pair<std::string, std::string> ConfigurationParser::_lineToPair(std::string line) {
-    std::vector<std::string> tmp;
-    std::pair<std::string, std::string> result;
+PAIR_STRING ConfigurationParser::_lineToPair(STRING line) {
+    VECTOR_STRING	tmp;
+    PAIR_STRING		result;
 
     if (line.size() <= 1) {
         throw (BadFile("Error: Bad server format: Bad arguments"));
@@ -27,21 +33,23 @@ std::pair<std::string, std::string> ConfigurationParser::_lineToPair(std::string
     return result;
 }
 
-std::vector<Configuration>
-ConfigurationParser::_modelToConfiguration(std::vector<std::pair<ConfigurationParser::_TempConfiguration,
-        std::vector<Route> > > model) {
-    std::vector<Configuration> config;
+VECTOR_CONFIGURATION
+ConfigurationParser::_modelToConfiguration(FINAL_MODEL model) {
+    VECTOR_CONFIGURATION    config;
+
     for (unsigned int i = 0; i < model.size(); i++) {
         config.push_back(_toConfiguration(model[i].first, model[i].second));
     }
     return config;
 }
 
-std::vector<std::pair<std::string, std::string> >
-ConfigurationParser::_fieldExtractor(const std::string &line, const std::string &opener) {
-    std::string removed_limiter_line;
-    std::vector<std::string> splitted_line;
-    std::vector<std::pair<std::string, std::string> > fields;
+FIELDS_MODEL
+ConfigurationParser::_fieldExtractor(const STRING &line,
+		const STRING &opener) {
+    STRING          removed_limiter_line;
+    VECTOR_STRING   splitted_line;
+    FIELDS_MODEL    fields;
+
     if (line.find(opener) != 0) {
         throw BadFile("Error: Bad limiters");
     }
@@ -53,7 +61,7 @@ ConfigurationParser::_fieldExtractor(const std::string &line, const std::string 
     return fields;
 }
 
-bool ConfigurationParser::_checkDoubleRoute(std::vector<Route> &routes) {
+bool ConfigurationParser::_checkDoubleRoute(VECTOR_ROUTE &routes) {
     for (unsigned int i = 0; i < routes.size(); i++) {
         for (unsigned int j = i + 1; j < routes.size(); j++) {
             if (routes[i].location == routes[j].location) {
@@ -64,8 +72,9 @@ bool ConfigurationParser::_checkDoubleRoute(std::vector<Route> &routes) {
     return false;
 }
 
-std::vector<Route> ConfigurationParser::_tmpToRoute(std::vector<ConfigurationParser::_TempRoute> data) {
-    std::vector<Route> routes;
+VECTOR_ROUTE ConfigurationParser::_tmpToRoute(VECTOR_TEMP_ROUTE data) {
+    VECTOR_ROUTE	routes;
+
     for (unsigned int i = 0; i < data.size(); i++) {
         routes.push_back(Route(data[i].getIndex(), data[i].getMethods(), data[i].getLocation()));
     }
@@ -75,9 +84,9 @@ std::vector<Route> ConfigurationParser::_tmpToRoute(std::vector<ConfigurationPar
     return routes;
 }
 
-std::vector<Route> ConfigurationParser::_dataToRoute(std::vector<std::string> data) {
-    std::vector<ConfigurationParser::_TempRoute> tmp_routes;
-    std::vector<std::pair<std::string, std::string> > fields;
+VECTOR_ROUTE ConfigurationParser::_dataToRoute(VECTOR_STRING data) {
+    VECTOR_TEMP_ROUTE	tmp_routes;
+    FIELDS_MODEL	    fields;
 
     for (unsigned int i = 0; i < data.size(); i++) {
         fields = _fieldExtractor(data[i], "route{");
@@ -87,14 +96,15 @@ std::vector<Route> ConfigurationParser::_dataToRoute(std::vector<std::string> da
         }
         tmp_routes[i].checkAllFieldsSet();
     }
-    std::vector<Route> routes = std::vector<Route>(_tmpToRoute(tmp_routes));
+    VECTOR_ROUTE routes = VECTOR_ROUTE(_tmpToRoute(tmp_routes));
     return routes;
 }
 
-ConfigurationParser::ConfigurationParser::_TempConfiguration
-ConfigurationParser::_dataToConfiguration(const std::string &data) {
-    ConfigurationParser::_TempConfiguration config;
-    std::vector<std::pair<std::string, std::string> > fields;
+TEMP_CONFIGURATION
+ConfigurationParser::_dataToConfiguration(const STRING &data) {
+    TEMP_CONFIGURATION	config;
+    FIELDS_MODEL	    fields;
+
     fields = _fieldExtractor(data, "server{");
     for (unsigned int i = 0; i < fields.size(); i++) {
         config.setFields(fields[i].first, fields[i].second);
@@ -103,20 +113,21 @@ ConfigurationParser::_dataToConfiguration(const std::string &data) {
     return config;
 }
 
-std::vector<std::pair<ConfigurationParser::_TempConfiguration, std::vector<Route> > >
-ConfigurationParser::_dataToModel(std::vector<std::pair<std::string, std::vector<std::string> > > data) {
-    std::vector<std::pair<ConfigurationParser::_TempConfiguration, std::vector<Route> > > model;
+FINAL_MODEL ConfigurationParser::_dataToModel(EXTRACTED_ROUTE_MODEL data) {
+    FINAL_MODEL model;
+
     for (unsigned int i = 0; i < data.size(); i++) {
-        ConfigurationParser::_TempConfiguration config = _dataToConfiguration(data[i].first);
-        std::vector<Route> routes = _dataToRoute(data[i].second);
+        TEMP_CONFIGURATION config = _dataToConfiguration(data[i].first);
+        VECTOR_ROUTE routes = _dataToRoute(data[i].second);
         model.push_back(std::make_pair(config, routes));
     }
     return model;
 }
 
-unsigned int ConfigurationParser::_findCloseBrace(std::string str) {
-    unsigned int open_brace = 0;
-    unsigned int close_brace = 0;
+unsigned int ConfigurationParser::_findCloseBrace(STRING str) {
+    unsigned int	open_brace	= 0;
+    unsigned int	close_brace	= 0;
+
     for (unsigned int i = 0; i < str.size(); i++) {
         if (str[i] == '{') {
             open_brace++;
@@ -130,12 +141,12 @@ unsigned int ConfigurationParser::_findCloseBrace(std::string str) {
     throw BadFile("Error: not the same number of open and close brace");
 }
 
-std::vector<std::pair<std::string, std::vector<std::string> > >
-ConfigurationParser::_extractRoute(std::vector<std::string> servers) {
-    unsigned int close_route_brace;
-    unsigned int open_route_brace;
-    std::vector<std::string> routes;
-    std::vector<std::pair<std::string, std::vector<std::string> > > return_pair;
+EXTRACTED_ROUTE_MODEL
+ConfigurationParser::_extractRoute(VECTOR_STRING servers) {
+    unsigned int		    close_route_brace;
+    unsigned int		    open_route_brace;
+    VECTOR_STRING		    routes;
+    EXTRACTED_ROUTE_MODEL	return_pair;
 
     for (unsigned int i = 0; i < servers.size(); i++) {
         routes.clear();
@@ -150,8 +161,9 @@ ConfigurationParser::_extractRoute(std::vector<std::string> servers) {
     return return_pair;
 }
 
-std::vector<std::string> ConfigurationParser::_serverSplitter(const std::string &file) {
-    std::vector<std::string> servers;
+VECTOR_STRING ConfigurationParser::_serverSplitter(const STRING &file) {
+    VECTOR_STRING   servers;
+
     if (file.substr(0, 7) != "server{") {
         throw BadFile("Error: first line is not server{");
     }
@@ -162,16 +174,14 @@ std::vector<std::string> ConfigurationParser::_serverSplitter(const std::string 
     return servers;
 }
 
-std::vector<Configuration> ConfigurationParser::parse(const std::string &path) {
-    std::string file = ParsingUtils::fileToString(path);
+VECTOR_CONFIGURATION ConfigurationParser::parse(const std::string &path) {
+    STRING                  file                = ParsingUtils::fileToString(path);
     ParsingUtils::checkLimiter(file);
-    std::string removed_space = ParsingUtils::removeIsSpace(file);
-    std::vector<std::string> servers = _serverSplitter(removed_space);
-    std::vector<std::pair<std::string, std::vector<std::string> > >
-            pair_server_route = _extractRoute(servers);
-    std::vector<std::pair<ConfigurationParser::_TempConfiguration,
-            std::vector<Route> > > temp_model = _dataToModel(pair_server_route);
-    std::vector<Configuration> configs = _modelToConfiguration(temp_model);
+    STRING                  removed_space       = ParsingUtils::removeIsSpace(file);
+    SPLITTED_FILE           servers             = _serverSplitter(removed_space);
+    EXTRACTED_ROUTE_MODEL   pair_server_route   = _extractRoute(servers);
+    FINAL_MODEL             temp_model          = _dataToModel(pair_server_route);
+    VECTOR_CONFIGURATION    configs             = _modelToConfiguration(temp_model);
     return configs;
 }
 
