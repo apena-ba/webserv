@@ -1,13 +1,13 @@
 #include "ConfigurationParser/utils/_TempConfiguration.hpp"
 
-void TEMP_CONFIGURATION::_setHost(const STRING &host) {
+void ConfigurationParser::TEMP_CONFIGURATION::_setHost(const STRING &host) {
     if (!this->_host.empty()) {
         throw ErrorParsing("Error: Host already set");
     }
     this->_host = host;
 }
 
-void TEMP_CONFIGURATION::_setPorts(STRING &ports) {
+void ConfigurationParser::TEMP_CONFIGURATION::_setPorts(STRING &ports) {
     UINT num;
 
     if (!this->_ports.empty()) {
@@ -25,7 +25,7 @@ void TEMP_CONFIGURATION::_setPorts(STRING &ports) {
     }
 }
 
-void TEMP_CONFIGURATION::_setMaxClients(const STRING &maxClients) {
+void ConfigurationParser::TEMP_CONFIGURATION::_setMaxClients(const STRING &maxClients) {
     UINT num;
 
     if (this->_maxClients_is_set) {
@@ -38,7 +38,7 @@ void TEMP_CONFIGURATION::_setMaxClients(const STRING &maxClients) {
     this->_maxClients = num;
 }
 
-void TEMP_CONFIGURATION::_setDefaultErrorPage(const STRING &defaultErrorPage) {
+void ConfigurationParser::TEMP_CONFIGURATION::_setDefaultErrorPage(const STRING &defaultErrorPage) {
     if (access(defaultErrorPage.c_str(), F_OK) == -1) {
         throw ErrorParsing("Error: Cannot access file default error page");
     }
@@ -48,7 +48,7 @@ void TEMP_CONFIGURATION::_setDefaultErrorPage(const STRING &defaultErrorPage) {
     this->_defaultErrorPage = defaultErrorPage;
 }
 
-void TEMP_CONFIGURATION::_setClientBodyMaxSize(const STRING &clientBodyMaxSize) {
+void ConfigurationParser::TEMP_CONFIGURATION::_setClientBodyMaxSize(const STRING &clientBodyMaxSize) {
     UINT num;
 
     if (this->_clientBodyMaxSize_is_set) {
@@ -61,34 +61,34 @@ void TEMP_CONFIGURATION::_setClientBodyMaxSize(const STRING &clientBodyMaxSize) 
     this->_clientBodyMaxSize = num;
 }
 
-TEMP_CONFIGURATION::_TempConfiguration() {
+ConfigurationParser::TEMP_CONFIGURATION::_TempConfiguration() {
     this->_maxClients_is_set        = false;
     this->_clientBodyMaxSize_is_set = false;
 }
 
-TEMP_CONFIGURATION::~_TempConfiguration() {}
+ConfigurationParser::TEMP_CONFIGURATION::~_TempConfiguration() {}
 
-STRING TEMP_CONFIGURATION::getHost() const {
+STRING ConfigurationParser::TEMP_CONFIGURATION::getHost() const {
     return this->_host;
 }
 
-VECTOR_UINT TEMP_CONFIGURATION::getPorts() const {
+VECTOR_UINT ConfigurationParser::TEMP_CONFIGURATION::getPorts() const {
     return this->_ports;
 }
 
-UINT TEMP_CONFIGURATION::getMaxClients() const {
+UINT ConfigurationParser::TEMP_CONFIGURATION::getMaxClients() const {
     return this->_maxClients;
 }
 
-STRING TEMP_CONFIGURATION::getDefaultErrorPage() const {
+STRING ConfigurationParser::TEMP_CONFIGURATION::getDefaultErrorPage() const {
     return this->_defaultErrorPage;
 }
 
-UINT TEMP_CONFIGURATION::getClientBodyMaxSize() const {
+UINT ConfigurationParser::TEMP_CONFIGURATION::getClientBodyMaxSize() const {
     return this->_clientBodyMaxSize;
 }
 
-bool TEMP_CONFIGURATION::checkAllFieldsSet() const {
+bool ConfigurationParser::TEMP_CONFIGURATION::checkAllFieldsSet() const {
     if (!this->_maxClients_is_set) {
         throw BadFile("Error: Max clients not set");
     }
@@ -104,7 +104,7 @@ bool TEMP_CONFIGURATION::checkAllFieldsSet() const {
     return true;
 }
 
-void TEMP_CONFIGURATION::setFields(const STRING &field, STRING value) {
+void ConfigurationParser::TEMP_CONFIGURATION::setFields(const STRING &field, STRING value) {
     if (field == "host") {
         this->_setHost(value);
     } else if (field == "max_clients") {

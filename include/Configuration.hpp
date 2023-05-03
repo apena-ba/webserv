@@ -32,7 +32,7 @@ public:
                     defaultErrorPage(_defaultErrorPage),
                     clientBodyMaxSize(_clientBodyMaxSize),
                     routes(_routes),
-                    host(_host) {};
+                    host(_host) {}
 
     ~Configuration() {}
 
@@ -63,5 +63,6 @@ public:
         };
     };
 };
+typedef std::vector <Configuration> VECTOR_CONFIGURATION;
 
 #endif

@@ -25,5 +25,5 @@ public:
     const std::vector<std::string> methods;
     const std::string location;
 };
-
+typedef std::vector <Route>         VECTOR_ROUTE;
 #endif

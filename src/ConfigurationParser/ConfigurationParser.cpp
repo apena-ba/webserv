@@ -43,7 +43,7 @@ ConfigurationParser::_modelToConfiguration(FINAL_MODEL model) {
     return config;
 }
 
-FIELDS_MODEL
+ConfigurationParser::FIELDS_MODEL
 ConfigurationParser::_fieldExtractor(const STRING &line,
 		const STRING &opener) {
     STRING          removed_limiter_line;
@@ -100,7 +100,7 @@ VECTOR_ROUTE ConfigurationParser::_dataToRoute(VECTOR_STRING data) {
     return routes;
 }
 
-TEMP_CONFIGURATION
+ConfigurationParser::TEMP_CONFIGURATION
 ConfigurationParser::_dataToConfiguration(const STRING &data) {
     TEMP_CONFIGURATION	config;
     FIELDS_MODEL	    fields;
@@ -113,7 +113,7 @@ ConfigurationParser::_dataToConfiguration(const STRING &data) {
     return config;
 }
 
-FINAL_MODEL ConfigurationParser::_dataToModel(EXTRACTED_ROUTE_MODEL data) {
+ConfigurationParser::FINAL_MODEL ConfigurationParser::_dataToModel(EXTRACTED_ROUTE_MODEL data) {
     FINAL_MODEL model;
 
     for (UINT i = 0; i < data.size(); i++) {
@@ -141,7 +141,7 @@ UINT ConfigurationParser::_findCloseBrace(STRING str) {
     throw BadFile("Error: not the same number of open and close brace");
 }
 
-EXTRACTED_ROUTE_MODEL
+ConfigurationParser::EXTRACTED_ROUTE_MODEL
 ConfigurationParser::_extractRoute(VECTOR_STRING servers) {
     UINT		    close_route_brace;
     UINT		    open_route_brace;

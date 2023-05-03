@@ -19,6 +19,7 @@
 #include <list>
 #include <map>
 #include <vector>
+#include <string>
 #include <fstream>
 #include <fcntl.h>
 #include <cstring>
@@ -27,8 +28,7 @@
 #include <poll.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#include "Route.hpp"
-#include "Configuration.hpp"
+
 
 #define PORT 8085
 
@@ -47,7 +47,6 @@ typedef std::vector <STRING>        VECTOR_STRING;
 typedef unsigned int                UINT;
 typedef std::vector <unsigned int>  VECTOR_UINT;
 typedef std::vector <int>           VECTOR_INT;
-typedef std::vector <Route>         VECTOR_ROUTE;
-typedef std::vector <Configuration> VECTOR_CONFIGURATION;
+
 
 #endif
