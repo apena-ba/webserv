@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/02 18:27:17 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/03 13:48:19 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ std::map<uint, std::string>	HTTPResponse::fillerrorpages()
 std::map<uint, std::string>	HTTPResponse::_errorPages = HTTPResponse::fillerrorpages();
 ////////////////////////////////////////////////////////////////////////////////
 
-void	HTTPResponse::get_perform(const Configuration &conf)
+void	HTTPResponse::get_perform()
 {
 	// Check existance and try to open the requested file.
 	if (access(this->_vals["location"].c_str(), F_OK))
@@ -83,19 +83,12 @@ void	HTTPResponse::get_perform(const Configuration &conf)
 	this->_body.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()); // Put the whole file into the body string.
 	file.close();
 
-	if (this->_body.size() > conf.clientBodyMaxSize)
-	{
-		this->_status = 413;
-		this->_body = this->_errorPages[this->_status];
-		return;
-	}
-
 	// Way of using the cgi to create the page?
 }
 
-void	HTTPResponse::pos_perform(const Configuration &conf) {}
+void	HTTPResponse::pos_perform() {}
 
-void	HTTPResponse::del_perform(const Configuration &conf) {}
+void	HTTPResponse::del_perform() {}
 
 void	HTTPResponse::bodybuilder(const Configuration &conf)
 {
@@ -129,11 +122,17 @@ void	HTTPResponse::bodybuilder(const Configuration &conf)
 	}
 
 	if (this->_vals["type"] == "GET")
-		get_perform(conf);
+		get_perform();
 	else if (this->_vals["type"] == "POST")
-		pos_perform(conf);
+		pos_perform();
 	else if (this->_vals["type"] == "DELETE")
-		del_perform(conf);
+		del_perform();
+
+	if (this->_body.size() > conf.clientBodyMaxSize)
+	{
+		this->_status = 413;
+		this->_body = this->_errorPages[this->_status];
+	}
 }
 
 // First the internal, inherited request parser is constructed to have direct access to the map.
@@ -156,8 +155,6 @@ HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configur
 	// Write only the required headers, avoid repetition.
 	// 3:
 	this->_response += "Server: Jam⍺ Rushers' Webserv\r\n";
-	/* if (this->_vals.find("connection") != this->_vals.end())
-	 *     this->_response += "Connection: " + this->_vals["connection"] + "\r\n"; */
 	this->_response += "Content-Length: " + tostr(this->_body.size()) + "\r\n\r\n";
 
 	// 4:
