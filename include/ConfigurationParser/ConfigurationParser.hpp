@@ -11,207 +11,272 @@
 #include "Route.hpp"
 
 
-class ConfigurationParser {
-private:
-    class _TempConfiguration {
-    private:
-        unsigned int _maxClients;
-        bool _maxClients_is_set;
-        std::string _defaultErrorPage;
-        unsigned int _clientBodyMaxSize;
-        bool _clientBodyMaxSize_is_set;
-        std::vector<unsigned int> _ports;
-        std::string _host;
+class ConfigurationParser
+{
+	private:
+    	class _TempConfiguration
+	{
+    		private:
+        	unsigned int			_maxClients;
+        	bool 				_maxClients_is_set;
+        	std::string			_defaultErrorPage;
+        	unsigned int			_clientBodyMaxSize;
+        	bool				_clientBodyMaxSize_is_set;
+        	std::vector<unsigned int>	_ports;
+        	std::string			_host;
 
-        void _setHost(const std::string &host) {
-            if (!this->_host.empty()) {
-                throw ErrorParsing("Error: Host already set");
+        void _setHost(const std::string &host)
+	{
+            if (!this->_host.empty()) 
+	    {
+		    throw ErrorParsing("Error: Host already set");
             }
-            this->_host = host;
-        }
-
-        void _setPorts(std::string &ports) {
+	    this->_host = host;
+	}
+	
+	void _setPorts(std::string &ports)
+	{
             unsigned int num;
-            if (!this->_ports.empty()) {
+
+            if (!this->_ports.empty())
+	    {
                 throw ErrorParsing("Error: Ports already set");
             }
             std::vector<std::string> ports_str = ParsingUtils::split(ports, ",");
-            if (ParsingUtils::checkDoubleValue(ports_str)) {
+            if (ParsingUtils::checkDoubleValue(ports_str))
+	    {
                 throw ErrorParsing("Error: Double value in ports");
             }
-            for (unsigned int i = 0; i < ports_str.size(); i++) {
-                if (!ParsingUtils::betteratoi(ports_str[i].c_str(), num)) {
+            for (unsigned int i = 0; i < ports_str.size(); i++)
+	    {
+                if (!ParsingUtils::betteratoi(ports_str[i].c_str(), num))
+		{
                     throw ErrorParsing("Error: Port is not a unsigned integer");
                 }
                 this->_ports.push_back(num);
             }
         }
 
-        void _setMaxClients(const std::string &maxClients) {
+        void _setMaxClients(const std::string &maxClients)
+	{
             unsigned int num;
-            if (this->_maxClients_is_set) {
+
+            if (this->_maxClients_is_set)
+	    {
                 throw ErrorParsing("Error: Max clients already set");
             }
             this->_maxClients_is_set = true;
-            if (!ParsingUtils::betteratoi(maxClients.c_str(), num)) {
+            if (!ParsingUtils::betteratoi(maxClients.c_str(), num))
+	    {
                 throw ErrorParsing("Error: Port is not a unsigned integer");
             }
             this->_maxClients = num;
         }
 
-        void _setDefaultErrorPage(const std::string &defaultErrorPage) {
-            if (access(defaultErrorPage.c_str(), F_OK) == -1) {
+        void _setDefaultErrorPage(const std::string &defaultErrorPage)
+	{
+            if (access(defaultErrorPage.c_str(), F_OK) == -1)
+	    {
                 throw ErrorParsing("Error: Cannot access file default error page");
             }
-            if (!this->_defaultErrorPage.empty()) {
+            if (!this->_defaultErrorPage.empty())
+	    {
                 throw ErrorParsing("Error: Default error page already set");
             }
             this->_defaultErrorPage = defaultErrorPage;
         }
 
-        void _setClientBodyMaxSize(const std::string &clientBodyMaxSize) {
+        void _setClientBodyMaxSize(const std::string &clientBodyMaxSize)
+	{
             unsigned int num;
-            if (this->_clientBodyMaxSize_is_set) {
+
+            if (this->_clientBodyMaxSize_is_set)
+	    {
                 throw ErrorParsing("Error: Client body max size already set");
             }
             this->_clientBodyMaxSize_is_set = true;
-            if (!ParsingUtils::betteratoi(clientBodyMaxSize.c_str(), num)) {
+            if (!ParsingUtils::betteratoi(clientBodyMaxSize.c_str(), num))
+	    {
                 throw ErrorParsing("Error: Port is not an unsigned integer");
             }
             this->_clientBodyMaxSize = num;
         }
 
     public:
-        _TempConfiguration() {
+        _TempConfiguration()
+	{
             this->_maxClients_is_set = false;
             this->_clientBodyMaxSize_is_set = false;
         }
 
-        ~_TempConfiguration() {
-        }
+        ~_TempConfiguration() {}
 
-        std::string getHost() const {
+        std::string getHost() const
+	{
             return this->_host;
         }
 
-        std::vector<unsigned int> getPorts() const {
+        std::vector<unsigned int> getPorts() const
+	{
             return this->_ports;
         }
 
-        unsigned int getMaxClients() const {
+        unsigned int getMaxClients() const
+	{
             return this->_maxClients;
         }
 
-        std::string getDefaultErrorPage() const {
+        std::string getDefaultErrorPage() const
+	{
             return this->_defaultErrorPage;
         }
 
-        unsigned int getClientBodyMaxSize() const {
+        unsigned int getClientBodyMaxSize() const
+	{
             return this->_clientBodyMaxSize;
         }
 
-        bool checkAllFieldsSet() const {
-            if (!this->_maxClients_is_set) {
+        bool checkAllFieldsSet() const
+	{
+            if (!this->_maxClients_is_set)
+	    {
                 throw BadFile("Error: Max clients not set");
             }
-            if (this->_defaultErrorPage.empty()) {
+            if (this->_defaultErrorPage.empty())
+	    {
                 throw BadFile("Error: Default error page not set");
             }
-            if (!this->_clientBodyMaxSize_is_set) {
+            if (!this->_clientBodyMaxSize_is_set)
+	    {
                 throw BadFile("Error: Client body max size not set");
             }
-            if (this->_ports.empty()) {
+            if (this->_ports.empty())
+	    {
                 throw BadFile("Error: Port not set");
             }
             return true;
         }
 
-        void setFields(const std::string &field, std::string value) {
-            if (field == "host") {
+        void setFields(const std::string &field, std::string value)
+	{
+            if (field == "host") 
+	    {
                 this->_setHost(value);
-            } else if (field == "max_clients") {
+            } 
+	    else if (field == "max_clients")
+	    {
                 this->_setMaxClients(value);
-            } else if (field == "default_error_page") {
+            } 
+	    else if (field == "default_error_page")
+	    {
                 _setDefaultErrorPage(value);
-            } else if (field == "client_body_max_size") {
+            } 
+	    else if (field == "client_body_max_size")
+	    {
                 this->_setClientBodyMaxSize(value);
-            } else if (field == "ports") {
+            } 
+	    else if (field == "ports")
+	    {
                 this->_setPorts(value);
-            } else {
+            }
+	    else
+	    {
                 throw ErrorParsing("Error: Invalid field");
             }
         }
 
-        class ErrorParsing : public std::exception {
+        class ErrorParsing : public std::exception
+	{
         private:
             const char *_msg;
         public:
             ErrorParsing(const char *msg) : _msg(msg) {};
 
-            virtual const char *what() const throw() {
+            virtual const char *what() const throw()
+	    {
                 return (this->_msg);
             }
         };
     };
 
-    class _TempRoute {
+    class _TempRoute
+    {
     private:
-        std::string _index;
+        std::string			_index;
 
-        std::vector<std::string> _methods;
+        std::vector<std::string>	_methods;
 
-        std::string _location;
+        std::string			_location;
 
-        void _setIndex(const std::string &index) {
-            if (access(index.c_str(), F_OK) == -1) {
+        void _setIndex(const std::string &index)
+	{
+            if (access(index.c_str(), F_OK) == -1)
+	    {
                 throw ErrorParsing("Error: Cannot access file index");
             }
-            if (!this->_index.empty()) {
+            if (!this->_index.empty())
+	    {
                 throw ErrorParsing("Error: Index already set");
             }
             this->_index = index;
         }
 
 
-        void _setMethods(const std::string &methods_input) {
-            int number_get = 0;
-            int number_post = 0;
-            int number_delete = 0;
-            std::vector<std::string> methods = ParsingUtils::split(methods_input, ",");
-            if (!this->_methods.empty()) {
+        void _setMethods(const std::string &methods_input)
+	{
+            int				number_get = 0;
+            int				number_post = 0;
+            int				number_delete = 0;
+            std::vector<std::string>	methods = ParsingUtils::split(methods_input, ",");
+
+            if (!this->_methods.empty())
+	    {
                 throw ErrorParsing("Error: Methods already set");
             }
-            if (methods.empty()) {
+            if (methods.empty())
+	    {
                 throw ErrorParsing("Error: No method provided");
             }
-            if (methods.size() > 3) {
+            if (methods.size() > 3)
+	    {
                 throw ErrorParsing("Error: Too many methods");
             }
-            for (unsigned int i = 0; i < methods.size(); i++) {
+            for (unsigned int i = 0; i < methods.size(); i++)
+	    {
                 if (methods[i] != "GET" && methods[i] != "get"
                     && methods[i] != "POST" && methods[i] != "post"
-                    && methods[i] != "DELETE" && methods[i] != "delete") {
+                    && methods[i] != "DELETE" && methods[i] != "delete")
+		{
                     throw ErrorParsing("Error: Invalid method");
                 }
-                if (methods[i] == "GET" || methods[i] == "get") {
+                if (methods[i] == "GET" || methods[i] == "get")
+		{
                     number_get++;
-                } else if (methods[i] == "POST" || methods[i] == "post") {
+                }
+		else if (methods[i] == "POST" || methods[i] == "post")
+		{
                     number_post++;
-                } else if (methods[i] == "DELETE" || methods[i] == "delete") {
+                } 
+		else if (methods[i] == "DELETE" || methods[i] == "delete")
+		{
                     number_delete++;
                 }
             }
-            if (number_get > 1 || number_post > 1 || number_delete > 1) {
+            if (number_get > 1 || number_post > 1 || number_delete > 1)
+	    {
                 throw ErrorParsing("Error: Double value in methods");
             }
             this->_methods = ParsingUtils::toUpperVector(methods);
         }
 
-        void _setLocation(std::string location) {
-            if (!this->_location.empty()) {
+        void _setLocation(std::string location)
+	{
+            if (!this->_location.empty())
+	    {
                 throw ErrorParsing("Error: route: location already set");
             }
-            if (location.back() == '/' && location.size() > 1) {
+            if (location.back() == '/' && location.size() > 1)
+	    {
                 location.erase(location.end() - 1);
             }
             this->_location = location;
@@ -220,86 +285,97 @@ private:
     public:
         _TempRoute() {}
 
-        ~_TempRoute() {
-        }
+        ~_TempRoute() {}
 
-        std::string getIndex() const {
+        std::string getIndex() const
+	{
             return this->_index;
         }
 
-        std::string getLocation() const {
+        std::string getLocation() const
+	{
             return this->_location;
         }
 
-        std::vector<std::string> getMethods() const {
+        std::vector<std::string> getMethods() const
+	{
             return this->_methods;
         }
 
-        bool checkAllFieldsSet() {
-            if (this->_location.empty()) {
+        bool checkAllFieldsSet()
+	{
+            if (this->_location.empty())
+	    {
                 throw BadFile("Error: Route: location is not set");
             }
-            if (this->_methods.empty()) {
+            if (this->_methods.empty())
+	    {
                 throw BadFile("Error: Route: methods is not set");
             }
-            if (this->_index.empty()) {
+            if (this->_index.empty())
+	    {
                 throw BadFile("Error: Route: index is not set");
             }
             return true;
         }
 
-        void setFields(std::string &field, std::string &value) {
-            if (field == "methods") {
+        void setFields(std::string &field, std::string &value)
+	{
+            if (field == "methods")
+	    {
                 _setMethods(value);
-            } else if (field == "location") {
+            } else if (field == "location")
+	    {
                 this->_setLocation(value);
-            } else if (field == "index") {
+            } else if (field == "index")
+	    {
                 this->_setIndex(value);
-            } else {
+            } else
+	    {
                 throw ErrorParsing("Error: Invalid field");
             }
         }
 
-        class ErrorParsing : public std::exception {
-        private:
-            const char *_msg;
-        public:
-            ErrorParsing(const char *msg) : _msg(msg) {};
+        class ErrorParsing : public std::exception
+	    {
+		    private:
+            		const char *_msg;
+		    public:
+            		ErrorParsing(const char *msg) : _msg(msg) {};
 
-            virtual const char *what() const throw() {
-                return (this->_msg);
-            }
-        };
+            		virtual const char *what() const throw()
+			{
+                		return (this->_msg);
+            		}
+	    };
     };
 
-    static std::pair<std::string, std::string> _lineToPair(std::string line);
+    static std::pair<std::string, std::string>			_lineToPair(std::string line);
 
-    static Configuration _toConfiguration(_TempConfiguration &server, const std::vector<Route> &routes);
+    static Configuration					_toConfiguration(_TempConfiguration &server,
+		    								const std::vector<Route> &routes);
 
-    static std::vector<Configuration> _modelToConfiguration(std::vector<std::pair<_TempConfiguration,
-            std::vector<Route> > > model);
+    static std::vector<Configuration>				_modelToConfiguration(std::vector<std::pair<_TempConfiguration,
+		    						std::vector<Route> > > model);
 
-    std::vector<std::pair<std::string, std::string> >
-    _fieldExtractor(const std::string &line, const std::string &opener);
+    std::vector<std::pair<std::string, std::string> >		_fieldExtractor(const std::string &line, const std::string &opener);
 
-    static bool _checkDoubleRoute(std::vector<Route> &routes);
+    static bool							_checkDoubleRoute(std::vector<Route> &routes);
 
-    static std::vector<Route> _tmpToRoute(std::vector<_TempRoute> data);
+    static std::vector<Route>					_tmpToRoute(std::vector<_TempRoute> data);
 
-    std::vector<Route> _dataToRoute(std::vector<std::string> data);
+    std::vector<Route>						_dataToRoute(std::vector<std::string> data);
 
-    _TempConfiguration
-    _dataToConfiguration(const std::string &data);
+    _TempConfiguration						_dataToConfiguration(const std::string &data);
 
-    std::vector<std::pair<_TempConfiguration, std::vector<Route> > >
-    _dataToModel(std::vector<std::pair<std::string, std::vector<std::string> > > data);
+    std::vector<std::pair<_TempConfiguration, std::vector<Route> > >	_dataToModel(std::vector<std::pair<std::string,
+		    								std::vector<std::string> > > data);
 
-    static std::vector<std::pair<std::string, std::vector<std::string> > >
-    _extractRoute(std::vector<std::string> servers);
+    static std::vector<std::pair<std::string, std::vector<std::string> > >	_extractRoute(std::vector<std::string> servers);
 
-    static unsigned int _findCloseBrace(std::string str);
+    static unsigned int								_findCloseBrace(std::string str);
 
-    static std::vector<std::string> _serverSplitter(const std::string &file);
+    static std::vector<std::string>						_serverSplitter(const std::string &file);
 
 public:
     ConfigurationParser();
