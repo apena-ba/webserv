@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/02 19:35:33 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/03 16:57:56 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 		return false;
 	}
 	version = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
-	if (version.compare(5, 4, "1.0") && version.compare(5, 4, "1.1") && version.compare(5, 2, "2") && version.compare(5, 2, "3"))
+	if (version.compare(5, 4, "1.1"))
 	{
 		std::cerr << ">> Error: 505, unsupported version." << std::endl;
 		this->_status = 505;
