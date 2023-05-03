@@ -18,16 +18,11 @@ private:
 
     void                        _setPorts(STRING &ports);
 
-    void                        _setMaxClients(const STRING
-                                    &maxClients);
+    void                        _setMaxClients(const STRING &maxClients);
 
-    void                        _setDefaultErrorPage(
-                                    const STRING
-                                    &defaultErrorPage);
+    void                        _setDefaultErrorPage(const STRING &defaultErrorPage);
 
-    void                        _setClientBodyMaxSize(
-                                    const STRING
-                                    &clientBodyMaxSize);
+    void                        _setClientBodyMaxSize(const STRING &clientBodyMaxSize);
 
 public:
     _TempConfiguration();
@@ -46,8 +41,7 @@ public:
 
     bool                        checkAllFieldsSet() const;
 
-    void                        setFields(const STRING
-                                            &field, STRING value);
+    void                        setFields(const STRING &field, STRING value);
 
     class ErrorParsing : public std::exception {
     private:

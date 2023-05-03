@@ -11,18 +11,18 @@
 #include "ConfigurationParser/utils/ParsingUtils.hpp"
 #include "Route.hpp"
 
-# define TEMP_ROUTE              ConfigurationParser::_TempRoute
+typedef ConfigurationParser::_TempRoute                             TEMP_ROUTE;
 
-# define VECTOR_TEMP_ROUTE       std::vector<TEMP_ROUTE>
+typedef std::vector<TEMP_ROUTE>                                     VECTOR_TEMP_ROUTE;
 
-# define TEMP_CONFIGURATION      ConfigurationParser::_TempConfiguration
+typedef ConfigurationParser::_TempConfiguration                     TEMP_CONFIGURATION;
 
-# define SPLITTED_FILE           VECTOR_STRING
+typedef VECTOR_STRING                                               SPLITTED_FILE;
 
-# define FIELDS_MODEL            std::vector<PAIR_STRING>
+typedef std::vector<PAIR_STRING>                                    FIELDS_MODEL;
 
-# define EXTRACTED_ROUTE_MODEL   std::vector<std::pair<STRING, VECTOR_STRING > >
+typedef std::vector<std::pair<STRING, VECTOR_STRING > >             EXTRACTED_ROUTE_MODEL;
 
-# define FINAL_MODEL             std::vector<std::pair<TEMP_CONFIGURATION, VECTOR_ROUTE > >
+typedef std::vector<std::pair<TEMP_CONFIGURATION, VECTOR_ROUTE > >  FINAL_MODEL;
 
 #endif
