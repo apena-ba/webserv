@@ -8,7 +8,7 @@ void TEMP_CONFIGURATION::_setHost(const STRING &host) {
 }
 
 void TEMP_CONFIGURATION::_setPorts(STRING &ports) {
-    unsigned int num;
+    UINT num;
 
     if (!this->_ports.empty()) {
         throw ErrorParsing("Error: Ports already set");
@@ -17,23 +17,23 @@ void TEMP_CONFIGURATION::_setPorts(STRING &ports) {
     if (ParsingUtils::checkDoubleValue(ports_str)) {
         throw ErrorParsing("Error: Double value in ports");
     }
-    for (unsigned int i = 0; i < ports_str.size(); i++) {
+    for (UINT i = 0; i < ports_str.size(); i++) {
         if (!ParsingUtils::betteratoi(ports_str[i].c_str(), num)) {
-            throw ErrorParsing("Error: Port is not a unsigned integer");
+            throw ErrorParsing("Error: Port is not a UINTeger");
         }
         this->_ports.push_back(num);
     }
 }
 
 void TEMP_CONFIGURATION::_setMaxClients(const STRING &maxClients) {
-    unsigned int num;
+    UINT num;
 
     if (this->_maxClients_is_set) {
         throw ErrorParsing("Error: Max clients already set");
     }
     this->_maxClients_is_set = true;
     if (!ParsingUtils::betteratoi(maxClients.c_str(), num)) {
-        throw ErrorParsing("Error: Port is not a unsigned integer");
+        throw ErrorParsing("Error: Port is not a UINTeger");
     }
     this->_maxClients = num;
 }
@@ -49,14 +49,14 @@ void TEMP_CONFIGURATION::_setDefaultErrorPage(const STRING &defaultErrorPage) {
 }
 
 void TEMP_CONFIGURATION::_setClientBodyMaxSize(const STRING &clientBodyMaxSize) {
-    unsigned int num;
+    UINT num;
 
     if (this->_clientBodyMaxSize_is_set) {
         throw ErrorParsing("Error: Client body max size already set");
     }
     this->_clientBodyMaxSize_is_set = true;
     if (!ParsingUtils::betteratoi(clientBodyMaxSize.c_str(), num)) {
-        throw ErrorParsing("Error: Port is not an unsigned integer");
+        throw ErrorParsing("Error: Port is not an UINTeger");
     }
     this->_clientBodyMaxSize = num;
 }
@@ -72,11 +72,11 @@ STRING TEMP_CONFIGURATION::getHost() const {
     return this->_host;
 }
 
-std::vector<unsigned int> TEMP_CONFIGURATION::getPorts() const {
+VECTOR_UINT TEMP_CONFIGURATION::getPorts() const {
     return this->_ports;
 }
 
-unsigned int TEMP_CONFIGURATION::getMaxClients() const {
+UINT TEMP_CONFIGURATION::getMaxClients() const {
     return this->_maxClients;
 }
 
@@ -84,7 +84,7 @@ STRING TEMP_CONFIGURATION::getDefaultErrorPage() const {
     return this->_defaultErrorPage;
 }
 
-unsigned int TEMP_CONFIGURATION::getClientBodyMaxSize() const {
+UINT TEMP_CONFIGURATION::getClientBodyMaxSize() const {
     return this->_clientBodyMaxSize;
 }
 

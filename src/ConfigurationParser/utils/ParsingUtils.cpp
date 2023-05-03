@@ -5,8 +5,8 @@ ParsingUtils::ParsingUtils() {}
 ParsingUtils::~ParsingUtils() {}
 
 bool ParsingUtils::checkDoubleValue(VECTOR_STRING vector) {
-    for (unsigned int i = 0; i < vector.size(); i++) {
-        for (unsigned int j = i + 1; j < vector.size(); j++) {
+    for (UINT i = 0; i < vector.size(); i++) {
+        for (UINT j = i + 1; j < vector.size(); j++) {
             if (vector[i] == vector[j]) {
                 return true;
             }
@@ -16,14 +16,14 @@ bool ParsingUtils::checkDoubleValue(VECTOR_STRING vector) {
 }
 
 STRING ParsingUtils::toUpper(STRING str) {
-    for (unsigned int i = 0; i < str.size(); i++) {
+    for (UINT i = 0; i < str.size(); i++) {
         str[i] = std::toupper(str[i]);
     }
     return str;
 }
 
 bool ParsingUtils::isNumber(STRING str) {
-    for (unsigned int i = 0; i < str.size(); i++) {
+    for (UINT i = 0; i < str.size(); i++) {
         if (!std::isdigit(str[i])) {
             return false;
         }
@@ -31,7 +31,7 @@ bool ParsingUtils::isNumber(STRING str) {
     return true;
 }
 
-bool ParsingUtils::betteratoi(const char *str, unsigned int &num) {
+bool ParsingUtils::betteratoi(const char *str, UINT &num) {
     long long int tmp;
     if (!isNumber(str)) {
         return false;
@@ -43,7 +43,7 @@ bool ParsingUtils::betteratoi(const char *str, unsigned int &num) {
     for (uint32_t i = 0; str[i]; i++) {
         tmp *= 10;
         tmp += str[i] - '0';
-        if (tmp > (long long int) std::numeric_limits<unsigned int>::max()) {
+        if (tmp > (long long int) std::numeric_limits<UINT>::max()) {
             return false;
         }
     }
@@ -55,7 +55,7 @@ bool ParsingUtils::betteratoi(const char *str, unsigned int &num) {
 }
 
 VECTOR_STRING ParsingUtils::toUpperVector(VECTOR_STRING vec) {
-    for (unsigned int i = 0; i < vec.size(); i++) {
+    for (UINT i = 0; i < vec.size(); i++) {
         vec[i] = toUpper(vec[i]);
     }
     return vec;
@@ -64,7 +64,7 @@ VECTOR_STRING ParsingUtils::toUpperVector(VECTOR_STRING vec) {
 STRING ParsingUtils::removeIsSpace(STRING str) {
     STRING ret;
 
-    for (unsigned int i = 0; i < str.size(); i++) {
+    for (UINT i = 0; i < str.size(); i++) {
         if (!(std::isspace(str[i]))) {
             ret += str[i];
         }
@@ -90,7 +90,7 @@ bool ParsingUtils::checkLimiter(STRING str) {
     int openLimiterNumber   = 0;
     int closeLimiterNumber  = 0;
 
-    for (unsigned int i = 0; i < str.size(); i++) {
+    for (UINT i = 0; i < str.size(); i++) {
         if (str[i] == '{') {
             openLimiterNumber++;
         } else if (str[i] == '}') {

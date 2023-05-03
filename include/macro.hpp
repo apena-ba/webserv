@@ -42,6 +42,9 @@
 # define    STRING                 std::string
 # define    PAIR_STRING            std::pair<STRING, STRING>
 # define    VECTOR_STRING          std::vector<STRING>
+# define    UINT                   unsigned int
+# define    VECTOR_UINT            std::vector<unsigned int>
+# define    VECTOR_INT             std::vector<int>
 # define    VECTOR_ROUTE           std::vector<Route>
 # define    VECTOR_CONFIGURATION   std::vector<Configuration>
 

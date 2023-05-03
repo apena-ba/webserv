@@ -37,7 +37,7 @@ VECTOR_CONFIGURATION
 ConfigurationParser::_modelToConfiguration(FINAL_MODEL model) {
     VECTOR_CONFIGURATION    config;
 
-    for (unsigned int i = 0; i < model.size(); i++) {
+    for (UINT i = 0; i < model.size(); i++) {
         config.push_back(_toConfiguration(model[i].first, model[i].second));
     }
     return config;
@@ -55,15 +55,15 @@ ConfigurationParser::_fieldExtractor(const STRING &line,
     }
     removed_limiter_line = line.substr(opener.length(), line.length() - opener.length() - 1);
     splitted_line = ParsingUtils::split(removed_limiter_line, ";");
-    for (unsigned int i = 0; i < splitted_line.size(); i++) {
+    for (UINT i = 0; i < splitted_line.size(); i++) {
         fields.push_back(this->_lineToPair(splitted_line[i]));
     }
     return fields;
 }
 
 bool ConfigurationParser::_checkDoubleRoute(VECTOR_ROUTE &routes) {
-    for (unsigned int i = 0; i < routes.size(); i++) {
-        for (unsigned int j = i + 1; j < routes.size(); j++) {
+    for (UINT i = 0; i < routes.size(); i++) {
+        for (UINT j = i + 1; j < routes.size(); j++) {
             if (routes[i].location == routes[j].location) {
                 return true;
             }
@@ -75,7 +75,7 @@ bool ConfigurationParser::_checkDoubleRoute(VECTOR_ROUTE &routes) {
 VECTOR_ROUTE ConfigurationParser::_tmpToRoute(VECTOR_TEMP_ROUTE data) {
     VECTOR_ROUTE	routes;
 
-    for (unsigned int i = 0; i < data.size(); i++) {
+    for (UINT i = 0; i < data.size(); i++) {
         routes.push_back(Route(data[i].getIndex(), data[i].getMethods(), data[i].getLocation()));
     }
     if (_checkDoubleRoute(routes)) {
@@ -88,10 +88,10 @@ VECTOR_ROUTE ConfigurationParser::_dataToRoute(VECTOR_STRING data) {
     VECTOR_TEMP_ROUTE	tmp_routes;
     FIELDS_MODEL	    fields;
 
-    for (unsigned int i = 0; i < data.size(); i++) {
+    for (UINT i = 0; i < data.size(); i++) {
         fields = _fieldExtractor(data[i], "route{");
         tmp_routes.push_back(ConfigurationParser::_TempRoute());
-        for (unsigned int j = 0; j < fields.size(); j++) {
+        for (UINT j = 0; j < fields.size(); j++) {
             tmp_routes[i].setFields(fields[j].first, fields[j].second);
         }
         tmp_routes[i].checkAllFieldsSet();
@@ -106,7 +106,7 @@ ConfigurationParser::_dataToConfiguration(const STRING &data) {
     FIELDS_MODEL	    fields;
 
     fields = _fieldExtractor(data, "server{");
-    for (unsigned int i = 0; i < fields.size(); i++) {
+    for (UINT i = 0; i < fields.size(); i++) {
         config.setFields(fields[i].first, fields[i].second);
     }
     config.checkAllFieldsSet();
@@ -116,7 +116,7 @@ ConfigurationParser::_dataToConfiguration(const STRING &data) {
 FINAL_MODEL ConfigurationParser::_dataToModel(EXTRACTED_ROUTE_MODEL data) {
     FINAL_MODEL model;
 
-    for (unsigned int i = 0; i < data.size(); i++) {
+    for (UINT i = 0; i < data.size(); i++) {
         TEMP_CONFIGURATION config = _dataToConfiguration(data[i].first);
         VECTOR_ROUTE routes = _dataToRoute(data[i].second);
         model.push_back(std::make_pair(config, routes));
@@ -124,11 +124,11 @@ FINAL_MODEL ConfigurationParser::_dataToModel(EXTRACTED_ROUTE_MODEL data) {
     return model;
 }
 
-unsigned int ConfigurationParser::_findCloseBrace(STRING str) {
-    unsigned int	open_brace	= 0;
-    unsigned int	close_brace	= 0;
+UINT ConfigurationParser::_findCloseBrace(STRING str) {
+    UINT	open_brace	= 0;
+    UINT	close_brace	= 0;
 
-    for (unsigned int i = 0; i < str.size(); i++) {
+    for (UINT i = 0; i < str.size(); i++) {
         if (str[i] == '{') {
             open_brace++;
         } else if (str[i] == '}') {
@@ -143,12 +143,12 @@ unsigned int ConfigurationParser::_findCloseBrace(STRING str) {
 
 EXTRACTED_ROUTE_MODEL
 ConfigurationParser::_extractRoute(VECTOR_STRING servers) {
-    unsigned int		    close_route_brace;
-    unsigned int		    open_route_brace;
+    UINT		    close_route_brace;
+    UINT		    open_route_brace;
     VECTOR_STRING		    routes;
     EXTRACTED_ROUTE_MODEL	return_pair;
 
-    for (unsigned int i = 0; i < servers.size(); i++) {
+    for (UINT i = 0; i < servers.size(); i++) {
         routes.clear();
         while (servers[i].find("route{") != servers[i].npos) {
             open_route_brace = servers[i].find("route{");
@@ -167,14 +167,14 @@ VECTOR_STRING ConfigurationParser::_serverSplitter(const STRING &file) {
     if (file.substr(0, 7) != "server{") {
         throw BadFile("Error: first line is not server{");
     }
-    for (unsigned int i = 0; i < file.size(); i++) {
+    for (UINT i = 0; i < file.size(); i++) {
         servers.push_back(file.substr(i, _findCloseBrace(file.substr(i)) + 1));
         i += _findCloseBrace(file.substr(i));
     }
     return servers;
 }
 
-VECTOR_CONFIGURATION ConfigurationParser::parse(const std::string &path) {
+VECTOR_CONFIGURATION ConfigurationParser::parse(const STRING &path) {
     STRING                  file                = ParsingUtils::fileToString(path);
     ParsingUtils::checkLimiter(file);
     STRING                  removed_space       = ParsingUtils::removeIsSpace(file);

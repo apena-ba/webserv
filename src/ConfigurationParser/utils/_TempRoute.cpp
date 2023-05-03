@@ -27,7 +27,7 @@ void TEMP_ROUTE::_setMethods(const STRING &methods_input) {
     if (methods.size() > 3) {
         throw ErrorParsing("Error: Too many methods");
     }
-    for (unsigned int i = 0; i < methods.size(); i++) {
+    for (UINT i = 0; i < methods.size(); i++) {
         if (methods[i] != "GET" && methods[i] != "get"
             && methods[i] != "POST" && methods[i] != "post"
             && methods[i] != "DELETE" && methods[i] != "delete") {

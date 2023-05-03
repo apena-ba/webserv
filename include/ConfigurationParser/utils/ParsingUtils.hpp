@@ -18,7 +18,7 @@ public:
 
     static  bool                isNumber(STRING str);
 
-    static  bool                betteratoi(const char *str, unsigned int &num);
+    static  bool                betteratoi(const char *str, UINT &num);
 
     static  VECTOR_STRING       toUpperVector(VECTOR_STRING vec);
 

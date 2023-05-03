@@ -6,12 +6,12 @@
 
 class ConfigurationParser::_TempConfiguration {
 private:
-    unsigned int                _maxClients;
+    UINT                        _maxClients;
     bool                        _maxClients_is_set;
     STRING                      _defaultErrorPage;
-    unsigned int                _clientBodyMaxSize;
+    UINT                        _clientBodyMaxSize;
     bool                        _clientBodyMaxSize_is_set;
-    std::vector<unsigned int>   _ports;
+    VECTOR_UINT                 _ports;
     STRING                      _host;
 
     void                        _setHost(const STRING &host);
@@ -36,13 +36,13 @@ public:
 
     STRING                      getHost() const;
 
-    std::vector<unsigned int>   getPorts() const;
+    VECTOR_UINT                 getPorts() const;
 
-    unsigned int                getMaxClients() const;
+    UINT                        getMaxClients() const;
 
     STRING                      getDefaultErrorPage() const;
 
-    unsigned int                getClientBodyMaxSize() const;
+    UINT                        getClientBodyMaxSize() const;
 
     bool                        checkAllFieldsSet() const;
 

@@ -41,7 +41,7 @@ private:
     static EXTRACTED_ROUTE_MODEL    _extractRoute(
                                         SPLITTED_FILE servers);
 
-    static unsigned int             _findCloseBrace
+    static UINT                     _findCloseBrace
                                         (STRING str);
 
     static SPLITTED_FILE            _serverSplitter(

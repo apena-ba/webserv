@@ -29,11 +29,11 @@ public:
                       defaultErrorPage(DEFAULT_ERROR_PAGE),
                       clientBodyMaxSize(DEFAULT_CLIENT_BODY_MAX_SIZE) {};
 
-    Configuration(unsigned int i);
+    Configuration(UINT i);
 
-    Configuration(const std::string &_host, unsigned int _maxClients, const std::string &_defaultErrorPage,
-                  const std::vector<unsigned int> &_ports,
-                  unsigned int _clientBodyMaxSize, const std::vector<Route> &_routes) : ports(_ports),
+    Configuration(const STRING &_host, UINT _maxClients, const STRING &_defaultErrorPage,
+                  const VECTOR_UINT &_ports,
+                  UINT _clientBodyMaxSize, const VECTOR_ROUTE &_routes) : ports(_ports),
                                                                                         maxClients(_maxClients),
                                                                                         defaultErrorPage(
                                                                                                 _defaultErrorPage),
@@ -44,26 +44,26 @@ public:
 
     ~Configuration() {}
 
-    std::vector<int> getPorts() const {
-        std::vector<int> vector;
+    VECTOR_INT getPorts() const {
+        VECTOR_INT vector;
         return vector;
     }
 
-    std::string getHost() const {
-        std::string host;
+    STRING getHost() const {
+        STRING host;
         return host;
     }
 
-    unsigned int getMaxClients() const { return maxClients; }
+    UINT getMaxClients() const { return maxClients; }
 
-    unsigned int getPort() const { return 1; }
+    UINT getPort() const { return 1; }
 
     Configuration operator=(const Configuration &rhs) {
         return *this;
     }
 
-    static std::string getExtension(const std::string &path) {
-        std::string fileExtension = path.substr(path.find_last_of('.'));
+    static STRING getExtension(const STRING &path) {
+        STRING fileExtension = path.substr(path.find_last_of('.'));
         if (fileExtension == ".py") {
             return ".py";
         }
@@ -76,10 +76,10 @@ public:
         return "";
     }
 
-    unsigned int checkPath(std::string path) const {
-        std::vector<std::string> vector;
-        std::vector<unsigned int> index_location_in_path;
-        unsigned int max_length_index;
+    UINT checkPath(STRING path) const {
+        VECTOR_STRING vector;
+        VECTOR_UINT index_location_in_path;
+        UINT max_length_index;
 
         if (path.empty()) {
             throw ConfigurationException("Path is empty");
@@ -90,7 +90,7 @@ public:
         if (path.back() == '/' && path.length() > 1) {
             path.erase(path.length() - 1, 1);
         }
-        for (unsigned int i = 0; i < routes.size(); i++) {
+        for (UINT i = 0; i < routes.size(); i++) {
             if (routes[i].location.length() > path.length()) { continue; }
             if (path.find(routes[i].location) == 0
                 && (path[routes[i].location.length()] == '/'
@@ -99,7 +99,7 @@ public:
             }
         }
         if (index_location_in_path.empty()) {
-            for (unsigned int i = 0; i < routes.size(); i++) {
+            for (UINT i = 0; i < routes.size(); i++) {
                 if (routes[i].location == "/") {
                     return (i);
                 }
@@ -107,7 +107,7 @@ public:
             throw ConfigurationException("Path not found");
         }
         max_length_index = index_location_in_path[0];
-        for (unsigned int j = 0; j < index_location_in_path.size(); j++) {
+        for (UINT j = 0; j < index_location_in_path.size(); j++) {
             if (routes[index_location_in_path[j]].location.length() > routes[max_length_index].location.length()) {
                 max_length_index = index_location_in_path[j];
             }
@@ -115,17 +115,17 @@ public:
         return max_length_index;
     }
 
-    const std::vector<unsigned int> ports;
+    const VECTOR_UINT ports;
 
-    const unsigned int maxClients;
+    const UINT maxClients;
 
-    const std::string defaultErrorPage;
+    const STRING defaultErrorPage;
 
-    const unsigned int clientBodyMaxSize;
+    const UINT clientBodyMaxSize;
 
-    const std::vector<Route> routes;
+    const VECTOR_ROUTE routes;
 
-    const std::string host;
+    const STRING host;
 
     class ConfigurationException : public std::exception {
     private:
