@@ -19,6 +19,7 @@
 #include <list>
 #include <map>
 #include <vector>
+#include <string>
 #include <fstream>
 #include <fcntl.h>
 #include <cstring>
@@ -28,24 +29,24 @@
 #include <stdlib.h>
 #include <sys/types.h>
 
-# define    PORT                   8085
 
-# define    TIMEOUT_POLL           100
-# define    TIMEOUT_READING_SEC    5
-# define    TIMEOUT_READING_USEC   0
-# define    TIMEOUT_WRITING_SEC    5
-# define    TIMEOUT_WRITING_USEC   0
-# define    MAXCLIENT              10
-# define    BUFFER_SIZE            1000
+#define PORT 8085
 
-//types
-# define    STRING                 std::string
-# define    PAIR_STRING            std::pair<STRING, STRING>
-# define    VECTOR_STRING          std::vector<STRING>
-# define    UINT                   unsigned int
-# define    VECTOR_UINT            std::vector<unsigned int>
-# define    VECTOR_INT             std::vector<int>
-# define    VECTOR_ROUTE           std::vector<Route>
-# define    VECTOR_CONFIGURATION   std::vector<Configuration>
+#define TIMEOUT_POLL 100
+#define TIMEOUT_READING_SEC 5
+#define TIMEOUT_READING_USEC 0
+#define TIMEOUT_WRITING_SEC 5
+#define TIMEOUT_WRITING_USEC 0
+#define MAXCLIENT 10
+#define BUFFER_SIZE 1000
+
+// types
+typedef std::string                 STRING;
+typedef std::pair <STRING, STRING>  PAIR_STRING;
+typedef std::vector <STRING>        VECTOR_STRING;
+typedef unsigned int                UINT;
+typedef std::vector <unsigned int>  VECTOR_UINT;
+typedef std::vector <int>           VECTOR_INT;
+
 
 #endif

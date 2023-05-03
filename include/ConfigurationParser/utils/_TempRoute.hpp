@@ -12,14 +12,11 @@ private:
 
     STRING          _location;
 
-    void            _setIndex(const STRING
-                        &index);
+    void            _setIndex(const STRING &index);
 
-    void            _setMethods(const STRING
-                        &methods_input);
+    void            _setMethods(const STRING &methods_input);
 
-    void            _setLocation(STRING
-                        location);
+    void            _setLocation(STRING location);
 
 public:
     _TempRoute();
@@ -34,8 +31,7 @@ public:
 
     bool            checkAllFieldsSet();
 
-    void            setFields(STRING &field,
-                        STRING &value);
+    void            setFields(STRING &field, STRING &value);
 
     class ErrorParsing : public std::exception {
     private:
@@ -48,5 +44,7 @@ public:
         }
     };
 };
+
+
 
 #endif

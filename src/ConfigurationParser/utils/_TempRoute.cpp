@@ -1,6 +1,7 @@
 #include "ConfigurationParser/utils/_TempRoute.hpp"
+#include "ConfigurationParser/ConfigurationParser.hpp"
 
-void TEMP_ROUTE::_setIndex(const STRING &index) {
+void ConfigurationParser::TEMP_ROUTE::_setIndex(const STRING &index) {
     if (access(index.c_str(), F_OK) == -1) {
         throw ErrorParsing("Error: Cannot access file index");
     }
@@ -11,7 +12,7 @@ void TEMP_ROUTE::_setIndex(const STRING &index) {
 }
 
 
-void TEMP_ROUTE::_setMethods(const STRING &methods_input) {
+void ConfigurationParser::TEMP_ROUTE::_setMethods(const STRING &methods_input) {
     int             number_get      = 0;
     int             number_post     = 0;
     int             number_delete   = 0;
@@ -47,7 +48,7 @@ void TEMP_ROUTE::_setMethods(const STRING &methods_input) {
     this->_methods = ParsingUtils::toUpperVector(methods);
 }
 
-void TEMP_ROUTE::_setLocation(STRING location) {
+void ConfigurationParser::TEMP_ROUTE::_setLocation(STRING location) {
     if (!this->_location.empty()) {
         throw ErrorParsing("Error: route: location already set");
     }
@@ -57,23 +58,23 @@ void TEMP_ROUTE::_setLocation(STRING location) {
     this->_location = location;
 }
 
-TEMP_ROUTE::_TempRoute() {}
+ConfigurationParser::TEMP_ROUTE::_TempRoute() {}
 
-TEMP_ROUTE::~_TempRoute() {}
+ConfigurationParser::TEMP_ROUTE::~_TempRoute() {}
 
-STRING TEMP_ROUTE::getIndex() const {
+STRING ConfigurationParser::TEMP_ROUTE::getIndex() const {
     return this->_index;
 }
 
-STRING TEMP_ROUTE::getLocation() const {
+STRING ConfigurationParser::TEMP_ROUTE::getLocation() const {
     return this->_location;
 }
 
-VECTOR_STRING TEMP_ROUTE::getMethods() const {
+VECTOR_STRING ConfigurationParser::TEMP_ROUTE::getMethods() const {
     return this->_methods;
 }
 
-bool TEMP_ROUTE::checkAllFieldsSet() {
+bool ConfigurationParser::TEMP_ROUTE::checkAllFieldsSet() {
     if (this->_location.empty()) {
         throw ErrorParsing("Error: Route: location is not set");
     }
@@ -86,7 +87,7 @@ bool TEMP_ROUTE::checkAllFieldsSet() {
     return true;
 }
 
-void TEMP_ROUTE::setFields(STRING &field, STRING &value) {
+void ConfigurationParser::TEMP_ROUTE::setFields(STRING &field, STRING &value) {
     if (field == "methods") {
         _setMethods(value);
     } else if (field == "location") {
