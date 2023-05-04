@@ -1,56 +1,56 @@
 server {
-    default_error_page : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
+    default_error_page : clean_conf;
     client_body_max_size : 22;
     max_clients : 10;
     host : localhost;
-    ports : 8080,8081,8082;
+    ports : 8083;
 
     route{
         methods : get,DELETE;
         location : /path1/path2/path3;
-        index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
+        index : clean_conf;
     }
 
     route {
         methods : get,DELETE;
         location : /path1/path2/;
-        index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
+        index : clean_conf;
     }
 
     route {
         methods : get,DELETE;
         location : /path1/;
-        index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
+        index : clean_conf;
     }
 }
 
 server{
-    default_error_page : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
+    default_error_page : clean_conf;
     client_body_max_size : 29848712;
     max_clients : 10;
     host : 0.0.0.0;
-    ports : 8080,8081,8082;
+    ports : 8083;
     route {
         methods : delete,get,post;
         location : /;
-        index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
+        index : clean_conf;
   }
 }
 
 server{
-    default_error_page : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
+    default_error_page : clean_conf;
     client_body_max_size : 2298;
     max_clients : 10;
     host : 10.12.9.2;
-    ports : 8080,8081,8082;
+    ports : 8083;
     route {
         methods : get,post,delete;
         location : /*.php;
-        index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
+        index : clean_conf;
         }
   route {
           methods : get,delete,post;
           location : /*.ph;
-          index : /Users/apena-ba/Documents/Proyectos/webserv/pages/400.html;
+          index : clean_conf;
     }
 }

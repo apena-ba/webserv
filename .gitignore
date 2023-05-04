@@ -37,6 +37,7 @@ webserv
 *.out
 *.app
 
+clean_conf
 *.swp
 .idea/
 templateConf.json
