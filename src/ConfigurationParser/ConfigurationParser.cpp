@@ -181,7 +181,7 @@ VECTOR_CONFIG ConfigurationParser::parse(const STRING &path) {
     SPLITTED_FILE           servers             = _serverSplitter(removed_space);
     EXTRACTED_ROUTE_MODEL   pair_server_route   = _extractRoute(servers);
     FINAL_MODEL             temp_model          = _dataToModel(pair_server_route);
-    VECTOR_CONFIG    configs             = _modelToConfiguration(temp_model);
+    VECTOR_CONFIG           configs             = _modelToConfiguration(temp_model);
     return configs;
 }
 
