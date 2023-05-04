@@ -37,7 +37,7 @@ private:
 
     static  Configuration           _toConfiguration(TEMP_CONFIGURATION &server, const VECTOR_ROUTE &routes);
 
-    static  VECTOR_CONFIG    _modelToConfiguration(FINAL_MODEL model);
+    static  VECTOR_CONFIG           _modelToConfiguration(FINAL_MODEL model);
 
     FIELDS_MODEL                    _fieldExtractor(const STRING &line, const STRING &opener);
 
