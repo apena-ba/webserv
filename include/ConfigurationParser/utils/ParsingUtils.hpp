@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include "macro.hpp"
+#include "../../macro.hpp"
 
 class ParsingUtils {
 public:
