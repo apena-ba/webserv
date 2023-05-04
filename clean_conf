@@ -1,19 +1,18 @@
 server {
     default_error_page : clean_conf;
-    client_body_max_size : 22;
+    client_body_max_size : 10000;
     max_clients : 10;
     host : localhost;
-    ports : 8083;
-
+    ports : 8080, 8081;
     route{
         methods : get,DELETE;
-        location : /path1/path2/path3;
+        location : /Users/apena-ba/Documents/Proyectos/webserv;
         index : clean_conf;
     }
 
     route {
         methods : get,DELETE;
-        location : /path1/path2/;
+        location : /path;
         index : clean_conf;
     }
 
@@ -29,7 +28,7 @@ server{
     client_body_max_size : 29848712;
     max_clients : 10;
     host : 0.0.0.0;
-    ports : 8083;
+    ports : 8080, 8081;
     route {
         methods : delete,get,post;
         location : /;
@@ -42,7 +41,7 @@ server{
     client_body_max_size : 2298;
     max_clients : 10;
     host : 10.12.9.2;
-    ports : 8083;
+    ports : 8080, 8081;
     route {
         methods : get,post,delete;
         location : /*.php;
