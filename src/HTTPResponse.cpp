@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/04 12:27:58 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/04 13:57:05 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,23 +29,23 @@ template<typename T> static std::string	tostr(T thang)
 }
 
 ///Declaring the implemented status codes and default error pages///////////////
-std::map<std::string, std::string>	HTTPResponse::fillstatusmessages()
+std::map<uint, std::string>	HTTPResponse::fillstatusmessages()
 {
-	std::map<std::string, std::string>	msgs;
+	std::map<uint, std::string>	msgs;
 
-	msgs.insert(std::pair<std::string, std::string>("200", "OK"));
-	msgs.insert(std::pair<std::string, std::string>("204", "No Content"));
-	msgs.insert(std::pair<std::string, std::string>("400", "Bad Request"));
-	msgs.insert(std::pair<std::string, std::string>("403", "Forbidden"));
-	msgs.insert(std::pair<std::string, std::string>("404", "Not Found"));
-	msgs.insert(std::pair<std::string, std::string>("405", "Method Not Allowed"));
-	msgs.insert(std::pair<std::string, std::string>("413", "Payload Too Large"));
-	msgs.insert(std::pair<std::string, std::string>("503", "Service Unavailable"));
-	msgs.insert(std::pair<std::string, std::string>("505", "HTTP Version Not Supported"));
+	msgs.insert(std::pair<uint, std::string>(200, "OK"));
+	msgs.insert(std::pair<uint, std::string>(204, "No Content"));
+	msgs.insert(std::pair<uint, std::string>(400, "Bad Request"));
+	msgs.insert(std::pair<uint, std::string>(403, "Forbidden"));
+	msgs.insert(std::pair<uint, std::string>(404, "Not Found"));
+	msgs.insert(std::pair<uint, std::string>(405, "Method Not Allowed"));
+	msgs.insert(std::pair<uint, std::string>(413, "Payload Too Large"));
+	msgs.insert(std::pair<uint, std::string>(503, "Service Unavailable"));
+	msgs.insert(std::pair<uint, std::string>(505, "HTTP Version Not Supported"));
 	return (msgs);
 }
 
-std::map<std::string, std::string>	HTTPResponse::_statusMessages = HTTPResponse::fillstatusmessages();
+std::map<uint, std::string>	HTTPResponse::_statusMessages = HTTPResponse::fillstatusmessages();
 
 std::map<uint, std::string>	HTTPResponse::fillerrorpages()
 {
@@ -167,7 +167,7 @@ HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configur
 	this->_strStatus = tostr(this->_status);
 
 	// 2:
-	this->_response = this->_vals["version"] + " " + this->_strStatus + " " + this->_statusMessages[this->_strStatus] + "\r\n";
+	this->_response = this->_vals["version"] + " " + this->_strStatus + " " + this->_statusMessages[this->_status] + "\r\n";
 
 	// Write only the required headers, avoid repetition.
 	// 3:

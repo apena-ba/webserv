@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 10:51:55 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/03 13:48:00 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/04 13:56:47 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,18 @@ class HTTPResponse : public HTTPRequestParser
 		std::string	getbody() const;
 
 	private:
-		static std::map<std::string, std::string>	fillstatusmessages();
-		static std::map<uint, std::string>			fillerrorpages();
-		void										bodybuilder(const Configuration &conf);
-		void										get_perform();
-		void										pos_perform();
-		void										del_perform();
+		static std::map<uint, std::string>	fillstatusmessages();
+		static std::map<uint, std::string>	fillerrorpages();
+		void								bodybuilder(const Configuration &conf);
+		void								get_perform();
+		void								pos_perform();
+		void								del_perform();
 
-		std::string									_strStatus;
-		std::string									_response;
-		std::string									_body;
-		static std::map<std::string, std::string>	_statusMessages;
-		static std::map<uint, std::string>			_errorPages;
+		std::string							_strStatus;
+		std::string							_response;
+		std::string							_body;
+		static std::map<uint, std::string>	_statusMessages;
+		static std::map<uint, std::string>	_errorPages;
 };
 
 #endif
