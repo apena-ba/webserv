@@ -33,9 +33,9 @@ PAIR_STRING ConfigurationParser::_lineToPair(STRING line) {
     return result;
 }
 
-VECTOR_CONFIGURATION
+VECTOR_CONFIG
 ConfigurationParser::_modelToConfiguration(FINAL_MODEL model) {
-    VECTOR_CONFIGURATION    config;
+    VECTOR_CONFIG    config;
 
     for (UINT i = 0; i < model.size(); i++) {
         config.push_back(_toConfiguration(model[i].first, model[i].second));
@@ -174,14 +174,14 @@ VECTOR_STRING ConfigurationParser::_serverSplitter(const STRING &file) {
     return servers;
 }
 
-VECTOR_CONFIGURATION ConfigurationParser::parse(const STRING &path) {
+VECTOR_CONFIG ConfigurationParser::parse(const STRING &path) {
     STRING                  file                = ParsingUtils::fileToString(path);
     ParsingUtils::checkLimiter(file);
     STRING                  removed_space       = ParsingUtils::removeIsSpace(file);
     SPLITTED_FILE           servers             = _serverSplitter(removed_space);
     EXTRACTED_ROUTE_MODEL   pair_server_route   = _extractRoute(servers);
     FINAL_MODEL             temp_model          = _dataToModel(pair_server_route);
-    VECTOR_CONFIGURATION    configs             = _modelToConfiguration(temp_model);
+    VECTOR_CONFIG    configs             = _modelToConfiguration(temp_model);
     return configs;
 }
 

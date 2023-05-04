@@ -35,22 +35,23 @@ public:
                     host(_host) {}
 
     ~Configuration() {}
+    // methods
+    static  STRING      getExtension(const STRING &path);
 
-    static  STRING  getExtension(const STRING &path);
+    UINT                checkPath(STRING path) const;
 
-    UINT            checkPath(STRING path) const;
-    
-    const VECTOR_UINT ports;
+    // fields configuration
+    const VECTOR_UINT   ports;
 
-    const UINT maxClients;
+    const UINT          maxClients;
 
-    const STRING defaultErrorPage;
+    const STRING        defaultErrorPage;
 
-    const UINT clientBodyMaxSize;
+    const UINT          clientBodyMaxSize;
 
-    const VECTOR_ROUTE routes;
+    const VECTOR_ROUTE  routes;
 
-    const STRING host;
+    const STRING        host;
 
     class ConfigurationException : public std::exception {
     private:
@@ -63,6 +64,6 @@ public:
         };
     };
 };
-typedef std::vector <Configuration> VECTOR_CONFIGURATION;
+typedef std::vector <Configuration> VECTOR_CONFIG;
 
 #endif
