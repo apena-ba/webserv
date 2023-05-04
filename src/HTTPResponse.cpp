@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/04 13:57:05 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/04 14:18:03 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,18 +47,32 @@ std::map<uint, std::string>	HTTPResponse::fillstatusmessages()
 
 std::map<uint, std::string>	HTTPResponse::_statusMessages = HTTPResponse::fillstatusmessages();
 
+std::string	HTTPResponse::fetchErrorPage(const std::string &file)
+{
+	std::ifstream	in(file);
+	std::string		ret;
+
+	if (in.bad())
+	{
+		in.close();
+		return ("SOME DEFAULT PAGE IN CASE THE DEFAULT PAGES FAIL LOL");
+	}
+	ret.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+	return (ret);
+}
+
 std::map<uint, std::string>	HTTPResponse::fillerrorpages()
 {
 	std::map<uint, std::string>	pags;
 
-	pags.insert(std::pair<uint, std::string>(204, "")); // The body for this one shall be left empty.
-	pags.insert(std::pair<uint, std::string>(400, ""));
-	pags.insert(std::pair<uint, std::string>(403, ""));
-	pags.insert(std::pair<uint, std::string>(404, ""));
-	pags.insert(std::pair<uint, std::string>(405, ""));
-	pags.insert(std::pair<uint, std::string>(413, ""));
-	pags.insert(std::pair<uint, std::string>(503, ""));
-	pags.insert(std::pair<uint, std::string>(505, ""));
+	pags.insert(std::pair<uint, std::string>(204, fetchErrorPage("pages/204.html"))); // The body for this one shall be left empty.
+	pags.insert(std::pair<uint, std::string>(400, fetchErrorPage("pages/400.html")));
+	pags.insert(std::pair<uint, std::string>(403, fetchErrorPage("pages/403.html")));
+	pags.insert(std::pair<uint, std::string>(404, fetchErrorPage("pages/404.html")));
+	pags.insert(std::pair<uint, std::string>(405, fetchErrorPage("pages/405.html")));
+	pags.insert(std::pair<uint, std::string>(413, fetchErrorPage("pages/413.html")));
+	pags.insert(std::pair<uint, std::string>(503, fetchErrorPage("pages/503.html")));
+	pags.insert(std::pair<uint, std::string>(505, fetchErrorPage("pages/505.html")));
 	return (pags);
 }
 
