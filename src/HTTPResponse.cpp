@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/04 14:18:03 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/04 18:21:34 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ std::string	HTTPResponse::fetchErrorPage(const std::string &file)
 	std::ifstream	in(file);
 	std::string		ret;
 
-	if (in.bad())
+	if (!in.is_open())
 	{
 		in.close();
 		return ("SOME DEFAULT PAGE IN CASE THE DEFAULT PAGES FAIL LOL");
@@ -89,7 +89,7 @@ void	HTTPResponse::get_perform()
 		return;
 	}
 	std::ifstream	file(this->_vals["location"]);
-	if (file.bad())
+	if (!file.is_open())
 	{
 		this->_status = 403;
 		this->_body = this->_errorPages[this->_status];
