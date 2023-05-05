@@ -1,56 +1,63 @@
 server {
-    default_error_page : clean_conf;
+    default_error_page : /page/error.html;
     client_body_max_size : 22;
     max_clients : 10;
     host : localhost;
     ports : 8083;
+    root: /Users/emilefournout/webservcleaning/html;
+    index: index.html;
 
     route{
         methods : get,DELETE;
-        location : /path1/path2/path3;
-        index : clean_conf;
-    }
-
-    route {
-        methods : get,DELETE;
-        location : /path1/path2/;
-        index : clean_conf;
-    }
-
-    route {
-        methods : get,DELETE;
-        location : /path1/;
-        index : clean_conf;
-    }
-}
-
-server{
-    default_error_page : clean_conf;
-    client_body_max_size : 29848712;
-    max_clients : 10;
-    host : 0.0.0.0;
-    ports : 8083;
-    route {
-        methods : delete,get,post;
         location : /;
-        index : clean_conf;
-  }
-}
-
-server{
-    default_error_page : clean_conf;
-    client_body_max_size : 2298;
-    max_clients : 10;
-    host : 10.12.9.2;
-    ports : 8083;
+        index : index.html;
+    }
+    route{
+        methods : get,DELETE;
+        location : /default;
+        index : file.html;
+    }
     route {
-        methods : get,post,delete;
-        location : /*.php;
-        index : clean_conf;
-        }
-  route {
-          methods : get,delete,post;
-          location : /*.ph;
-          index : clean_conf;
+        methods : get,DELETE;
+        location : /somepath;
+        index : index.html;
+    }
+    route {
+        methods : get,DELETE;
+        location : /download;
+        index : downloaded.html;
     }
 }
+
+server {
+    default_error_page : /page/error.html;
+    client_body_max_size : 22;
+    max_clients : 10;
+    host : localhost;
+    ports : 8083;
+    root: /Users/emilefournout/webservcleaning/html;
+    index: index.html;
+
+    route{
+        methods : get,DELETE;
+        location : /;
+        index : index.html;
+    }
+    route{
+        methods : get,DELETE;
+        location : /default;
+        index : file.html;
+    }
+    route {
+        methods : get,DELETE;
+        location : /somepath;
+        index : index.html;
+    }
+    route {
+        methods : get,DELETE;
+        location : /download;
+        index : downloaded.html;
+    }
+}
+
+
