@@ -33,7 +33,15 @@ private:
     typedef std::vector<std::pair<TEMP_CONFIGURATION, VECTOR_ROUTE > >  FINAL_MODEL;
 
     // Methods
-    static  PAIR_STRING              _lineToPair(STRING line);
+    void                            _accessRoutePaths(const std::string &location_path,
+                                                      const std::string &route_index_path);
+
+    void                            _accessGeneralPaths(const std::string & root_path, const std::string & index_path,
+                                                        const std::string & error_page_path);
+
+    void                            _accessPaths(VECTOR_CONFIG & configs);
+
+    static  PAIR_STRING             _lineToPair(STRING line);
 
     static  Configuration           _toConfiguration(TEMP_CONFIGURATION &server, const VECTOR_ROUTE &routes);
 
@@ -75,6 +83,7 @@ public:
             return (this->_msg);
         };
     };
+
 };
 
 #endif

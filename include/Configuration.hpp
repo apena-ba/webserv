@@ -27,12 +27,15 @@ public:
                     const STRING &          _defaultErrorPage,
                     const VECTOR_UINT &     _ports,
                     UINT                    _clientBodyMaxSize,
-                    const VECTOR_ROUTE &    _routes) : 
-                    ports(_ports), maxClients(_maxClients),
+                    const STRING &          _root,
+                    const STRING &          _index,
+                    const VECTOR_ROUTE &    _routes) :
+                    root(_root), index(_index),
+                    ports(_ports),
+                    maxClients(_maxClients),
                     defaultErrorPage(_defaultErrorPage),
                     clientBodyMaxSize(_clientBodyMaxSize),
-                    routes(_routes),
-                    host(_host) {}
+                    routes(_routes), host(_host){}
 
     ~Configuration() {}
     // methods
@@ -41,6 +44,10 @@ public:
     UINT                checkPath(STRING path) const;
 
     // fields configuration
+    const STRING        root;
+
+    const STRING        index;
+
     const VECTOR_UINT   ports;
 
     const UINT          maxClients;
