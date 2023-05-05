@@ -4,6 +4,67 @@
 #include "ConfigurationParser/utils/_TempRoute.hpp"
 #include "Route.hpp"
 
+
+void ConfigurationParser::_accessRoutePaths(const std::string & location_path,
+                                            const std::string & route_index_path){
+    if (access(location_path.c_str(), F_OK) == -1) {
+        throw BadFile("Error: Cannot access location path");
+    }
+    if (access(route_index_path.c_str(), F_OK) == -1) {
+        throw BadFile("Error: Cannot access route index path");
+    }
+}
+
+void ConfigurationParser::_accessGeneralPaths(const std::string & root_path,
+                                              const std::string & index_path,
+                                              const std::string & error_page_path) {
+    if (access(root_path.c_str(), F_OK) == -1) {
+        throw BadFile("Error: Cannot access root path");
+    }
+    if (access(index_path.c_str(), F_OK) == -1) {
+        throw BadFile("Error: Cannot access index path");
+    }
+    if (access(error_page_path.c_str(), F_OK) == -1) {
+        throw BadFile("Error: Cannot access error page path");
+    }
+}
+
+void ConfigurationParser::_accessPaths(VECTOR_CONFIG & configs){
+    for (UINT i = 0; i < configs.size(); i++) {
+        std::string root_path       = configs[i].root;
+        if (root_path.back() == '/') {
+            root_path.erase(root_path.end() - 1);
+        }
+        std::string index_path      = configs[i].index;
+        if (index_path[0] == '/') {
+            index_path.erase(index_path.begin());
+        }
+        std::string error_page_path = configs[i].defaultErrorPage;
+        if (error_page_path[0] == '/') {
+            error_page_path.erase(error_page_path.begin());
+        }
+        index_path = root_path + "/" + index_path;
+        error_page_path = root_path + "/" + error_page_path;
+        _accessGeneralPaths(root_path, index_path, error_page_path);
+        for (UINT j = 0; j < configs[i].routes.size(); j++) {
+            std::string location_path = configs[i].routes[j].location;
+            if (location_path[0] == '/') {
+                location_path.erase(location_path.begin());
+            }
+            if (location_path.back() == '/') {
+                location_path.erase(location_path.end() - 1);
+            }
+            location_path = root_path + "/" + location_path;
+            std::string route_index_path = configs[i].routes[j].index;
+            if (route_index_path[0] == '/') {
+                route_index_path.erase(route_index_path.begin());
+            }
+            route_index_path = location_path + "/" + route_index_path;
+            _accessRoutePaths(location_path, route_index_path);
+        }
+    }
+}
+
 Configuration ConfigurationParser::_toConfiguration
 		(TEMP_CONFIGURATION &server,
 		 const VECTOR_ROUTE &routes) {
@@ -12,6 +73,8 @@ Configuration ConfigurationParser::_toConfiguration
 		    server.getDefaultErrorPage(),
 		    server.getPorts(),
 		    server.getClientBodyMaxSize(),
+            server.getRoot(),
+            server.getIndex(),
 		    routes);
     return conf;
 }
@@ -181,7 +244,8 @@ VECTOR_CONFIG ConfigurationParser::parse(const STRING &path) {
     SPLITTED_FILE           servers             = _serverSplitter(removed_space);
     EXTRACTED_ROUTE_MODEL   pair_server_route   = _extractRoute(servers);
     FINAL_MODEL             temp_model          = _dataToModel(pair_server_route);
-    VECTOR_CONFIG    configs             = _modelToConfiguration(temp_model);
+    VECTOR_CONFIG           configs             = _modelToConfiguration(temp_model);
+    _accessPaths(configs);
     return configs;
 }
 

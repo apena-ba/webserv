@@ -13,7 +13,7 @@ STRING Configuration::getExtension(const STRING &path) {
             return ".html";
         }
         return "";
-    }
+}
 
 UINT Configuration::checkPath(STRING path) const {
         VECTOR_STRING   vector;

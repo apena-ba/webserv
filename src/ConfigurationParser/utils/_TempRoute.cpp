@@ -2,9 +2,6 @@
 #include "ConfigurationParser/ConfigurationParser.hpp"
 
 void ConfigurationParser::TEMP_ROUTE::_setIndex(const STRING &index) {
-    if (access(index.c_str(), F_OK) == -1) {
-        throw ErrorParsing("Error: Cannot access file index");
-    }
     if (!this->_index.empty()) {
         throw ErrorParsing("Error: Index already set");
     }

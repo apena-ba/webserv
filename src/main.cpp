@@ -14,11 +14,10 @@
 #include "ConfigurationParser/utils/ParsingUtils.hpp"
 #include "ConfigurationParser/ConfigurationParser.hpp"
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv, char **env) {
     try {
         ConfigurationParser parser;
         std::vector<Configuration> configs = parser.parse("clean_conf");
-        std::cout << Configuration::getExtension("hello.html") << std::endl;
         Cluster cluster(configs);
         cluster.run();
     } catch (std::exception &e) {

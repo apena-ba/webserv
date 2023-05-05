@@ -8,11 +8,17 @@ class ConfigurationParser::_TempConfiguration {
 private:
     UINT                        _maxClients;
     bool                        _maxClients_is_set;
-    STRING                      _defaultErrorPage;
     UINT                        _clientBodyMaxSize;
     bool                        _clientBodyMaxSize_is_set;
+    STRING                      _defaultErrorPage;
     VECTOR_UINT                 _ports;
     STRING                      _host;
+    STRING                      _root;
+    STRING                      _index;
+
+    void                        _setRoot(const STRING &root);
+
+    void                        _setIndex(const STRING &index);
 
     void                        _setHost(const STRING &host);
 
@@ -28,6 +34,10 @@ public:
     _TempConfiguration();
 
     ~_TempConfiguration();
+
+    STRING                      getIndex() const;
+
+    STRING                      getRoot() const;
 
     STRING                      getHost() const;
 
