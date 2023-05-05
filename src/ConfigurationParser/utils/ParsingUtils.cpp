@@ -105,6 +105,7 @@ bool ParsingUtils::checkLimiter(STRING str) {
 
 STRING ParsingUtils::fileToString(const STRING &filePath) {
     std::ifstream file(filePath);
+
     STRING str((std::istreambuf_iterator<char>(file)),
                std::istreambuf_iterator<char>());
     return str;
