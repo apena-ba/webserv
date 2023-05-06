@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/06 17:09:25 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/06 19:00:55 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ void	HTTPResponse::fillerrorpages(const Configuration &conf)
 	_errorPages[conf.host].insert(std::pair<uint, std::string>(413, fetchErrorPage(conf.defaultErrorPage + "/413.html")));
 	_errorPages[conf.host].insert(std::pair<uint, std::string>(503, fetchErrorPage(conf.defaultErrorPage + "/503.html")));
 	_errorPages[conf.host].insert(std::pair<uint, std::string>(505, fetchErrorPage(conf.defaultErrorPage + "/505.html")));
-	std::cout << "AH PAGS\n";
 }
 
 std::map<std::string, std::map<uint, std::string> >	HTTPResponse::_errorPages;
