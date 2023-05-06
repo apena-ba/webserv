@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 server {
     default_error_page : page/error.html;
     client_body_max_size : 22;
@@ -61,3 +62,34 @@ server {
 }
 
 
+=======
+server{
+    default_error_page : index.html;
+    client_body_max_size : 2298;
+    root: /Users/emilefournout/webservcleaning/html;
+    max_clients : 10;
+    host : 10.12.9.2;
+    ports : 8080, 8081;
+    index: index.html;
+    route {
+        methods : get,post,delete;
+        location : /default;
+        index : file.html;
+        }
+}
+
+server{
+    default_error_page : index.html;
+    client_body_max_size : 2298;
+    root: /Users/emilefournout/webservcleaning/html;
+    max_clients : 10;
+    host : 10.12.9.1;
+    ports : 8080, 8081;
+    index: index.html;
+    route {
+        methods : get,post,delete;
+        location : /default;
+        index : file.html;
+        }
+}
+>>>>>>> master
