@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/04 18:21:34 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/06 15:56:09 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,12 @@ std::string	HTTPResponse::fetchErrorPage(const std::string &file)
 	if (!in.is_open())
 	{
 		in.close();
-		return ("SOME DEFAULT PAGE IN CASE THE DEFAULT PAGES FAIL LOL");
+		//in.open(conf.defaultErrorPage);
+		if (!in.is_open())
+			return ("SOME DEFAULT PAGE IN CASE THE DEFAULT PAGES FAIL LOL");
 	}
-	ret.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+	else
+		ret.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
 	return (ret);
 }
 
@@ -121,6 +124,12 @@ void	HTTPResponse::del_perform()
 	this->_body = this->_errorPages[this->_status];
 }
 
+void	HTTPResponse::patharchitect(const Configuration &conf)
+{
+	// The location field of the _vals map must be concatenated to the root given in the config.
+	this->_vals["location"] = conf.root + this->_vals["location"];
+}
+
 void	HTTPResponse::bodybuilder(const Configuration &conf)
 {
 	if (this->_status == 503) // Create the 503 error page.
@@ -129,10 +138,12 @@ void	HTTPResponse::bodybuilder(const Configuration &conf)
 		return;
 	}
 
+	patharchitect(conf);
+
 	// Check if the given method is allowed for the given path:
 	try
 	{
-		uint										pindex = conf.checkPath(this->_vals["location"]);
+		uint										pindex = conf.checkPath(this->_vals["location"]); 
 		std::vector<std::string>::const_iterator	it = conf.routes[pindex].methods.begin();
 
 		for (; it != conf.routes[pindex].methods.end(); ++it)

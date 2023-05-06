@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 10:51:55 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/04 14:17:42 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/06 13:50:16 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class HTTPResponse : public HTTPRequestParser
 		static std::map<uint, std::string>	fillerrorpages();
 		static std::string					fetchErrorPage(const std::string &file);
 		void								bodybuilder(const Configuration &conf);
+		void								patharchitect(const Configuration &conf);
 		void								get_perform();
 		void								pos_perform();
 		void								del_perform();

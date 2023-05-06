@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/03 16:57:56 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/06 13:42:57 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,17 +82,18 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 		host = "";
 	abs_path = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
 	uri += host + abs_path;
-	// Check the files accessibility to exit with 403 or 404:
-	if (access(abs_path.c_str(), F_OK))
-	{
-		std::cerr << ">> Error: 404, file '" << abs_path << "' not found." << std::endl;
-		this->_status = 404;
-	}
-	else if (access(abs_path.c_str(), R_OK))
-	{
-		std::cerr << ">> Error: 403, access to file '" << abs_path << "' if forbidden." << std::endl;
-		this->_status = 403;
-	}
+	// This is now done only in the response, after handling the root and available locations given by the configuration.
+		// Check the files accessibility to exit with 403 or 404:
+		/* if (access(abs_path.c_str(), F_OK))
+		 * {
+		 *     std::cerr << ">> Error: 404, file '" << abs_path << "' not found." << std::endl;
+		 *     this->_status = 404;
+		 * }
+		 * else if (access(abs_path.c_str(), R_OK))
+		 * {
+		 *     std::cerr << ">> Error: 403, access to file '" << abs_path << "' if forbidden." << std::endl;
+		 *     this->_status = 403;
+		 * } */
 	this->_vals.insert(std::pair<std::string, std::string>("location", abs_path));
 	this->_vals.insert(std::pair<std::string, std::string>("uri", uri));
 	i += abs_path.size();
