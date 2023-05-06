@@ -11,6 +11,9 @@ void ConfigurationParser::TEMP_CONFIGURATION::_setIndex(const STRING &index) {
 }
 
 void ConfigurationParser::TEMP_CONFIGURATION::_setRoot(const STRING &root) {
+    if (root.front() != '/') {
+        throw ErrorParsing("Error: Root must start with '/'");
+    }
     if (!this->_root.empty()) {
         throw ErrorParsing("Error: Root already set");
     }
