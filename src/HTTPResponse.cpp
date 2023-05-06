@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/06 17:01:52 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/06 17:09:25 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,9 @@ std::string	HTTPResponse::fetchErrorPage(const std::string &file)
 	std::ifstream	in(file);
 	std::string		ret;
 
-	std::cout << "PAG: " << file << std::endl;
 	if (!in.is_open())
 	{
 		in.close();
-		std::cout << "Falló!\n";
 		return ("<!DOCTYPE html><html><header><title>500 Internal Server Error</title></header><body><center><h3>Error! 500</h3></center><center>Something went wrong. The server wasn't able to load the corresponding error page, so this is what you get :(</center></body></html>");
 	}
 	else
