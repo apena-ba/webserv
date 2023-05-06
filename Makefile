@@ -25,7 +25,6 @@ OBJ			= $(addprefix obj/, $(notdir $(SRC:.cpp=.o)))
 all:		$(NAME)
 
 $(NAME):	obj $(OBJ)
-	@mv *.o obj/
 	@$(CXX) $(CXXFLAGS) $(INC) -o $(NAME) $(OBJ)
 	@printf "\n\033[38;5;202m$(NAME) ready to run B)\033[0m\n"
 
@@ -33,7 +32,7 @@ obj:
 	@mkdir obj
 
 obj/%.o:	%.cpp
-	@$(CXX) $(CXXFLAGS) $(INC) -c $<
+	@$(CXX) $(CXXFLAGS) $(INC) -c $< -o $@
 	@printf "\033[38;5;6m[$<]\033[0m Compiled!\n"
 
 clean:
