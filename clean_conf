@@ -1,95 +1,14 @@
-<<<<<<< HEAD
-server {
-    default_error_page : page/error.html;
-    client_body_max_size : 22;
+server{
+    default_error_page : pages;
+    client_body_max_size : 1000000;
+    root: /Users/apena-ba/Documents/Proyectos/webserv/html;
     max_clients : 10;
     host : localhost;
-    ports : 8083;
-    root: /Users/emilefournout/webservcleaning/html;
-    index: index.html;
-
-    route{
-        methods : get,DELETE;
-        location : /;
-        index : index.html;
-    }
-    route{
-        methods : get,DELETE;
-        location : /default;
-        index : file.html;
-    }
-    route {
-        methods : get,DELETE;
-        location : /somepath;
-        index : index.html;
-    }
-    route {
-        methods : get,DELETE;
-        location : /download;
-        index : downloaded.html;
-    }
-}
-
-server {
-    default_error_page : /page/error.html;
-    client_body_max_size : 22;
-    max_clients : 10;
-    host : localhost;
-    ports : 8083;
-    root: /Users/emilefournout/webservcleaning/html;
-    index: index.html;
-
-    route{
-        methods : get,DELETE;
-        location : /;
-        index : index.html;
-    }
-    route{
-        methods : get,DELETE;
-        location : /default;
-        index : file.html;
-    }
-    route {
-        methods : get,DELETE;
-        location : /somepath;
-        index : index.html;
-    }
-    route {
-        methods : get,DELETE;
-        location : /download;
-        index : downloaded.html;
-    }
-}
-
-
-=======
-server{
-    default_error_page : index.html;
-    client_body_max_size : 2298;
-    root: /Users/emilefournout/webservcleaning/html;
-    max_clients : 10;
-    host : 10.12.9.2;
-    ports : 8080, 8081;
-    index: index.html;
+    ports : 8080;
+    index: /index.html;
     route {
         methods : get,post,delete;
-        location : /default;
-        index : file.html;
+        location : /;
+        index : /index.html;
         }
 }
-
-server{
-    default_error_page : index.html;
-    client_body_max_size : 2298;
-    root: /Users/emilefournout/webservcleaning/html;
-    max_clients : 10;
-    host : 10.12.9.1;
-    ports : 8080, 8081;
-    index: index.html;
-    route {
-        methods : get,post,delete;
-        location : /default;
-        index : file.html;
-        }
-}
->>>>>>> master

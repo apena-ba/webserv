@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:49:10 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/06 17:47:59 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/08 18:45:31 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ void cleanExit(int signal){
     std::exit(0);
 }
 
+void ft(){system("leaks -q webserv");}
+
 int main(int argc, char **argv, char **env) {
+    atexit(ft);
     try {
         signal(SIGINT, cleanExit);
         ConfigurationParser parser;
