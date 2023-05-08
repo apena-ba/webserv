@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 server {
     default_error_page : page/error.html;
     client_body_max_size : 22;
     max_clients : 10;
-    host : localhost;
+    host : 0.0.0.0;
     ports : 8083;
     root: /Users/emilefournout/webservcleaning/html;
     index: index.html;
@@ -62,7 +61,6 @@ server {
 }
 
 
-=======
 server{
     default_error_page : index.html;
     client_body_max_size : 2298;
@@ -92,4 +90,3 @@ server{
         index : file.html;
         }
 }
->>>>>>> master
