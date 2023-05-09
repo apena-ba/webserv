@@ -1,5 +1,15 @@
 #include "ConfigurationParser/utils/_TempConfiguration.hpp"
 
+void ConfigurationParser::TEMP_CONFIGURATION::_setPhpCgiPath(const STRING &phpPath) {
+    if (!this->_phpCgiPath.empty()) {
+        throw ErrorParsing("Error: PhpCgiPath already set");
+    }
+    if (access(phpPath.c_str(), F_OK) == -1) {
+        throw ErrorParsing("Error: Cannot access php cgi");
+    }
+    this->_phpCgiPath = phpPath;
+}
+
 void ConfigurationParser::TEMP_CONFIGURATION::_setIndex(const STRING &index) {
     if (!this->_index.empty()) {
         throw ErrorParsing("Error: Index already set");
@@ -129,7 +139,14 @@ STRING ConfigurationParser::TEMP_CONFIGURATION::getRoot() const {
     return this->_root;
 }
 
+STRING ConfigurationParser::TEMP_CONFIGURATION::getPhpCgiPath() const {
+    return this->_phpCgiPath;
+}
+
 bool ConfigurationParser::TEMP_CONFIGURATION::checkAllFieldsSet() const {
+    if (this->_phpCgiPath.empty()) {
+        throw BadFile("Error: PHP CGI path not set");
+    }
     if (!this->_maxClients_is_set) {
         throw BadFile("Error: Max clients not set");
     }
@@ -167,7 +184,11 @@ void ConfigurationParser::TEMP_CONFIGURATION::forceSetDefaultErrorPage(const STR
 }
 
 void ConfigurationParser::TEMP_CONFIGURATION::setFields(const STRING &field, STRING value) {
-    if (field == "host") {
+
+    if (field == "php_cgi"){
+        this->_setPhpCgiPath(value);
+    }
+    else if (field == "host") {
         this->_setHost(value);
     }
     else if (field == "root") {

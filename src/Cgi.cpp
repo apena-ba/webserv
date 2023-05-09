@@ -13,7 +13,7 @@ std::string Cgi::_findScript(const std::string & path){
 }
 
 std::string Cgi::process(const HTTPRequestParser &request, const Configuration &config) {
-    std::string phpcgi = "/opt/homebrew/bin/php-cgi";
+    std::string phpcgi = config.php_cgi;
     std::string script = _findScript(request.get("location"));
     std::vector<const char *> env;
     std::string redirect_status = "REDIRECT_STATUS=200";
@@ -72,6 +72,8 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
         std::cerr << "execve failed" << std::endl;
         std::cerr << "code d'erreur: " << errno << std::endl;
         std::cerr << "erreur: " << strerror(errno) << std::endl;
+        std::cout << "script_name: " << script_name << std::endl;
+        std::cout << "script_name: " << script_filename << std::endl;
         return "";
     } else {
         close(stdin_pipefd[0]);

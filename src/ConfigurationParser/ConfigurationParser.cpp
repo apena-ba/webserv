@@ -74,6 +74,7 @@ Configuration ConfigurationParser::_toConfiguration
 		    server.getClientBodyMaxSize(),
             server.getRoot(),
             server.getIndex(),
+            server.getPhpCgiPath(),
 		    routes);
     return conf;
 }

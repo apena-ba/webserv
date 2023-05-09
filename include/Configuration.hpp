@@ -29,8 +29,10 @@ public:
                     UINT                    _clientBodyMaxSize,
                     const STRING &          _root,
                     const STRING &          _index,
+                    const STRING &          _php_cgi,
                     const VECTOR_ROUTE &    _routes) :
-                    root(_root), index(_index),
+                    php_cgi(_php_cgi), root(_root),
+                    index(_index),
                     ports(_ports),
                     maxClients(_maxClients),
                     defaultErrorPage(_defaultErrorPage),
@@ -44,6 +46,8 @@ public:
     UINT                checkPath(STRING path) const;
 
     // fields configuration
+    const STRING        php_cgi;
+
     const STRING        root;
 
     const STRING        index;

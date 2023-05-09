@@ -15,6 +15,9 @@ private:
     STRING                      _host;
     STRING                      _root;
     STRING                      _index;
+    STRING                      _phpCgiPath;
+
+    void                        _setPhpCgiPath(const STRING &phpPath);
 
     void                        _setRoot(STRING root);
 
@@ -34,6 +37,8 @@ public:
     _TempConfiguration();
 
     ~_TempConfiguration();
+
+    STRING                      getPhpCgiPath() const;
 
     STRING                      getIndex() const;
 
