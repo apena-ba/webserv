@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:49:10 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/08 18:45:31 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/09 19:57:14 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,6 @@ int main(int argc, char **argv, char **env) {
         signal(SIGINT, cleanExit);
         ConfigurationParser parser;
         VECTOR_CONFIG configs = parser.parse(argv[1]);
-        std::cout << configs[0].routes[0].location << std::endl;
-        std::cout << configs[0].root << std::endl;
-        std::string path = "/Users/emilefournout/webservfinaltest/html/default/";
-        unsigned int index = configs[0].checkPath(path);
-        std::cout << "index: " << index << std::endl;
-        exit (0);
         Cluster cluster(configs);
         cluster.run();
     } catch (std::exception &e) {
