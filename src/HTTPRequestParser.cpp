@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/06 13:42:57 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:12:02 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,19 @@ static void	handlehost(std::string &host, std::map<std::string, std::string> &va
 	}
 }
 
+static void	handlequery(std::string &path, std::map<std::string, std::string> &vals)
+{
+	std::string	query;
+	size_t		qpos = path.find("?");
+
+	if (qpos != std::string::npos)
+	{
+		query = path.substr(qpos + 1);
+		path.erase(qpos);
+		vals.insert(std::pair<std::string, std::string>("quey_string", query));
+	}
+}
+
 bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 {
 	// If any errors arise, status is set to indicate the corresponding HTTP status code and the constructor returns.
@@ -69,7 +82,7 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 		i += 7;
 		host = req.substr(i, req.find("/", i) - i);
 		i += host.size();
-		handlehost(host, _vals);
+		handlehost(host, this->_vals);
 		this->_vals.insert(std::pair<std::string, std::string>("host", host));
 	}
 	else if (req.compare(i, 1, "/"))
@@ -82,18 +95,7 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 		host = "";
 	abs_path = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
 	uri += host + abs_path;
-	// This is now done only in the response, after handling the root and available locations given by the configuration.
-		// Check the files accessibility to exit with 403 or 404:
-		/* if (access(abs_path.c_str(), F_OK))
-		 * {
-		 *     std::cerr << ">> Error: 404, file '" << abs_path << "' not found." << std::endl;
-		 *     this->_status = 404;
-		 * }
-		 * else if (access(abs_path.c_str(), R_OK))
-		 * {
-		 *     std::cerr << ">> Error: 403, access to file '" << abs_path << "' if forbidden." << std::endl;
-		 *     this->_status = 403;
-		 * } */
+	handlequery(abs_path, this->_vals);
 	this->_vals.insert(std::pair<std::string, std::string>("location", abs_path));
 	this->_vals.insert(std::pair<std::string, std::string>("uri", uri));
 	i += abs_path.size();
@@ -236,6 +238,8 @@ HTTPRequestParser::HTTPRequestParser(const std::string &req)
 			parsebody(req, i);
 		}
 	}
+	for (auto it : _vals)
+		std::cout << it.first << ": " << it.second << std::endl;
 }
 
 HTTPRequestParser::~HTTPRequestParser() {}
