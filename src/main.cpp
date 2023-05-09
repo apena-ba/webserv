@@ -23,11 +23,16 @@ void cleanExit(int signal){
 void ft(){system("leaks -q webserv");}
 
 int main(int argc, char **argv, char **env) {
+    if (argc != 2) {
+        std::cerr << "Bad number of arguments" << std::endl;
+        return (1);
+    }
     atexit(ft);
+
     try {
         signal(SIGINT, cleanExit);
         ConfigurationParser parser;
-        std::vector<Configuration> configs = parser.parse("clean_conf");
+        VECTOR_CONFIG configs = parser.parse(argv[1]);
         Cluster cluster(configs);
         cluster.run();
     } catch (std::exception &e) {

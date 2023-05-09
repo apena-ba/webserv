@@ -201,6 +201,8 @@ std::vector<std::string>	HTTPRequestParser::fillrequestheaderfields()
 	fields.push_back("authorization");
 	fields.push_back("expect");
 	fields.push_back("connection");
+    fields.push_back("content-length");
+    fields.push_back("content-type");
 	fields.push_back("from");
 	fields.push_back("host");
 	fields.push_back("if-match");
