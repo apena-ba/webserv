@@ -31,6 +31,10 @@ public:
 
     bool            checkAllFieldsSet();
 
+    void            forceSetLocation(STRING location);
+
+    void            forceSetIndex(STRING index);
+
     void            setFields(STRING &field, STRING &value);
 
     class ErrorParsing : public std::exception {

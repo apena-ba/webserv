@@ -18,12 +18,14 @@ std::string Cgi::process(HTTPRequestParser &request, const Configuration &config
     std::vector<const char *> env;
     std::string redirect_status = "REDIRECT_STATUS=200";
     std::string request_method = "REQUEST_METHOD=" + request.get("type");
-    std::string script_filename = "SCRIPT_FILENAME=" + request.get("location");
+    std::string script_filename = "SCRIPT_FILENAME=" + config.root + request.get("location");
     std::string script_name = "SCRIPT_NAME=" + request.get("location");
     std::string content_type = "CONTENT_TYPE=" + request.get("content-type");
     std::string content_length = "CONTENT_LENGTH=" + request.get("content-length");
     std::string document_root = "DOCUMENT_ROOT=" + config.root;
+    std::string query_string = "QUERY_STRING=" + request.get("query-string");
     //TODO: QUERY_STRING
+
     env.push_back(redirect_status.c_str());
     env.push_back(request_method.c_str());
     env.push_back(script_filename.c_str());
@@ -35,8 +37,8 @@ std::string Cgi::process(HTTPRequestParser &request, const Configuration &config
 
     std::vector<const char *> argv;
     argv.push_back(phpcgi.c_str());
+    argv.push_back("-q");
     argv.push_back(NULL);
-    //argv.push_back("-q");
     int stdin_pipefd[2];
     int stdout_pipefd[2];
     pid_t pid;

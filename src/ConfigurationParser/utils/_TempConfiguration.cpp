@@ -10,9 +10,12 @@ void ConfigurationParser::TEMP_CONFIGURATION::_setIndex(const STRING &index) {
     this->_index = index;
 }
 
-void ConfigurationParser::TEMP_CONFIGURATION::_setRoot(const STRING &root) {
+void ConfigurationParser::TEMP_CONFIGURATION::_setRoot(STRING root) {
     if (!this->_root.empty()) {
         throw ErrorParsing("Error: Root already set");
+    }
+    if (root.back() == '/') {
+        root.erase(root.end() - 1);
     }
     this->_root = root;
 }
@@ -136,6 +139,18 @@ bool ConfigurationParser::TEMP_CONFIGURATION::checkAllFieldsSet() const {
         throw BadFile("Error: Port not set");
     }
     return true;
+}
+
+void ConfigurationParser::TEMP_CONFIGURATION::forceSetRoot(const STRING &root){
+    this->_root = root;
+}
+
+void ConfigurationParser::TEMP_CONFIGURATION::forceSetIndex(const STRING &index){
+    this->_index = index;
+}
+
+void ConfigurationParser::TEMP_CONFIGURATION::forceSetDefaultErrorPage(const STRING &defaultErrorPage){
+    this->_defaultErrorPage = defaultErrorPage;
 }
 
 void ConfigurationParser::TEMP_CONFIGURATION::setFields(const STRING &field, STRING value) {

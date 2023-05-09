@@ -39,7 +39,7 @@ private:
     void                            _accessGeneralPaths(const std::string & root_path, const std::string & index_path,
                                                         const std::string & error_page_path);
 
-    void                            _accessPaths(VECTOR_CONFIG & configs);
+    void                            _accessPaths(FINAL_MODEL & model);
 
     static  PAIR_STRING             _lineToPair(STRING line);
 
@@ -51,9 +51,9 @@ private:
 
     static  bool                    _checkDoubleRoute(VECTOR_ROUTE &routes);
 
-    static VECTOR_ROUTE             _tmpToRoute(VECTOR_TEMP_ROUTE data);
+    static VECTOR_ROUTE             _tmpToRoute(VECTOR_TEMP_ROUTE data, std::string root);
 
-    VECTOR_ROUTE                    _dataToRoute(VECTOR_STRING data);
+    VECTOR_ROUTE                    _dataToRoute(VECTOR_STRING data,std::string root);
 
     TEMP_CONFIGURATION              _dataToConfiguration(const STRING &data);
 

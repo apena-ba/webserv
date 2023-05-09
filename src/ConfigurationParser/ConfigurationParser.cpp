@@ -29,37 +29,26 @@ void ConfigurationParser::_accessGeneralPaths(const std::string & root_path,
     }
 }
 
-void ConfigurationParser::_accessPaths(VECTOR_CONFIG & configs){
-    for (UINT i = 0; i < configs.size(); i++) {
-        std::string root_path       = configs[i].root;
-        if (root_path.back() == '/') {
-            root_path.erase(root_path.end() - 1);
-        }
-        std::string index_path      = configs[i].index;
+void ConfigurationParser::_accessPaths(FINAL_MODEL & model){
+    for (UINT i = 0; i < model.size(); i++) {
+        std::string root_path       = model[i].first.getRoot();
+        std::string index_path      = model[i].first.getIndex();
         if (index_path[0] == '/') {
             index_path.erase(index_path.begin());
         }
-        std::string error_page_path = configs[i].defaultErrorPage;
+        std::string error_page_path = model[i].first.getDefaultErrorPage();
         if (error_page_path[0] == '/') {
             error_page_path.erase(error_page_path.begin());
         }
         index_path = root_path + "/" + index_path;
         error_page_path = root_path + "/" + error_page_path;
         _accessGeneralPaths(root_path, index_path, error_page_path);
-        for (UINT j = 0; j < configs[i].routes.size(); j++) {
-            std::string location_path = configs[i].routes[j].location;
-            if (location_path[0] == '/') {
-                location_path.erase(location_path.begin());
-            }
-            if (location_path.back() == '/') {
-                location_path.erase(location_path.end() - 1);
-            }
-            location_path = root_path + "/" + location_path;
-            std::string route_index_path = configs[i].routes[j].index;
-            if (route_index_path[0] == '/') {
-                route_index_path.erase(route_index_path.begin());
-            }
-            route_index_path = location_path + "/" + route_index_path;
+        model[i].first.forceSetRoot(root_path);
+        model[i].first.forceSetIndex(index_path);
+        model[i].first.forceSetDefaultErrorPage(error_page_path);
+        for (UINT j = 0; j < model[i].second.size(); j++) {
+            std::string location_path = model[i].second[j].location;
+            std::string route_index_path = model[i].second[j].index;
             _accessRoutePaths(location_path, route_index_path);
         }
     }
@@ -135,11 +124,29 @@ bool ConfigurationParser::_checkDoubleRoute(VECTOR_ROUTE &routes) {
     return false;
 }
 
-VECTOR_ROUTE ConfigurationParser::_tmpToRoute(VECTOR_TEMP_ROUTE data) {
+VECTOR_ROUTE ConfigurationParser::_tmpToRoute(VECTOR_TEMP_ROUTE data, std::string root) {
     VECTOR_ROUTE	routes;
+    std::string     root_path = root;
 
     for (UINT i = 0; i < data.size(); i++) {
-        routes.push_back(Route(data[i].getIndex(), data[i].getMethods(), data[i].getLocation()));
+        std::string location_path = data[i].getLocation();
+            if (location_path[0] == '/') {
+                location_path.erase(location_path.begin());
+            }
+            if (location_path.back() == '/') {
+                location_path.erase(location_path.end() - 1);
+            }
+            location_path = root_path + "/" + location_path;
+            if (location_path.back() == '/') {
+                location_path.erase(location_path.end() - 1);
+            }
+            std::string route_index_path = data[i].getIndex();
+            if (route_index_path[0] == '/') {
+                route_index_path.erase(route_index_path.begin());
+            }
+
+            route_index_path = location_path + "/" + route_index_path;
+        routes.push_back(Route(route_index_path, data[i].getMethods(), location_path));
     }
     if (_checkDoubleRoute(routes)) {
         throw BadFile("Error: Bad route format: Both route have the same location");
@@ -147,7 +154,7 @@ VECTOR_ROUTE ConfigurationParser::_tmpToRoute(VECTOR_TEMP_ROUTE data) {
     return routes;
 }
 
-VECTOR_ROUTE ConfigurationParser::_dataToRoute(VECTOR_STRING data) {
+VECTOR_ROUTE ConfigurationParser::_dataToRoute(VECTOR_STRING data, std::string root) {
     VECTOR_TEMP_ROUTE	tmp_routes;
     FIELDS_MODEL	    fields;
 
@@ -159,7 +166,7 @@ VECTOR_ROUTE ConfigurationParser::_dataToRoute(VECTOR_STRING data) {
         }
         tmp_routes[i].checkAllFieldsSet();
     }
-    VECTOR_ROUTE routes = VECTOR_ROUTE(_tmpToRoute(tmp_routes));
+    VECTOR_ROUTE routes = VECTOR_ROUTE(_tmpToRoute(tmp_routes, root));
     return routes;
 }
 
@@ -178,10 +185,12 @@ ConfigurationParser::_dataToConfiguration(const STRING &data) {
 
 ConfigurationParser::FINAL_MODEL ConfigurationParser::_dataToModel(EXTRACTED_ROUTE_MODEL data) {
     FINAL_MODEL model;
+    std::string root;
 
     for (UINT i = 0; i < data.size(); i++) {
         TEMP_CONFIGURATION config = _dataToConfiguration(data[i].first);
-        VECTOR_ROUTE routes = _dataToRoute(data[i].second);
+        root = config.getRoot();
+        VECTOR_ROUTE routes = _dataToRoute(data[i].second, root);
         model.push_back(std::make_pair(config, routes));
     }
     return model;
@@ -244,8 +253,8 @@ VECTOR_CONFIG ConfigurationParser::parse(const STRING &path) {
     SPLITTED_FILE           servers             = _serverSplitter(removed_space);
     EXTRACTED_ROUTE_MODEL   pair_server_route   = _extractRoute(servers);
     FINAL_MODEL             temp_model          = _dataToModel(pair_server_route);
+    _accessPaths(temp_model);
     VECTOR_CONFIG           configs             = _modelToConfiguration(temp_model);
-    _accessPaths(configs);
     return configs;
 }
 

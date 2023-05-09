@@ -84,6 +84,14 @@ bool ConfigurationParser::TEMP_ROUTE::checkAllFieldsSet() {
     return true;
 }
 
+void ConfigurationParser::TEMP_ROUTE::forceSetLocation(STRING location){
+    this->_location = location;
+}
+
+void ConfigurationParser::TEMP_ROUTE::forceSetIndex(STRING index){
+    this->_index = index;
+}
+
 void ConfigurationParser::TEMP_ROUTE::setFields(STRING &field, STRING &value) {
     if (field == "methods") {
         _setMethods(value);
