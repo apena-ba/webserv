@@ -265,7 +265,6 @@ VECTOR_CONFIG ConfigurationParser::parse(const STRING &path) {
     FINAL_MODEL             temp_model          = _dataToModel(pair_server_route);
     _accessPaths(temp_model);
     VECTOR_CONFIG           configs             = _modelToConfiguration(temp_model);
-    _accessPaths(configs);
     _checkDoubleHost(configs);
     return configs;
 }
