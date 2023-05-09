@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/09 17:12:02 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:18:52 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,8 +238,6 @@ HTTPRequestParser::HTTPRequestParser(const std::string &req)
 			parsebody(req, i);
 		}
 	}
-	for (auto it : _vals)
-		std::cout << it.first << ": " << it.second << std::endl;
 }
 
 HTTPRequestParser::~HTTPRequestParser() {}
