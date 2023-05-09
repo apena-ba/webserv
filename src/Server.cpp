@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 20:54:01 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/06 16:58:00 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/06 19:01:30 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ Server::~Server(){}
 Server::Server(Configuration &config) : _config(config), _timeOutWrite(initializeTimeOutWrite())
 {
 	HTTPResponse::fillerrorpages(config);
-	std::cout << "AH SERVER\n";
 }
 
 /*

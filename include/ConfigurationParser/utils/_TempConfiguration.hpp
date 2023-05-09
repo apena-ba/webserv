@@ -16,7 +16,7 @@ private:
     STRING                      _root;
     STRING                      _index;
 
-    void                        _setRoot(const STRING &root);
+    void                        _setRoot(STRING root);
 
     void                        _setIndex(const STRING &index);
 
@@ -50,6 +50,12 @@ public:
     UINT                        getClientBodyMaxSize() const;
 
     bool                        checkAllFieldsSet() const;
+
+    void                        forceSetRoot(const STRING &root);
+
+    void                        forceSetIndex(const STRING &index);
+
+    void                        forceSetDefaultErrorPage(const STRING &defaultErrorPage);
 
     void                        setFields(const STRING &field, STRING value);
 
