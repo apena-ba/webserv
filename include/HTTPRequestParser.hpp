@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 18:31:06 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/02 17:32:37 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/09 19:23:09 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ class HTTPRequestParser {
 		HTTPRequestParser(const std::string &req);
 		~HTTPRequestParser();
 
-		std::string	get(const std::string &key);
+		std::string	get(const std::string &key) const;
 		int			status() const;
 
 	protected:

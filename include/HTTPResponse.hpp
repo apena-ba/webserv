@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 10:51:55 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/06 16:59:03 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/09 19:09:06 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include "HTTPRequestParser.hpp"
 #include "Configuration.hpp"
+#include "Cgi.hpp"
 
 class HTTPResponse : public HTTPRequestParser
 {
@@ -37,7 +38,9 @@ class HTTPResponse : public HTTPRequestParser
 
 		std::string													_strStatus;
 		std::string													_response;
+		std::string													_postHeaders;
 		std::string													_body;
+		const HTTPRequestParser										&_request;
 		static std::map<uint, std::string>							_statusMessages;
 		static std::map<std::string, std::map<uint, std::string> >	_errorPages;
 };

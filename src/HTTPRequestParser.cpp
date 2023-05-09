@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/09 17:18:52 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/09 19:23:36 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,14 +244,14 @@ HTTPRequestParser::HTTPRequestParser(const std::string &req)
 
 HTTPRequestParser::~HTTPRequestParser() {}
 
-std::string	HTTPRequestParser::get(const std::string &key)
+std::string	HTTPRequestParser::get(const std::string &key) const
 {
 	if (this->_vals.find(key) == this->_vals.end())
 	{
 		std::cerr << ">> Error: key '" << key << "' couldn't be found." << std::endl;
 		return ("");
 	}
-	return (this->_vals[key]);
+	return (this->_vals.at(key));
 }
 
 int	HTTPRequestParser::status() const

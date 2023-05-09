@@ -12,7 +12,7 @@ std::string Cgi::_findScript(const std::string & path){
     return path.substr(path.find_last_of('/') + 1);
 }
 
-std::string Cgi::process(HTTPRequestParser &request, const Configuration &config) {
+std::string Cgi::process(const HTTPRequestParser &request, const Configuration &config) {
     std::string phpcgi = "/opt/homebrew/bin/php-cgi";
     std::string script = _findScript(request.get("location"));
     std::vector<const char *> env;

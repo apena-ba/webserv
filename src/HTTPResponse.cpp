@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/09 17:24:50 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/09 19:17:53 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,9 @@ std::map<std::string, std::map<uint, std::string> >	HTTPResponse::_errorPages;
 
 void	HTTPResponse::get_perform(const Configuration &conf)
 {
+	if (Configuration::getExtension(this->_vals["location"]) == ".php")
+		return pos_perform(conf);
+
 	// Check existance and try to open the requested file.
 	if (access(this->_vals["location"].c_str(), F_OK))
 	{
@@ -98,11 +101,22 @@ void	HTTPResponse::get_perform(const Configuration &conf)
 	}
 	this->_body.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()); // Put the whole file into the body string.
 	file.close();
-
-	// Way of using the cgi to create the page?
 }
 
-void	HTTPResponse::pos_perform(const Configuration &conf) {}
+void	HTTPResponse::pos_perform(const Configuration &conf)
+{
+	std::string	cgistr = Cgi::process(this->_request, conf);
+
+	if (cgistr == "")
+	{
+		this->_status = 500;
+		this->_body = this->_errorPages[conf.host][this->_status];
+		return;
+	}
+	size_t	nulain = cgistr.find_first_of("\r\n\r\n");
+	this->_postHeaders = cgistr.substr(0, nulain + 2);
+	this->_body = cgistr.substr(nulain + 4);
+}
 
 void	HTTPResponse::del_perform(const Configuration &conf)
 {
@@ -140,7 +154,7 @@ void	HTTPResponse::bodybuilder(const Configuration &conf)
 	// Check if the given method is allowed for the given path:
 	try
 	{
-		uint										pindex = conf.checkPath(this->_vals["location"]); 
+		uint										pindex = conf.checkPath(this->_vals["location"]);
 		std::vector<std::string>::const_iterator	it = conf.routes[pindex].methods.begin();
 
 		for (; it != conf.routes[pindex].methods.end(); ++it)
@@ -184,7 +198,7 @@ void	HTTPResponse::bodybuilder(const Configuration &conf)
 // [2]The first line of the response is then built by concatenation.
 // [3]Build the header lines as simple '<key>: <value>\r\n' strings.
 // [4]Add the body and voilà, a hot served response!
-HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configuration &conf) : HTTPRequestParser(givenRequest)
+HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configuration &conf) : HTTPRequestParser(givenRequest), _postHeaders(""), _request(givenRequest)
 {
 	// Build the body if the method requires it, try access again and update status accordingly
 	bodybuilder(conf);
@@ -198,7 +212,8 @@ HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configur
 	// Write only the required headers, avoid repetition.
 	// 3:
 	this->_response += "Server: Jam⍺ Rushers' Webserv\r\n";
-	this->_response += "Content-Length: " + tostr(this->_body.size()) + "\r\n\r\n";
+	this->_response += "Content-Length: " + tostr(this->_body.size());
+	this->_response += this->_postHeaders + "\r\n\r\n";
 
 	// 4:
 	this->_response += this->_body;

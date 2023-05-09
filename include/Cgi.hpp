@@ -11,7 +11,7 @@ private:
     static std::vector<const char *> _fillEnv(HTTPRequestParser &request,
                                 const Configuration & config);
 public:
-    static std::string process(HTTPRequestParser &request, const Configuration & config);
+    static std::string process(const HTTPRequestParser &request, const Configuration & config);
 };
 
 #endif
