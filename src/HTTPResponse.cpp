@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/04 18:21:34 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:24:50 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,44 +55,44 @@ std::string	HTTPResponse::fetchErrorPage(const std::string &file)
 	if (!in.is_open())
 	{
 		in.close();
-		return ("SOME DEFAULT PAGE IN CASE THE DEFAULT PAGES FAIL LOL");
+		return ("<!DOCTYPE html><html><header><title>500 Internal Server Error</title></header><body><center><h3>Error! 500</h3></center><center>Something went wrong. The server wasn't able to load the corresponding error page, so this is what you get :(</center></body></html>");
 	}
-	ret.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
+	else
+		ret.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
 	return (ret);
 }
 
-std::map<uint, std::string>	HTTPResponse::fillerrorpages()
+void	HTTPResponse::fillerrorpages(const Configuration &conf)
 {
-	std::map<uint, std::string>	pags;
-
-	pags.insert(std::pair<uint, std::string>(204, fetchErrorPage("pages/204.html"))); // The body for this one shall be left empty.
-	pags.insert(std::pair<uint, std::string>(400, fetchErrorPage("pages/400.html")));
-	pags.insert(std::pair<uint, std::string>(403, fetchErrorPage("pages/403.html")));
-	pags.insert(std::pair<uint, std::string>(404, fetchErrorPage("pages/404.html")));
-	pags.insert(std::pair<uint, std::string>(405, fetchErrorPage("pages/405.html")));
-	pags.insert(std::pair<uint, std::string>(413, fetchErrorPage("pages/413.html")));
-	pags.insert(std::pair<uint, std::string>(503, fetchErrorPage("pages/503.html")));
-	pags.insert(std::pair<uint, std::string>(505, fetchErrorPage("pages/505.html")));
-	return (pags);
+	_errorPages[conf.host].insert(std::pair<uint, std::string>(204, "")); // The body for this one shall be left empty.
+	
+	// This will only work properly if all paths in the config are stored with their absolute path using the config root.
+	_errorPages[conf.host].insert(std::pair<uint, std::string>(400, fetchErrorPage(conf.defaultErrorPage + "/400.html")));
+	_errorPages[conf.host].insert(std::pair<uint, std::string>(403, fetchErrorPage(conf.defaultErrorPage + "/403.html")));
+	_errorPages[conf.host].insert(std::pair<uint, std::string>(404, fetchErrorPage(conf.defaultErrorPage + "/404.html")));
+	_errorPages[conf.host].insert(std::pair<uint, std::string>(405, fetchErrorPage(conf.defaultErrorPage + "/405.html")));
+	_errorPages[conf.host].insert(std::pair<uint, std::string>(413, fetchErrorPage(conf.defaultErrorPage + "/413.html")));
+	_errorPages[conf.host].insert(std::pair<uint, std::string>(503, fetchErrorPage(conf.defaultErrorPage + "/503.html")));
+	_errorPages[conf.host].insert(std::pair<uint, std::string>(505, fetchErrorPage(conf.defaultErrorPage + "/505.html")));
 }
 
-std::map<uint, std::string>	HTTPResponse::_errorPages = HTTPResponse::fillerrorpages();
+std::map<std::string, std::map<uint, std::string> >	HTTPResponse::_errorPages;
 ////////////////////////////////////////////////////////////////////////////////
 
-void	HTTPResponse::get_perform()
+void	HTTPResponse::get_perform(const Configuration &conf)
 {
 	// Check existance and try to open the requested file.
 	if (access(this->_vals["location"].c_str(), F_OK))
 	{
 		this->_status = 404;
-		this->_body = this->_errorPages[this->_status];
+		this->_body = this->_errorPages[conf.host][this->_status];
 		return;
 	}
 	std::ifstream	file(this->_vals["location"]);
 	if (!file.is_open())
 	{
 		this->_status = 403;
-		this->_body = this->_errorPages[this->_status];
+		this->_body = this->_errorPages[conf.host][this->_status];
 		file.close();
 		return;
 	}
@@ -102,15 +102,15 @@ void	HTTPResponse::get_perform()
 	// Way of using the cgi to create the page?
 }
 
-void	HTTPResponse::pos_perform() {}
+void	HTTPResponse::pos_perform(const Configuration &conf) {}
 
-void	HTTPResponse::del_perform()
+void	HTTPResponse::del_perform(const Configuration &conf)
 {
 	// Check if file exists:
 	if (access(this->_vals["location"].c_str(), F_OK))
 	{
 		this->_status = 404;
-		this->_body = this->_errorPages[this->_status];
+		this->_body = this->_errorPages[conf.host][this->_status];
 		return;
 	}
 	// Try to remove it. A non-zero return means remove failed:
@@ -118,51 +118,63 @@ void	HTTPResponse::del_perform()
 		this->_status = 204; // The file was deleted. Nothing is returned.
 	else
 		this->_status = 403; // The file wasn't deleted, but it exists: Access forbidden.
-	this->_body = this->_errorPages[this->_status];
+	this->_body = this->_errorPages[conf.host][this->_status];
+}
+
+void	HTTPResponse::patharchitect(const Configuration &conf)
+{
+	// The location field of the _vals map must be concatenated to the root given in the config.
+	this->_vals["location"] = conf.root + this->_vals["location"];
 }
 
 void	HTTPResponse::bodybuilder(const Configuration &conf)
 {
 	if (this->_status == 503) // Create the 503 error page.
 	{
-		this->_body = this->_errorPages[this->_status];
+		this->_body = this->_errorPages[conf.host][this->_status];
 		return;
 	}
+
+	patharchitect(conf);
 
 	// Check if the given method is allowed for the given path:
 	try
 	{
-		uint										pindex = conf.checkPath(this->_vals["location"]);
+		uint										pindex = conf.checkPath(this->_vals["location"]); 
 		std::vector<std::string>::const_iterator	it = conf.routes[pindex].methods.begin();
 
 		for (; it != conf.routes[pindex].methods.end(); ++it)
 			if (this->_vals["type"] == *it)
+			{
+				if (this->_vals["location"] == conf.routes[pindex].location)
+					this->_vals["location"] += conf.routes[pindex].index;
 				break;
+			}
 		if (it == conf.routes[pindex].methods.end())
 		{
 			this->_status = 405;
-			this->_body = this->_errorPages[this->_status];
+			this->_body = this->_errorPages[conf.host][this->_status];
 			return;
 		}
 	}
 	catch (const std::exception &e)
 	{
 		this->_status = 404;
-		this->_body = this->_errorPages[this->_status];
+		this->_body = this->_errorPages[conf.host][this->_status];
 		return;
 	}
 
 	if (this->_vals["type"] == "GET")
-		get_perform();
+		get_perform(conf);
 	else if (this->_vals["type"] == "POST")
-		pos_perform();
+		pos_perform(conf);
 	else if (this->_vals["type"] == "DELETE")
-		del_perform();
+		del_perform(conf);
 
 	if (this->_body.size() > conf.clientBodyMaxSize)
 	{
 		this->_status = 413;
-		this->_body = this->_errorPages[this->_status];
+		this->_body = this->_errorPages[conf.host][this->_status];
 	}
 }
 

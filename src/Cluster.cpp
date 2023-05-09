@@ -6,15 +6,16 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:08:07 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/04 17:42:58 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/06 17:38:42 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Cluster.hpp"
+#include <algorithm>
 
 // Cluster
 
-Cluster::Cluster() {}
+// Cluster::Cluster() {}
 
 Cluster::Cluster(std::vector<Configuration> &configs) {
     std::map<unsigned int, int> portsNumbers;
@@ -73,7 +74,6 @@ void Cluster::run(void) {
     int ret_poll;
 
     while (1) {
-        
         this->remakeFds();
         ret_poll = poll(this->_fdsPoll.data(), this->_fdsPoll.size(), 100);
         this->updatePortsFds();

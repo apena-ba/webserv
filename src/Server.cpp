@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 20:54:01 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/04 17:52:35 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/06 19:01:30 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ Server::~Server(){}
 
 Server::Server(Configuration &config) : _config(config), _timeOutWrite(initializeTimeOutWrite())
 {
+	HTTPResponse::fillerrorpages(config);
 }
 
 /*
