@@ -33,6 +33,12 @@ int main(int argc, char **argv, char **env) {
         signal(SIGINT, cleanExit);
         ConfigurationParser parser;
         VECTOR_CONFIG configs = parser.parse(argv[1]);
+        std::cout << configs[0].routes[0].location << std::endl;
+        std::cout << configs[0].root << std::endl;
+        std::string path = "/Users/emilefournout/webservfinaltest/html/default/";
+        unsigned int index = configs[0].checkPath(path);
+        std::cout << "index: " << index << std::endl;
+        exit (0);
         Cluster cluster(configs);
         cluster.run();
     } catch (std::exception &e) {

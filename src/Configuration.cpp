@@ -30,20 +30,16 @@ UINT Configuration::checkPath(STRING path) const {
             path.erase(path.length() - 1, 1);
         }
         for (UINT i = 0; i < routes.size(); i++) {
-            if (routes[i].location.length() > path.length()) { continue; }
-            if (path.find(routes[i].location) == 0
-                && (path[routes[i].location.length()] == '/'
-                    || path.length() == routes[i].location.length())) {
+            std::string location = routes[i].location;
+            if (location.back() == '/'){
+                location.erase(location.end() - 1);
+            }
+            if (location.length() > path.length()) { continue; }
+            if (path.find(location) == 0
+                && (path[location.length()] == '/'
+                    || path.length() == location.length())) {
                 index_location_in_path.push_back(i);
             }
-        }
-        if (index_location_in_path.empty()) {
-            for (UINT i = 0; i < routes.size(); i++) {
-                if (routes[i].location == "/") {
-                    return (i);
-                }
-            }
-            throw ConfigurationException("Path not found");
         }
         max_length_index = index_location_in_path[0];
         for (UINT j = 0; j < index_location_in_path.size(); j++) {
