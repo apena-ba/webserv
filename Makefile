@@ -6,18 +6,13 @@ CXX			= c++
 
 CXXFLAGS	= -Wall -Wextra -Werror -Wno-unused -Wno-unused-parameter -std=c++98
 
-SRC = src/main.cpp src/Cluster.cpp src/Server.cpp src/Port.cpp src/HTTPRequestParser.cpp src/Configuration.cpp \
-	src/ConfigurationParser/ConfigurationParser.cpp src/ConfigurationParser/utils/_TempConfiguration.cpp \
-	src/ConfigurationParser/utils/_TempRoute.cpp src/ConfigurationParser/utils/ParsingUtils.cpp \
-	src/Cgi.cpp
-################################################################################
+INC			= -I include -I include/ConfigurationParser
 
-OBJ = obj/main.o obj/Cluster.o obj/Server.o obj/Port.o obj/HTTPRequestParser.o obj/ConfigurationParser.o \
-	obj/_TempConfiguration.o obj/_TempRoute.o obj/ParsingUtils.o obj/Configuration.o obj/Cgi.o
+VPATH		= ./src:./src/ConfigurationParser/:./src/ConfigurationParser/utils/
 
 #----                                                                      ----#
 
-CORESRCS	= $(addprefix src/, Cluster.cpp Server.cpp Port.cpp)
+CORESRCS	= $(addprefix src/, Cluster.cpp Server.cpp Port.cpp Cgi.cpp)
 CONFSRCS	= $(addprefix src/ConfigurationParser/, ConfigurationParser.cpp utils/_TempConfiguration.cpp utils/_TempRoute.cpp utils/ParsingUtils.cpp)
 HTTPSRCS	= $(addprefix src/, HTTPRequestParser.cpp HTTPResponse.cpp)
 #------------------------------------------------------------------------------#
