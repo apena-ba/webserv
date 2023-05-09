@@ -85,8 +85,7 @@ std::string Cgi::process(HTTPRequestParser &request, const Configuration &config
             response += buffer[0];
         }
         close(stdout_pipefd[0]);
-        std::cout << response;
-        wait(nullptr);
+        wait(NULL);
         return response;
     }
 
