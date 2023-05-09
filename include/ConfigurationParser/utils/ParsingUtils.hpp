@@ -30,6 +30,8 @@ public:
 
     static  STRING              fileToString(const STRING &filePath);
 
+    static  bool                checkDoubleSlash(const STRING & str);
+
     class ErrorParsing : public std::exception {
     private:
         const char *_msg;

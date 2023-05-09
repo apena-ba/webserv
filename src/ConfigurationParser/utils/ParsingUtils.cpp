@@ -103,6 +103,16 @@ bool ParsingUtils::checkLimiter(STRING str) {
     return true;
 }
 
+bool ParsingUtils::checkDoubleSlash(const STRING & str){
+    for (UINT i = 0; i < str.size(); i++) {
+        if (str[i] == '/' && str[i + 1] == '/') {
+            return true;
+        }
+    }
+    return false;
+}
+
+
 STRING ParsingUtils::fileToString(const STRING &filePath) {
     std::ifstream file(filePath);
 

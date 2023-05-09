@@ -5,6 +5,9 @@ void ConfigurationParser::TEMP_ROUTE::_setIndex(const STRING &index) {
     if (!this->_index.empty()) {
         throw ErrorParsing("Error: Index already set");
     }
+    if (ParsingUtils::checkDoubleSlash(index) == true) {
+        throw BadFile("Error: index: Double slash");
+    }
     this->_index = index;
 }
 
@@ -48,6 +51,9 @@ void ConfigurationParser::TEMP_ROUTE::_setMethods(const STRING &methods_input) {
 void ConfigurationParser::TEMP_ROUTE::_setLocation(STRING location) {
     if (!this->_location.empty()) {
         throw ErrorParsing("Error: route: location already set");
+    }
+    if (ParsingUtils::checkDoubleSlash(location) == true) {
+        throw BadFile("Error: location: Double slash");
     }
     if (location.back() == '/' && location.size() > 1) {
         location.erase(location.end() - 1);
