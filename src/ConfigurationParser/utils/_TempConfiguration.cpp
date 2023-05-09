@@ -4,6 +4,9 @@ void ConfigurationParser::TEMP_CONFIGURATION::_setIndex(const STRING &index) {
     if (!this->_index.empty()) {
         throw ErrorParsing("Error: Index already set");
     }
+    if (ParsingUtils::checkDoubleSlash(index) == true) {
+        throw BadFile("Error: index: Double slash");
+    }
     if (index.back() == '/') {
         throw ErrorParsing("Error: Index can't be a directory (end with '/')");
     }
@@ -13,6 +16,9 @@ void ConfigurationParser::TEMP_CONFIGURATION::_setIndex(const STRING &index) {
 void ConfigurationParser::TEMP_CONFIGURATION::_setRoot(STRING root) {
     if (!this->_root.empty()) {
         throw ErrorParsing("Error: Root already set");
+    }
+    if (ParsingUtils::checkDoubleSlash(root) == true) {
+        throw BadFile("Error: root: Double slash");
     }
     if (root.back() == '/') {
         root.erase(root.end() - 1);
@@ -61,6 +67,9 @@ void ConfigurationParser::TEMP_CONFIGURATION::_setMaxClients(const STRING &maxCl
 void ConfigurationParser::TEMP_CONFIGURATION::_setDefaultErrorPage(const STRING &defaultErrorPage) {
     if (!this->_defaultErrorPage.empty()) {
         throw ErrorParsing("Error: Default error page already set");
+    }
+    if (ParsingUtils::checkDoubleSlash(defaultErrorPage) == true) {
+        throw BadFile("Error: defaultErrorPages: Double slash");
     }
     if (defaultErrorPage.back() == '/') {
         throw ErrorParsing("Error: Default error page cannot be a directory (end with '/')");
