@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/06 19:00:55 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:24:50 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,11 @@ void	HTTPResponse::bodybuilder(const Configuration &conf)
 
 		for (; it != conf.routes[pindex].methods.end(); ++it)
 			if (this->_vals["type"] == *it)
+			{
+				if (this->_vals["location"] == conf.routes[pindex].location)
+					this->_vals["location"] += conf.routes[pindex].index;
 				break;
+			}
 		if (it == conf.routes[pindex].methods.end())
 		{
 			this->_status = 405;
