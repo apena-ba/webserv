@@ -33,6 +33,8 @@ private:
     typedef std::vector<std::pair<TEMP_CONFIGURATION, VECTOR_ROUTE > >  FINAL_MODEL;
 
     // Methods
+    void                            _checkDoubleHost(const VECTOR_CONFIG & configs);
+
     void                            _accessRoutePaths(const std::string &location_path,
                                                       const std::string &route_index_path);
 

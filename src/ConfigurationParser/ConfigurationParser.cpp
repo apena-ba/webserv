@@ -5,6 +5,16 @@
 #include "Route.hpp"
 
 
+void ConfigurationParser::_checkDoubleHost(const VECTOR_CONFIG & configs) {
+    for (UINT i = 0; i < configs.size(); i++) {
+        for (UINT j = i + 1; j < configs.size(); j++) {
+            if (configs[i].host == configs[j].host) {
+                throw BadFile("Error: Double host");
+            }
+        }
+    }
+}
+
 void ConfigurationParser::_accessRoutePaths(const std::string & location_path,
                                             const std::string & route_index_path){
     if (access(location_path.c_str(), F_OK) == -1) {
@@ -40,7 +50,7 @@ void ConfigurationParser::_accessPaths(FINAL_MODEL & model){
         if (error_page_path[0] == '/') {
             error_page_path.erase(error_page_path.begin());
         }
-        index_path = root_path + "/" + index_path;
+        index_path      = root_path + "/" + index_path;
         error_page_path = root_path + "/" + error_page_path;
         _accessGeneralPaths(root_path, index_path, error_page_path);
         model[i].first.forceSetRoot(root_path);
@@ -215,8 +225,8 @@ UINT ConfigurationParser::_findCloseBrace(STRING str) {
 
 ConfigurationParser::EXTRACTED_ROUTE_MODEL
 ConfigurationParser::_extractRoute(VECTOR_STRING servers) {
-    UINT		    close_route_brace;
-    UINT		    open_route_brace;
+    UINT		            close_route_brace;
+    UINT		            open_route_brace;
     VECTOR_STRING		    routes;
     EXTRACTED_ROUTE_MODEL	return_pair;
 
@@ -255,6 +265,8 @@ VECTOR_CONFIG ConfigurationParser::parse(const STRING &path) {
     FINAL_MODEL             temp_model          = _dataToModel(pair_server_route);
     _accessPaths(temp_model);
     VECTOR_CONFIG           configs             = _modelToConfiguration(temp_model);
+    _accessPaths(configs);
+    _checkDoubleHost(configs);
     return configs;
 }
 

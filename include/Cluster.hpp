@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:02:05 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/02 19:29:50 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/04 17:43:08 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ class Cluster {
         std::vector<Server>     _allServers;
     public:
         Cluster();
-        Cluster(std::vector<Configuration> configs);
+        Cluster(std::vector<Configuration> &configs);
         Cluster(Cluster const &to_copy);
         ~Cluster();
         
