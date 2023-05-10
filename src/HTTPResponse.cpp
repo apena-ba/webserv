@@ -6,11 +6,13 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/09 20:03:58 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/10 16:54:26 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/HTTPResponse.hpp"
+
+const std::string	ERROR500PAGE = "<!DOCTYPE html><html><header><title>500 Internal Server Error</title></header><body><center><h3>Error! 500</h3></center><center>Something went wrong. The server wasn't able to load the corresponding error page, so this is what you get :(</center></body></html>";
 
 // The <<something>> to string conversion is done automatically by the string stream.
 template<typename T> static std::string	tostr(T thang)
@@ -55,7 +57,7 @@ std::string	HTTPResponse::fetchErrorPage(const std::string &file)
 	if (!in.is_open())
 	{
 		in.close();
-		return ("<!DOCTYPE html><html><header><title>500 Internal Server Error</title></header><body><center><h3>Error! 500</h3></center><center>Something went wrong. The server wasn't able to load the corresponding error page, so this is what you get :(</center></body></html>");
+		return (ERROR500PAGE);
 	}
 	else
 		ret.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
@@ -110,7 +112,7 @@ void	HTTPResponse::pos_perform(const Configuration &conf)
 	if (cgistr == "")
 	{
 		this->_status = 500;
-		this->_body = this->_errorPages[conf.host][this->_status];
+		this->_body = ERROR500PAGE;
 		return;
 	}
 	size_t	nulain = cgistr.find_first_of("\r\n\r\n");
