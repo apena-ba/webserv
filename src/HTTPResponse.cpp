@@ -147,7 +147,8 @@ void	HTTPResponse::patharchitect(const Configuration &conf)
 		path_info = loc.substr(i);
 		loc.erase(i);
 	}
-	this->_vals.insert(std::pair<std::string, std::string>("path_info", path_info));
+
+    this->_vals.insert(std::pair<std::string, std::string>("path_info", path_info));
 	// The location field of the _vals map must be concatenated to the root given in the config.
 	loc = conf.root + loc;
 }

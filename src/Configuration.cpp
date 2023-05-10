@@ -1,7 +1,11 @@
 #include "Configuration.hpp"
 
 STRING Configuration::getExtension(const STRING &path) {
-        STRING fileExtension = path.substr(path.find_last_of('.'));
+        unsigned int i = path.find_last_of('.');
+        if (i == std::string::npos) {
+            return "";
+        }
+        STRING fileExtension = path.substr();
         
         if (fileExtension == ".py") {
             return ".py";

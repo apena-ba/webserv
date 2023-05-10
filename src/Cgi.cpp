@@ -24,6 +24,8 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
     std::string content_length = "CONTENT_LENGTH=" + request.get("content-length");
     std::string document_root = "DOCUMENT_ROOT=" + config.root;
     std::string query_string = "QUERY_STRING=" + request.get("query-string");
+    std::string server_protocol = "SERVER_PROTOCOL=" + request.get("version");
+    std::string path_info = "PATH_INFO=";
     //TODO: QUERY_STRING
 
     env.push_back(redirect_status.c_str());
@@ -33,6 +35,9 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
     env.push_back(content_type.c_str());
     env.push_back(content_length.c_str());
     env.push_back(document_root.c_str());
+    env.push_back(query_string.c_str());
+    env.push_back(server_protocol.c_str());
+    env.push_back(path_info.c_str());
     env.push_back(NULL);
 
     std::vector<const char *> argv;
