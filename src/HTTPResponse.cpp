@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/10 16:54:26 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/10 16:59:48 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,7 @@ std::string	HTTPResponse::fetchErrorPage(const std::string &file)
 	std::string		ret;
 
 	if (!in.is_open())
-	{
-		in.close();
 		return (ERROR500PAGE);
-	}
 	else
 		ret.assign(std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>());
 	return (ret);
