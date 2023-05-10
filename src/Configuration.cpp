@@ -1,7 +1,7 @@
 #include "Configuration.hpp"
 
 STRING Configuration::getExtension(const STRING &path) {
-        unsigned int i = path.find_last_of('.');
+        size_t i = path.find_last_of('.');
         if (i == std::string::npos) {
             return "";
         }
