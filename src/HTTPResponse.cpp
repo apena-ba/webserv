@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/11 16:59:31 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/11 17:38:53 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,11 +112,9 @@ void	HTTPResponse::pos_perform(const Configuration &conf)
 		this->_body = ERROR500PAGE;
 		return;
 	}
-	size_t	nulain = cgistr.find_first_of("\r\n\r\n");
+	size_t	nulain = cgistr.find("\r\n\r\n");
 	this->_postHeaders = cgistr.substr(0, nulain + 2);
 	this->_body = cgistr.substr(nulain + 4);
-    std::cout << "post header: " << this->_postHeaders << std::endl;
-    std::cout << "post body: " << this->_body << std::endl;
 }
 
 void	HTTPResponse::del_perform(const Configuration &conf)
@@ -224,7 +222,7 @@ HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configur
 	// Write only the required headers, avoid repetition.
 	// 3:
 	this->_response += "Server: Jam⍺ Rushers' Webserv\r\n";
-	this->_response += "Content-Length: " + tostr(this->_body.size());
+	this->_response += "Content-Length: " + tostr(this->_body.size()) + "\r\n";
 	this->_response += this->_postHeaders + "\r\n\r\n";
 
 	// 4:

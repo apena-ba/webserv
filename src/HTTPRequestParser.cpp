@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/11 17:16:29 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/11 17:34:06 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void	handlehost(std::string &host, std::map<std::string, std::string> &va
 	
 	if (portPos != std::string::npos)
 	{
-		port = host.substr(portPos + 1, host.find_first_of("\r\n"));
+		port = host.substr(portPos + 1, host.find("\r\n"));
 		host.erase(portPos, port.size() + 1);
 		vals.insert(std::pair<std::string, std::string>("port", port));
 	}
@@ -153,7 +153,7 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 
 		i = eatupsspaces(req, i);
 
-		std::string	field = req.substr(i, req.find_first_of("\r\n", i) - i);
+		std::string	field = req.substr(i, req.find("\r\n", i) - i);
 		if (key == "host")
 			handlehost(field, _vals);
 		if (!this->_vals.insert(std::pair<std::string, std::string>(key, field)).second)
@@ -162,7 +162,7 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 			this->_status = 400;
 			//return false;
 		}
-		i = req.find_first_of("\r\n", i);
+		i = req.find("\r\n", i);
 		if (req.compare(i, 2, "\r\n"))
 		{
 			std::cerr << ">> Error: 400, bad end of line character pair in '" << key << "' line." << std::endl;
