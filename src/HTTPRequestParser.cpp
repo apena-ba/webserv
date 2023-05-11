@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/11 16:27:17 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/11 17:16:29 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,10 +95,10 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 		host = "";
 	abs_path = req.substr(i, req.find_first_of(" \t\v\r\n\f", i) - i);
 	uri += host + abs_path;
+	i += abs_path.size();
 	handlequery(abs_path, this->_vals);
 	this->_vals.insert(std::pair<std::string, std::string>("location", abs_path));
 	this->_vals.insert(std::pair<std::string, std::string>("uri", uri));
-	i += abs_path.size();
 
 	i = eatupsspaces(req, i);
 
