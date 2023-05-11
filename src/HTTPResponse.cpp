@@ -115,6 +115,8 @@ void	HTTPResponse::pos_perform(const Configuration &conf)
 	size_t	nulain = cgistr.find_first_of("\r\n\r\n");
 	this->_postHeaders = cgistr.substr(0, nulain + 2);
 	this->_body = cgistr.substr(nulain + 4);
+    std::cout << "post header: " << this->_postHeaders << std::endl;
+    std::cout << "post body: " << this->_body << std::endl;
 }
 
 void	HTTPResponse::del_perform(const Configuration &conf)

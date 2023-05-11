@@ -14,25 +14,17 @@ std::string Cgi::_findScript(const std::string & path){
 
 std::string Cgi::process(const HTTPRequestParser &request, const Configuration &config) {
 
-    for (std::map<std::string, std::string>::const_iterator it = request.getVals().begin(); it != request.getVals().end(); ++it)
+    /*for (std::map<std::string, std::string>::const_iterator it = request.getVals().begin(); it != request.getVals().end(); ++it)
     {
         std::cout << it->first << ": " << it->second << std::endl;
-    }
+    }*/
 
-    return "";
-    std::string phpcgi = config.cgi;
+    std::string phpcgi = "cgi_tester";
     std::string script = _findScript(request.get("location"));
     std::vector<const char *> env;
-    //std::string redirect_status = "REDIRECT_STATUS=200";
     std::string request_method = "REQUEST_METHOD=" + request.get("type");
-    //std::string script_filename = "SCRIPT_FILENAME=" + config.root + request.get("location");
-    //std::string script_name = "SCRIPT_NAME=" + request.get("location");
-    //std::string content_type = "CONTENT_TYPE=" + request.get("content-type");
-    //std::string content_length = "CONTENT_LENGTH=" + request.get("content-length");
-    //std::string document_root = "DOCUMENT_ROOT=" + config.root;
-    //std::string query_string = "QUERY_STRING=" + request.get("query-string");
     std::string server_protocol = "SERVER_PROTOCOL=" + request.get("version");
-    std::string path_info = "PATH_INFO=somepath";
+    std::string path_info = "PATH_INFO=" + request.get("location");
     //TODO: QUERY_STRING
 
     //env.push_back(redirect_status.c_str());
@@ -101,6 +93,7 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
         }
         close(stdout_pipefd[0]);
         wait(NULL);
+        std::cout << "response: " << response << std::endl;
         return response;
     }
 
