@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/10 19:07:16 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/11 10:52:02 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,14 +106,12 @@ void	HTTPResponse::pos_perform(const Configuration &conf)
 {
 	std::string	cgistr = Cgi::process(this->_request, conf);
 
-	std::cout << "'" << cgistr << "'" << std::endl;
 	if (cgistr == "")
 	{
 		this->_status = 500;
 		this->_body = ERROR500PAGE;
 		return;
 	}
-	std::cout << "HERE\n";
 	size_t	nulain = cgistr.find_first_of("\r\n\r\n");
 	this->_postHeaders = cgistr.substr(0, nulain + 2);
 	this->_body = cgistr.substr(nulain + 4);
@@ -147,8 +145,8 @@ void	HTTPResponse::patharchitect(const Configuration &conf)
 		path_info = loc.substr(i);
 		loc.erase(i);
 	}
-
     this->_vals.insert(std::pair<std::string, std::string>("path_info", path_info));
+
 	// The location field of the _vals map must be concatenated to the root given in the config.
 	loc = conf.root + loc;
 }
@@ -229,7 +227,6 @@ HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configur
 
 	// 4:
 	this->_response += this->_body;
-	std::cout << _response << std::endl;
 }
 
 HTTPResponse::~HTTPResponse() {}
