@@ -5,7 +5,7 @@ STRING Configuration::getExtension(const STRING &path) {
         if (i == std::string::npos) {
             return "";
         }
-        STRING fileExtension = path.substr();
+        STRING fileExtension = path.substr(i);
         
         if (fileExtension == ".py") {
             return ".py";
@@ -44,6 +44,9 @@ UINT Configuration::checkPath(STRING path) const {
                     || path.length() == location.length())) {
                 index_location_in_path.push_back(i);
             }
+        }
+        if (index_location_in_path.empty()) {
+            throw ConfigurationException("Path not found");
         }
         max_length_index = index_location_in_path[0];
         for (UINT j = 0; j < index_location_in_path.size(); j++) {
