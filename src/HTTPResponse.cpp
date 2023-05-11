@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/11 17:38:53 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/11 17:43:08 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,7 +223,7 @@ HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configur
 	// 3:
 	this->_response += "Server: Jam⍺ Rushers' Webserv\r\n";
 	this->_response += "Content-Length: " + tostr(this->_body.size()) + "\r\n";
-	this->_response += this->_postHeaders + "\r\n\r\n";
+	this->_response += this->_postHeaders + "\r\n";
 
 	// 4:
 	this->_response += this->_body;
