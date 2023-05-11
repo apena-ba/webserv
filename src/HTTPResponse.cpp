@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/11 16:33:52 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/11 16:59:31 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ void	HTTPResponse::patharchitect(const Configuration &conf)
 
 void	HTTPResponse::bodybuilder(const Configuration &conf)
 {
-	if (this->_status == 503) // Create the 503 error page.
+	if (this->_status != 200) // Create the 503 error page.
 	{
 		this->_body = this->_errorPages[conf.host][this->_status];
 		return;
