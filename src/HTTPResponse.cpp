@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/11 10:52:02 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/11 16:33:52 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ std::map<std::string, std::map<uint, std::string> >	HTTPResponse::_errorPages;
 
 void	HTTPResponse::get_perform(const Configuration &conf)
 {
-	if (Configuration::getExtension(this->_vals["location"]) == ".php")
+	if (Configuration::getExtension(this->_vals["location"]) == conf.cgi_extension)
 		return pos_perform(conf);
 
 	// Check existance and try to open the requested file.
@@ -139,9 +139,9 @@ void	HTTPResponse::patharchitect(const Configuration &conf)
 	std::string	path_info = "";
 	std::string	&loc = this->_vals["location"];
 
-	if (Configuration::getExtension(loc) == ".php")
+	if (Configuration::getExtension(loc) == conf.cgi_extension)
 	{
-		size_t	i = loc.find(".php") + 4;
+		size_t	i = loc.find(conf.cgi_extension) + conf.cgi_extension.size();
 		path_info = loc.substr(i);
 		loc.erase(i);
 	}
