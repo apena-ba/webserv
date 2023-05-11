@@ -4,7 +4,6 @@
 #include "ConfigurationParser/utils/_TempRoute.hpp"
 #include "Route.hpp"
 
-
 void ConfigurationParser::_checkDoubleHost(const VECTOR_CONFIG & configs) {
     for (UINT i = 0; i < configs.size(); i++) {
         for (UINT j = i + 1; j < configs.size(); j++) {
@@ -74,7 +73,8 @@ Configuration ConfigurationParser::_toConfiguration
 		    server.getClientBodyMaxSize(),
             server.getRoot(),
             server.getIndex(),
-            server.getPhpCgiPath(),
+            server.getCgiPath(),
+            server.getCgiExtension(),
 		    routes);
     return conf;
 }
@@ -155,7 +155,6 @@ VECTOR_ROUTE ConfigurationParser::_tmpToRoute(VECTOR_TEMP_ROUTE data, std::strin
             if (route_index_path[0] == '/') {
                 route_index_path.erase(route_index_path.begin());
             }
-
             route_index_path = location_path + "/" + route_index_path;
             if (location_path == root_path){
                 location_path += "/";

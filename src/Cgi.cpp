@@ -13,33 +13,41 @@ std::string Cgi::_findScript(const std::string & path){
 }
 
 std::string Cgi::process(const HTTPRequestParser &request, const Configuration &config) {
-    std::string phpcgi = config.php_cgi;
+
+    for (std::map<std::string, std::string>::const_iterator it = request.getVals().begin(); it != request.getVals().end(); ++it)
+    {
+        std::cout << it->first << ": " << it->second << std::endl;
+    }
+
+    return "";
+    std::string phpcgi = config.cgi;
     std::string script = _findScript(request.get("location"));
     std::vector<const char *> env;
-    std::string redirect_status = "REDIRECT_STATUS=200";
+    //std::string redirect_status = "REDIRECT_STATUS=200";
     std::string request_method = "REQUEST_METHOD=" + request.get("type");
-    std::string script_filename = "SCRIPT_FILENAME=" + config.root + request.get("location");
-    std::string script_name = "SCRIPT_NAME=" + request.get("location");
-    std::string content_type = "CONTENT_TYPE=" + request.get("content-type");
-    std::string content_length = "CONTENT_LENGTH=" + request.get("content-length");
-    std::string document_root = "DOCUMENT_ROOT=" + config.root;
-    std::string query_string = "QUERY_STRING=" + request.get("query-string");
+    //std::string script_filename = "SCRIPT_FILENAME=" + config.root + request.get("location");
+    //std::string script_name = "SCRIPT_NAME=" + request.get("location");
+    //std::string content_type = "CONTENT_TYPE=" + request.get("content-type");
+    //std::string content_length = "CONTENT_LENGTH=" + request.get("content-length");
+    //std::string document_root = "DOCUMENT_ROOT=" + config.root;
+    //std::string query_string = "QUERY_STRING=" + request.get("query-string");
     std::string server_protocol = "SERVER_PROTOCOL=" + request.get("version");
-    std::string path_info = "PATH_INFO=";
+    std::string path_info = "PATH_INFO=somepath";
     //TODO: QUERY_STRING
 
-    env.push_back(redirect_status.c_str());
+    //env.push_back(redirect_status.c_str());
     env.push_back(request_method.c_str());
-    env.push_back(script_filename.c_str());
-    env.push_back(script_name.c_str());
-    env.push_back(content_type.c_str());
-    env.push_back(content_length.c_str());
-    env.push_back(document_root.c_str());
-    env.push_back(query_string.c_str());
+    //env.push_back(script_filename.c_str());
+    //env.push_back(script_name.c_str());
+    //env.push_back(content_type.c_str());
+    //env.push_back(content_length.c_str());
+    //env.push_back(document_root.c_str());
+    //env.push_back(query_string.c_str());
     env.push_back(server_protocol.c_str());
     env.push_back(path_info.c_str());
     env.push_back(NULL);
-
+    for (size_t i = 0; env[i] != NULL; i++)
+        std::cout << env[i] << std::endl;
     std::vector<const char *> argv;
     argv.push_back(phpcgi.c_str());
     argv.push_back("-q");
@@ -77,8 +85,8 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
         std::cerr << "execve failed" << std::endl;
         std::cerr << "code d'erreur: " << errno << std::endl;
         std::cerr << "erreur: " << strerror(errno) << std::endl;
-        std::cout << "script_name: " << script_name << std::endl;
-        std::cout << "script_name: " << script_filename << std::endl;
+        //std::cout << "script_name: " << script_name << std::endl;
+        //std::cout << "script_name: " << script_filename << std::endl;
         return "";
     } else {
         close(stdin_pipefd[0]);

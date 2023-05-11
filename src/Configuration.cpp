@@ -7,16 +7,7 @@ STRING Configuration::getExtension(const STRING &path) {
         }
         STRING fileExtension = path.substr(i);
         
-        if (fileExtension == ".py") {
-            return ".py";
-        }
-        if (fileExtension == ".php") {
-            return ".php";
-        }
-        if (fileExtension == ".html") {
-            return ".html";
-        }
-        return "";
+        return fileExtension;
 }
 
 UINT Configuration::checkPath(STRING path) const {
