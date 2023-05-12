@@ -21,7 +21,7 @@ static std::string _replaceAllOccurence(std::string str, const std::string& from
     return str;
 }
 
-std::string Cgi::process(const HTTPRequestParser &request, const Configuration &config) {
+std::string Cgi::process(const HTTPRequestParser &request, const Configuration &config, std::string body) {
     std::string phpcgi = config.cgi;
     std::string script = _findScript(request.get("location"));
     std::vector<std::string> env;
@@ -36,7 +36,7 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
     std::string env_var;
     for (std::map<std::string, std::string>::const_iterator it = request.getVals().begin(); it != request.getVals().end(); ++it)
     {
-        std::cout << "request: " << it->first << ": " << it->second << std::endl;
+        //std::cout << "request: " << it->first << ": " << it->second << std::endl;
         env_var = _replaceAllOccurence(env_var, "-", "_");
         env.push_back(env_var);
     }
@@ -86,7 +86,6 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
         return "";
     } else {
         close(stdin_pipefd[0]);
-        std::string body = request.get("body");
         write(stdin_pipefd[1], body.c_str(), body.length());
         close(stdin_pipefd[1]);
         close(stdout_pipefd[1]);
@@ -97,6 +96,7 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
         }
         close(stdout_pipefd[0]);
         wait(NULL);
+        std::cout << "cgi_response: " << response << std::endl;
         return response;
     }
 }
