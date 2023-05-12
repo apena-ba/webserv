@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/12 15:51:36 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/12 15:54:00 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,14 +78,14 @@ void	HTTPResponse::fillerrorpages(const Configuration &conf)
 std::map<std::string, std::map<uint, std::string> >	HTTPResponse::_errorPages;
 ////////////////////////////////////////////////////////////////////////////////
 
-void	HTTPResponse::read_file(const Configuration &conf)
+bool	HTTPResponse::read_file(const Configuration &conf)
 {
 	// Check existance and try to open the requested file.
 	if (access(this->_vals["location"].c_str(), F_OK))
 	{
 		this->_status = 404;
 		this->_body = this->_errorPages[conf.host][this->_status];
-		return;
+		return false;
 	}
 	std::ifstream	file(this->_vals["location"]);
 	if (!file.is_open())
@@ -93,10 +93,11 @@ void	HTTPResponse::read_file(const Configuration &conf)
 		this->_status = 403;
 		this->_body = this->_errorPages[conf.host][this->_status];
 		file.close();
-		return;
+		return false;
 	}
 	this->_body.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()); // Put the whole file into the body string.
 	file.close();
+	return true;
 }
 
 std::string	HTTPResponse::run_cgi(const Configuration &conf)
@@ -120,7 +121,8 @@ void	HTTPResponse::store_cgi(const std::string &cgistr)
 
 void	HTTPResponse::get_perform(const Configuration &conf)
 {
-	read_file(conf);
+	if (!read_file(conf))
+		return;
 	if (Configuration::getExtension(this->_vals["location"]) == conf.cgi_extension)
 	{
 		std::string	cgistr = run_cgi(conf);
@@ -132,7 +134,8 @@ void	HTTPResponse::get_perform(const Configuration &conf)
 
 void	HTTPResponse::pos_perform(const Configuration &conf)
 {
-	read_file(conf);
+	if (!read_file(conf))
+		return;
 	std::string	cgistr = run_cgi(conf);
 	if (this->_vals["location"].back() == '/')
 	{
