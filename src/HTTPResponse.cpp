@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/11 17:43:08 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/12 13:54:29 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,6 @@ std::map<std::string, std::map<uint, std::string> >	HTTPResponse::_errorPages;
 
 void	HTTPResponse::get_perform(const Configuration &conf)
 {
-	if (Configuration::getExtension(this->_vals["location"]) == conf.cgi_extension)
-		return pos_perform(conf);
-
 	// Check existance and try to open the requested file.
 	if (access(this->_vals["location"].c_str(), F_OK))
 	{
@@ -100,6 +97,10 @@ void	HTTPResponse::get_perform(const Configuration &conf)
 	}
 	this->_body.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()); // Put the whole file into the body string.
 	file.close();
+
+	if (Configuration::getExtension(this->_vals["location"]) == conf.cgi_extension)
+		return pos_perform(conf);
+
 }
 
 void	HTTPResponse::pos_perform(const Configuration &conf)
@@ -111,6 +112,18 @@ void	HTTPResponse::pos_perform(const Configuration &conf)
 		this->_status = 500;
 		this->_body = ERROR500PAGE;
 		return;
+	}
+	if (this->_vals["type"] == "POST" && this->_vals["path_info"].find("create=true") != std::string::npos)
+	{
+		std::ofstream	oFile(this->_vals["location"], std::ios::trunc); // Overwrite whatever was inside the file.
+		if (!oFile.is_open())
+		{
+			this->_status = 404;
+			this->_body = this->_errorPages[conf.host][this->_status];
+			return;
+		}
+		oFile << this->_vals["body"];
+		oFile.close();
 	}
 	size_t	nulain = cgistr.find("\r\n\r\n");
 	this->_postHeaders = cgistr.substr(0, nulain + 2);
