@@ -21,7 +21,7 @@ static std::string _replaceAllOccurence(std::string str, const std::string& from
     return str;
 }
 
-std::string Cgi::process(const HTTPRequestParser &request, const Configuration &config, std::string body) {
+std::string Cgi::process(const HTTPRequestParser &request, const Configuration &config, std::string stdin_content) {
     std::string phpcgi = config.cgi;
     std::string script = _findScript(request.get("location"));
     std::vector<std::string> env;
@@ -86,7 +86,7 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
         return "";
     } else {
         close(stdin_pipefd[0]);
-        write(stdin_pipefd[1], body.c_str(), body.length());
+        write(stdin_pipefd[1], stdin_content.c_str(), stdin_content.length());
         close(stdin_pipefd[1]);
         close(stdout_pipefd[1]);
         char buffer[1];
