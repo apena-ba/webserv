@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/12 16:03:02 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/12 16:11:36 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,15 +138,19 @@ void	HTTPResponse::pos_perform(const Configuration &conf)
 	 *     return; */
 	this->_body = this->_vals["body"];
 	std::string	cgistr = run_cgi(conf);
-	if (this->_vals["location"].back() == '/')
+	if (this->_isDir)
 	{
 		store_cgi(cgistr);
 		return;
 	}
 
-	std::ofstream	oFile;
-	//if (this->_vals["path_info"].find("create=true") != std::string::npos)
-	oFile.open(this->_vals["location"], std::ios::trunc); // Overwrite whatever was inside the file.
+	if (this->_vals["path_info"].find("create=true") == std::string::npos && access(this->_vals["location"].c_str(), F_OK))
+	{
+		this->_status = 404;
+		this->_body = this->_errorPages[conf.host][this->_status];
+		return;
+	}
+	std::ofstream	oFile(this->_vals["location"], std::ios::trunc); // Overwrite whatever was inside the file.
 	if (!oFile.is_open())
 	{
 		this->_status = 404;
@@ -179,6 +183,9 @@ void	HTTPResponse::patharchitect(const Configuration &conf)
 {
 	std::string	path_info = "";
 	std::string	&loc = this->_vals["location"];
+
+	if (this->_vals["location"].back() == '/')
+		this->_isDir = true;
 
 	if (Configuration::getExtension(loc) == conf.cgi_extension)
 	{
@@ -249,7 +256,7 @@ void	HTTPResponse::bodybuilder(const Configuration &conf)
 // [2]The first line of the response is then built by concatenation.
 // [3]Build the header lines as simple '<key>: <value>\r\n' strings.
 // [4]Add the body and voilà, a hot served response!
-HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configuration &conf) : HTTPRequestParser(givenRequest), _postHeaders(""), _request(givenRequest)
+HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configuration &conf) : HTTPRequestParser(givenRequest), _postHeaders(""), _request(givenRequest), _isDir(false)
 {
 	// Build the body if the method requires it, try access again and update status accordingly
 	bodybuilder(conf);

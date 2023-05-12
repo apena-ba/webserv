@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 10:51:55 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/12 15:53:32 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/12 16:10:18 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ class HTTPResponse : public HTTPRequestParser
 		void								pos_perform(const Configuration &conf);
 		void								del_perform(const Configuration &conf);
 
+		bool														_isDir;
 		std::string													_strStatus;
 		std::string													_response;
 		std::string													_postHeaders;
