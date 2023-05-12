@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/12 15:42:36 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/12 15:51:36 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,18 +140,17 @@ void	HTTPResponse::pos_perform(const Configuration &conf)
 		return;
 	}
 
-	if (this->_vals["path_info"].find("create=true") != std::string::npos)
+	std::ofstream	oFile;
+	//if (this->_vals["path_info"].find("create=true") != std::string::npos)
+	oFile.open(this->_vals["location"], std::ios::trunc); // Overwrite whatever was inside the file.
+	if (!oFile.is_open())
 	{
-		std::ofstream	oFile(this->_vals["location"], std::ios::trunc); // Overwrite whatever was inside the file.
-		if (!oFile.is_open())
-		{
-			this->_status = 404;
-			this->_body = this->_errorPages[conf.host][this->_status];
-			return;
-		}
-		oFile << this->_vals["body"];
-		oFile.close();
+		this->_status = 404;
+		this->_body = this->_errorPages[conf.host][this->_status];
+		return;
 	}
+	oFile << this->_vals["body"];
+	oFile.close();
 	store_cgi(cgistr);
 }
 
