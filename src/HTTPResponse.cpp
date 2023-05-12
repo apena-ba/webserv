@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/12 13:54:29 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/12 13:59:37 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	HTTPResponse::get_perform(const Configuration &conf)
 
 void	HTTPResponse::pos_perform(const Configuration &conf)
 {
-	std::string	cgistr = Cgi::process(this->_request, conf);
+	std::string	cgistr = Cgi::process(this->_request, conf, this->_vals["body"]);
 
 	if (cgistr == "")
 	{
