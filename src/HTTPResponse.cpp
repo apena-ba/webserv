@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/12 14:02:47 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/12 15:42:36 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	HTTPResponse::fillerrorpages(const Configuration &conf)
 std::map<std::string, std::map<uint, std::string> >	HTTPResponse::_errorPages;
 ////////////////////////////////////////////////////////////////////////////////
 
-void	HTTPResponse::get_perform(const Configuration &conf)
+void	HTTPResponse::read_file(const Configuration &conf)
 {
 	// Check existance and try to open the requested file.
 	if (access(this->_vals["location"].c_str(), F_OK))
@@ -97,13 +97,9 @@ void	HTTPResponse::get_perform(const Configuration &conf)
 	}
 	this->_body.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()); // Put the whole file into the body string.
 	file.close();
-
-	if (Configuration::getExtension(this->_vals["location"]) == conf.cgi_extension)
-		return pos_perform(conf);
-
 }
 
-void	HTTPResponse::pos_perform(const Configuration &conf)
+std::string	HTTPResponse::run_cgi(const Configuration &conf)
 {
 	std::string	cgistr = Cgi::process(this->_request, conf, this->_body);
 
@@ -111,9 +107,40 @@ void	HTTPResponse::pos_perform(const Configuration &conf)
 	{
 		this->_status = 500;
 		this->_body = ERROR500PAGE;
+	}
+	return cgistr;
+}
+
+void	HTTPResponse::store_cgi(const std::string &cgistr)
+{
+	size_t	nulain = cgistr.find("\r\n\r\n");
+	this->_postHeaders = cgistr.substr(0, nulain + 2);
+	this->_body = cgistr.substr(nulain + 4);
+}
+
+void	HTTPResponse::get_perform(const Configuration &conf)
+{
+	read_file(conf);
+	if (Configuration::getExtension(this->_vals["location"]) == conf.cgi_extension)
+	{
+		std::string	cgistr = run_cgi(conf);
+		if (cgistr == "")
+			return;
+		store_cgi(cgistr);
+	}
+}
+
+void	HTTPResponse::pos_perform(const Configuration &conf)
+{
+	read_file(conf);
+	std::string	cgistr = run_cgi(conf);
+	if (this->_vals["location"].back() == '/')
+	{
+		store_cgi(cgistr);
 		return;
 	}
-	if (this->_vals["type"] == "POST" && this->_vals["path_info"].find("create=true") != std::string::npos)
+
+	if (this->_vals["path_info"].find("create=true") != std::string::npos)
 	{
 		std::ofstream	oFile(this->_vals["location"], std::ios::trunc); // Overwrite whatever was inside the file.
 		if (!oFile.is_open())
@@ -125,9 +152,7 @@ void	HTTPResponse::pos_perform(const Configuration &conf)
 		oFile << this->_vals["body"];
 		oFile.close();
 	}
-	size_t	nulain = cgistr.find("\r\n\r\n");
-	this->_postHeaders = cgistr.substr(0, nulain + 2);
-	this->_body = cgistr.substr(nulain + 4);
+	store_cgi(cgistr);
 }
 
 void	HTTPResponse::del_perform(const Configuration &conf)
