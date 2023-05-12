@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/12 16:35:40 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/12 16:43:28 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,19 +181,10 @@ void	HTTPResponse::del_perform(const Configuration &conf)
 
 void	HTTPResponse::patharchitect(const Configuration &conf)
 {
-	std::string	path_info = "";
 	std::string	&loc = this->_vals["location"];
 
 	if (this->_vals["location"].back() == '/')
 		this->_isDir = true;
-
-	if (Configuration::getExtension(loc) == conf.cgi_extension)
-	{
-		size_t	i = loc.find(conf.cgi_extension) + conf.cgi_extension.size();
-		path_info = loc.substr(i);
-		loc.erase(i);
-	}
-    this->_vals.insert(std::pair<std::string, std::string>("path_info", path_info));
 
 	// The location field of the _vals map must be concatenated to the root given in the config.
 	loc = conf.root + loc;
