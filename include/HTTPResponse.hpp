@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 10:51:55 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/12 16:10:18 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/12 16:56:32 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class HTTPResponse : public HTTPRequestParser
 		static std::string					fetchErrorPage(const std::string &file);
 		void								bodybuilder(const Configuration &conf);
 		void								patharchitect(const Configuration &conf);
+		bool								isredir(uint pindex, const Configuration &conf);
 		bool								read_file(const Configuration &conf);
 		std::string							run_cgi(const Configuration &conf);
 		void								store_cgi(const std::string &cgistr);

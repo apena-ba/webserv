@@ -6,13 +6,14 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/12 16:43:28 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/12 17:03:21 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/HTTPResponse.hpp"
 
 const std::string	ERROR500PAGE = "<!DOCTYPE html><html><header><title>500 Internal Server Error</title></header><body><center><h3>Error! 500</h3></center><center>Something went wrong. The server wasn't able to load the corresponding error page, so this is what you get :(</center></body></html>";
+const std::string	ERROR301PAGE = "<!DOCTYPE html><html><header><title>301 Moved Permanently</title></header><body><center><h3>Error! 301</h3></center><center>It appears you've tryed accessing forbidden realms... Begone you!</center></body></html>";
 
 // The <<something>> to string conversion is done automatically by the string stream.
 template<typename T> static std::string	tostr(T thang)
@@ -37,6 +38,7 @@ std::map<uint, std::string>	HTTPResponse::fillstatusmessages()
 
 	msgs.insert(std::pair<uint, std::string>(200, "OK"));
 	msgs.insert(std::pair<uint, std::string>(204, "No Content"));
+	msgs.insert(std::pair<uint, std::string>(301, "Moved Permanently"));
 	msgs.insert(std::pair<uint, std::string>(400, "Bad Request"));
 	msgs.insert(std::pair<uint, std::string>(403, "Forbidden"));
 	msgs.insert(std::pair<uint, std::string>(404, "Not Found"));
@@ -66,6 +68,7 @@ void	HTTPResponse::fillerrorpages(const Configuration &conf)
 	_errorPages[conf.host].insert(std::pair<uint, std::string>(204, "")); // The body for this one shall be left empty.
 	
 	// This will only work properly if all paths in the config are stored with their absolute path using the config root.
+	_errorPages[conf.host].insert(std::pair<uint, std::string>(301, ERROR301PAGE));
 	_errorPages[conf.host].insert(std::pair<uint, std::string>(400, fetchErrorPage(conf.defaultErrorPage + "/400.html")));
 	_errorPages[conf.host].insert(std::pair<uint, std::string>(403, fetchErrorPage(conf.defaultErrorPage + "/403.html")));
 	_errorPages[conf.host].insert(std::pair<uint, std::string>(404, fetchErrorPage(conf.defaultErrorPage + "/404.html")));
@@ -179,6 +182,18 @@ void	HTTPResponse::del_perform(const Configuration &conf)
 	this->_body = this->_errorPages[conf.host][this->_status];
 }
 
+bool	HTTPResponse::isredir(uint pindex, const Configuration &conf)
+{
+	if (!conf.routes[pindex].redirection.empty())
+	{
+		this->_status = 301;
+		this->_body = this->_errorPages[conf.host][this->_status];
+		this->_postHeaders = "Location: " + conf.routes[pindex].redirection;
+		return true;
+	}
+	return false;
+}
+
 void	HTTPResponse::patharchitect(const Configuration &conf)
 {
 	std::string	&loc = this->_vals["location"];
@@ -219,6 +234,8 @@ void	HTTPResponse::bodybuilder(const Configuration &conf)
 			this->_body = this->_errorPages[conf.host][this->_status];
 			return;
 		}
+		if (isredir(pindex, conf))
+			return;
 	}
 	catch (const std::exception &e)
 	{
