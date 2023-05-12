@@ -12,16 +12,22 @@ private:
 
     STRING          _location;
 
+    STRING          _redirection;
+
     void            _setIndex(const STRING &index);
 
     void            _setMethods(const STRING &methods_input);
 
     void            _setLocation(STRING location);
 
+    void            _setRedirection(const STRING &redirection);
+
 public:
     _TempRoute();
 
     ~_TempRoute();
+
+    STRING          getRedirection() const;
 
     STRING          getIndex() const;
 

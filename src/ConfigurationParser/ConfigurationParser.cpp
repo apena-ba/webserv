@@ -159,7 +159,7 @@ VECTOR_ROUTE ConfigurationParser::_tmpToRoute(VECTOR_TEMP_ROUTE data, std::strin
             if (location_path == root_path){
                 location_path += "/";
             }
-        routes.push_back(Route(route_index_path, data[i].getMethods(), location_path));
+        routes.push_back(Route(route_index_path, data[i].getMethods(), location_path, data[i].getRedirection()));
     }
     if (_checkDoubleRoute(routes)) {
         throw BadFile("Error: Bad route format: Both route have the same location");

@@ -204,7 +204,6 @@ void ConfigurationParser::TEMP_CONFIGURATION::forceSetDefaultErrorPage(const STR
 }
 
 void ConfigurationParser::TEMP_CONFIGURATION::setFields(const STRING &field, STRING value) {
-
     if (field == "cgi_extension") {
         this->_setCgiExtension(value);
     }

@@ -61,6 +61,14 @@ void ConfigurationParser::TEMP_ROUTE::_setLocation(STRING location) {
     this->_location = location;
 }
 
+void ConfigurationParser::TEMP_ROUTE::_setRedirection(const STRING &redirection){
+    if (!this->_redirection.empty()) {
+        throw ErrorParsing("Error: route: redirection already set");
+    }
+    this->_redirection = "http://" + redirection;
+}
+
+
 ConfigurationParser::TEMP_ROUTE::_TempRoute() {}
 
 ConfigurationParser::TEMP_ROUTE::~_TempRoute() {}
@@ -75,6 +83,10 @@ STRING ConfigurationParser::TEMP_ROUTE::getLocation() const {
 
 VECTOR_STRING ConfigurationParser::TEMP_ROUTE::getMethods() const {
     return this->_methods;
+}
+
+STRING ConfigurationParser::TEMP_ROUTE::getRedirection() const{
+    return this->_redirection;
 }
 
 bool ConfigurationParser::TEMP_ROUTE::checkAllFieldsSet() {
@@ -99,7 +111,9 @@ void ConfigurationParser::TEMP_ROUTE::forceSetIndex(STRING index){
 }
 
 void ConfigurationParser::TEMP_ROUTE::setFields(STRING &field, STRING &value) {
-    if (field == "methods") {
+    if (field == "redirection") {
+        this->_setRedirection(value);
+    } else if (field == "methods") {
         _setMethods(value);
     } else if (field == "location") {
         this->_setLocation(value);

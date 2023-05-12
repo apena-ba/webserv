@@ -184,6 +184,7 @@ void	HTTPResponse::del_perform(const Configuration &conf)
 
 bool	HTTPResponse::isredir(uint pindex, const Configuration &conf)
 {
+    std::cout << "index : " << pindex <<  " redirection: " << conf.routes[pindex].redirection << std::endl;
 	if (!conf.routes[pindex].redirection.empty())
 	{
 		this->_status = 301;
@@ -283,6 +284,7 @@ HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configur
 
 	// 4:
 	this->_response += this->_body;
+    std::cout << "Response: " << this->_response << std::endl;
 }
 
 HTTPResponse::~HTTPResponse() {}
