@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/12 16:11:36 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/12 16:35:40 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ void	HTTPResponse::pos_perform(const Configuration &conf)
 		return;
 	}
 
-	if (this->_vals["path_info"].find("create=true") == std::string::npos && access(this->_vals["location"].c_str(), F_OK))
+	if (this->_vals["query_string"].find("create=true") == std::string::npos && access(this->_vals["location"].c_str(), F_OK))
 	{
 		this->_status = 404;
 		this->_body = this->_errorPages[conf.host][this->_status];
@@ -256,7 +256,7 @@ void	HTTPResponse::bodybuilder(const Configuration &conf)
 // [2]The first line of the response is then built by concatenation.
 // [3]Build the header lines as simple '<key>: <value>\r\n' strings.
 // [4]Add the body and voilà, a hot served response!
-HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configuration &conf) : HTTPRequestParser(givenRequest), _postHeaders(""), _request(givenRequest), _isDir(false)
+HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configuration &conf) : HTTPRequestParser(givenRequest), _isDir(false), _postHeaders(""), _request(givenRequest)
 {
 	// Build the body if the method requires it, try access again and update status accordingly
 	bodybuilder(conf);
