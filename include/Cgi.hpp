@@ -7,9 +7,8 @@
 
 class Cgi{
 private:
-    static std::string _findScript(const std::string & path);
-    static std::vector<const char *> _fillEnv(HTTPRequestParser &request,
-                                const Configuration & config);
+    static std::string                  _findScript(const std::string & path);
+    static std::vector<const char *>    _fillEnv(HTTPRequestParser &request, const Configuration & config);
 public:
     static std::string process(const HTTPRequestParser &request, const Configuration & config, std::string stdin_content);
 };
