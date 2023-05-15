@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/11 17:34:06 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/15 19:33:18 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,6 @@ static void	makeitlower(std::string &str)
 	for (uint i = 0; i < str.size(); i++)
 		str[i] = std::tolower(str[i]);
 }
-
-/* static bool	iskeygoodboi(const std::string &key, const std::vector<std::string> &requestHeaderFields)
- * {
- *     for (uint i = 0; i < requestHeaderFields.size(); i++)
- *         if (key == requestHeaderFields[i])
- *             return true;
- *     return false;
- * } */
 
 static void	handlehost(std::string &host, std::map<std::string, std::string> &vals)
 {
@@ -143,12 +135,6 @@ bool	HTTPRequestParser::parseheaders(const std::string &req, uint32_t &i)
 	{
 		std::string	key = req.substr(i, req.find(":", i) - i);
 		makeitlower(key);
-		/* if (!iskeygoodboi(key, this->_requestHeaderFields))
-		 * {
-		 *     std::cerr << ">> Error: 400, bad request header field (" << key << ")." << std::endl;
-		 *     this->_status = 400;
-		 *     return false;
-		 * } */
 		i += key.size() + 1; // Skip the ':' with that + 1
 
 		i = eatupsspaces(req, i);
@@ -188,44 +174,6 @@ bool	HTTPRequestParser::parsebody(const std::string &req, uint32_t &i)
 	this->_vals.insert(std::pair<std::string, std::string>("body", body));
 	return true;
 }
-
-///Declaring the allowed header fields//////////////////////////////////////////
-/* std::vector<std::string>	HTTPRequestParser::fillrequestheaderfields()
- * {
- *     std::vector<std::string>	fields;
- *
- *     fields.push_back("accept");
- *     fields.push_back("accept-charset");
- *     fields.push_back("accept-encoding");
- *     fields.push_back("accept-language");
- *     fields.push_back("authorization");
- *     fields.push_back("expect");
- *     fields.push_back("connection");
- *     fields.push_back("content-length");
- *     fields.push_back("content-type");
- *     fields.push_back("from");
- *     fields.push_back("host");
- *     fields.push_back("if-match");
- *     fields.push_back("if-modified-since");
- *     fields.push_back("if-none-match");
- *     fields.push_back("if-range");
- *     fields.push_back("if-unmodified-since");
- *     fields.push_back("max-forwards");
- *     fields.push_back("proxy-authorization");
- *     fields.push_back("range");
- *     fields.push_back("referer");
- *     fields.push_back("sec-fetch-dest");
- *     fields.push_back("sec-fetch-mode");
- *     fields.push_back("sec-fetch-site");
- *     fields.push_back("sec-fetch-user");
- *     fields.push_back("te");
- *     fields.push_back("upgrade-insecure-requests");
- *     fields.push_back("user-agent");
- *     return (fields);
- * }
- *
- * std::vector<std::string>	HTTPRequestParser::_requestHeaderFields = HTTPRequestParser::fillrequestheaderfields(); */
-////////////////////////////////////////////////////////////////////////////////
 
 HTTPRequestParser::HTTPRequestParser(const std::string &req)
 {

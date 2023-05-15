@@ -6,14 +6,14 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/12 17:03:21 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/15 19:32:16 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/HTTPResponse.hpp"
 
 const std::string	ERROR500PAGE = "<!DOCTYPE html><html><header><title>500 Internal Server Error</title></header><body><center><h3>Error! 500</h3></center><center>Something went wrong. The server wasn't able to load the corresponding error page, so this is what you get :(</center></body></html>";
-const std::string	ERROR301PAGE = "<!DOCTYPE html><html><header><title>301 Moved Permanently</title></header><body><center><h3>Error! 301</h3></center><center>It appears you've tryed accessing forbidden realms... Begone you!</center></body></html>";
+const std::string	ERROR301PAGE = "<!DOCTYPE html><html><header><title>301 Moved Permanently</title></header><body><center><h3>Error! 301</h3></center><center>It appears you've tried accessing forbidden realms... Begone you!</center></body></html>";
 
 // The <<something>> to string conversion is done automatically by the string stream.
 template<typename T> static std::string	tostr(T thang)
@@ -184,7 +184,6 @@ void	HTTPResponse::del_perform(const Configuration &conf)
 
 bool	HTTPResponse::isredir(uint pindex, const Configuration &conf)
 {
-    std::cout << "index : " << pindex <<  " redirection: " << conf.routes[pindex].redirection << std::endl;
 	if (!conf.routes[pindex].redirection.empty())
 	{
 		this->_status = 301;
@@ -284,7 +283,6 @@ HTTPResponse::HTTPResponse(const HTTPRequestParser &givenRequest, const Configur
 
 	// 4:
 	this->_response += this->_body;
-    std::cout << "Response: " << this->_response << std::endl;
 }
 
 HTTPResponse::~HTTPResponse() {}
