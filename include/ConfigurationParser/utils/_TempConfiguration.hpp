@@ -1,7 +1,7 @@
 #ifndef TEMP_CONFIGURATION_HPP
 #define TEMP_CONFIGURATION_HPP
 
-#include "../../../../webservfinaltest/include/ConfigurationParser/ConfigurationParser.hpp"
+#include "ConfigurationParser.hpp"
 #include "macro.hpp"
 
 class ConfigurationParser::_TempConfiguration {

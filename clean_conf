@@ -5,6 +5,7 @@ server{
     max_clients : 10;
     host : localhost;
     ports : 8080;
+    cgi : /Users/apena-ba/Documents/Proyectos/webserv/cgi_tester;
     cgi_extension : .php;
     index: /index.html;
     route {
