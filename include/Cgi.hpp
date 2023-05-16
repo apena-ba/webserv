@@ -5,7 +5,7 @@
 #include "HTTPRequestParser.hpp"
 #include "Configuration.hpp"
 
-# define CGI_PATH "/Users/emilefournout/webservfinaltest/cgi_tester";
+# define CGI_PATH "/Users/apena-ba/Documents/Proyectos/webserv/cgi_tester";
 
 class Cgi{
 private:

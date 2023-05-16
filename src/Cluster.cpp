@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:08:07 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/06 17:38:42 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/16 16:40:50 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void Cluster::run(void) {
         this->updatePortsFds();
         // -1 Error
         if (ret_poll == -1)
-            throw (Cluster::FailPollException());
+            continue;
         // If the return is ok, we run every server
         for (unsigned int i = 0; i < this->_ports.size(); i++)
             this->_ports[i].run();

@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:47:14 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/06 17:39:30 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/16 16:51:11 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Port::Port(unsigned int portNumber, std::vector<Server*> servers) : _timeOutRead
     this->_portFd = socket(AF_INET, SOCK_STREAM, 0);
     if (this->_portFd < 1)
         throw (Port::FailSocketDeclarationException());
-    std::cout << "Port number " << portNumber << " fd = " << this->_portFd  << " is on" << std::endl;
+    std::cout << "Port number " << portNumber << " is on" << std::endl;
     if(this->setSockTimeOut(this->_portFd) == false)
         throw (Port::FailTimeOutException());
     this->_addressLen = sizeof(this->_address);
@@ -102,8 +102,6 @@ void Port::createNewClient(void)
     struct sockaddr_in  client_address;
     socklen_t           client_address_length = sizeof(client_address);
 
-    std::cout << std::endl << "NEW CLIENT" << std::endl;
-
     new_client = accept(this->_pollFds[0].fd, (struct sockaddr *)&client_address, &client_address_length);
     if (new_client > 0 && this->setSockTimeOut(new_client) == true && fcntl(new_client, F_SETFL, O_NONBLOCK) == 0)
     {
@@ -126,7 +124,6 @@ void Port::selectServer(unsigned int i)
     int anywhere_index = -1;
     for(unsigned int x = 0; x < this->_servers.size(); x++)
     {
-        std::cout << "Host es |" << this->_servers[x]->getHost() << "|" << std::endl;
         HTTPRequestParser parser(this->_requests[i]);
         if(this->_servers[x]->getHost() == "0.0.0.0")
             anywhere_index = i;

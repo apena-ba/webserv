@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:02:05 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/06 17:38:34 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/16 16:41:02 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,22 +34,6 @@ class Cluster {
         void updatePortsFds(void);
         void remakeFds(void);
         void handleCommand(void);
-
-        // Exceptions
-        class FailPollException : public std::exception
-        {
-            virtual const char* what() const throw()
-            {
-                return ("Poll failed");
-            };
-        };
-        class InOutFailException : public std::exception
-        {
-            virtual const char* what() const throw()
-            {
-                return ("STDIN or STDOUT failed");
-            };
-        };
 };
 
 #endif
