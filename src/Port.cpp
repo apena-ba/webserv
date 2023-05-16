@@ -93,6 +93,8 @@ bool Port::setSockTimeOut(int fd)
         return (false);
     if (setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, (const void *) &this->_timeOutWrite, sizeof(this->_timeOutWrite)) < 0)
         return (false);
+    if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const void *) &this->_timeOutWrite, sizeof(this->_timeOutWrite)) < 0)
+        return (false);
     return (true);
 }
 
