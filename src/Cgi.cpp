@@ -6,10 +6,6 @@
 #include "Configuration.hpp"
 #include "ConfigurationParser/utils/ParsingUtils.hpp"
 
-std::string Cgi::_findScript(const std::string & path) {
-    return path.substr(path.find_last_of('/') + 1);
-}
-
 static std::string _replaceAllOccurence(std::string str, const std::string& from, const std::string& to) {
     size_t start_pos = 0;
     while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
@@ -38,7 +34,7 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
         env.push_back(env_var);
     }
 
-    std::string                 phpcgi = CGI_PATH;
+    std::string                 phpcgi = config.cgi;
     std::vector<const char *>   argv;
     argv.push_back(phpcgi.c_str());
     argv.push_back(path_info.c_str());
