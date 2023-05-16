@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ParsingUtils.cpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: efournou <efournou@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/16 20:16:28 by efournou          #+#    #+#             */
+/*   Updated: 2023/05/16 20:16:29 by efournou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ConfigurationParser/utils/ParsingUtils.hpp"
 
 ParsingUtils::ParsingUtils() {}
