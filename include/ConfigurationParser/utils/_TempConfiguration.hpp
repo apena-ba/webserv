@@ -15,12 +15,9 @@ private:
     STRING                      _host;
     STRING                      _root;
     STRING                      _index;
-    STRING                      _CgiPath;
     STRING                      _cgiExtension;
 
     void                        _setCgiExtension(const STRING &cgiExtension);
-
-    void                        _setCgiPath(const STRING &Path);
 
     void                        _setRoot(STRING root);
 
@@ -42,8 +39,6 @@ public:
     ~_TempConfiguration();
 
     STRING                      getCgiExtension() const;
-
-    STRING                      getCgiPath() const;
 
     STRING                      getIndex() const;
 

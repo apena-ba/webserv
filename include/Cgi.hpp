@@ -5,6 +5,8 @@
 #include "HTTPRequestParser.hpp"
 #include "Configuration.hpp"
 
+# define CGI_PATH "/Users/emilefournout/webservfinaltest/cgi_tester";
+
 class Cgi{
 private:
     static std::string                  _findScript(const std::string & path);

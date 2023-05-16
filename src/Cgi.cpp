@@ -38,7 +38,7 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
         env.push_back(env_var);
     }
 
-    std::string                 phpcgi = config.cgi;
+    std::string                 phpcgi = CGI_PATH;
     std::vector<const char *>   argv;
     argv.push_back(phpcgi.c_str());
     argv.push_back(path_info.c_str());
