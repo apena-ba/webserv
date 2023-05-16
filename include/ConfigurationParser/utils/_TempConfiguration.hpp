@@ -1,7 +1,7 @@
 #ifndef TEMP_CONFIGURATION_HPP
 #define TEMP_CONFIGURATION_HPP
 
-#include "../ConfigurationParser.hpp"
+#include "../../../../webservfinaltest/include/ConfigurationParser/ConfigurationParser.hpp"
 #include "macro.hpp"
 
 class ConfigurationParser::_TempConfiguration {
@@ -15,9 +15,12 @@ private:
     STRING                      _host;
     STRING                      _root;
     STRING                      _index;
+    STRING                      _CgiPath;
     STRING                      _cgiExtension;
 
     void                        _setCgiExtension(const STRING &cgiExtension);
+
+    void                        _setCgiPath(const STRING &Path);
 
     void                        _setRoot(STRING root);
 
@@ -39,6 +42,8 @@ public:
     ~_TempConfiguration();
 
     STRING                      getCgiExtension() const;
+
+    STRING                      getCgiPath() const;
 
     STRING                      getIndex() const;
 

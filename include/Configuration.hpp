@@ -15,8 +15,8 @@
 
 #include <vector>
 #include <iostream>
-#include "Route.hpp"
-#include "macro.hpp"
+#include "../../webservfinaltest/include/Route.hpp"
+#include "../../webservfinaltest/include/macro.hpp"
 
 class Configuration {
 private:
@@ -29,9 +29,10 @@ public:
                     UINT                    _clientBodyMaxSize,
                     const STRING &          _root,
                     const STRING &          _index,
+                    const STRING &          _cgi,
                     const STRING &          _cgi_extension,
                     const VECTOR_ROUTE &    _routes) :
-                    cgi_extension(_cgi_extension),
+                    cgi_extension(_cgi_extension), cgi(_cgi),
                     root(_root),
                     index(_index),
                     ports(_ports),
@@ -48,6 +49,8 @@ public:
 
     // fields configuration
     const STRING        cgi_extension;
+
+    const STRING        cgi;
 
     const STRING        root;
 

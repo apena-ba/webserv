@@ -2,10 +2,8 @@
 #define CGI_HPP
 
 #include <iostream>
-#include "HTTPRequestParser.hpp"
-#include "Configuration.hpp"
-
-# define CGI_PATH "/Users/apena-ba/Documents/Proyectos/webserv/cgi_tester";
+#include "../../webservfinaltest/include/HTTPRequestParser.hpp"
+#include "../../webservfinaltest/include/Configuration.hpp"
 
 class Cgi{
 private:

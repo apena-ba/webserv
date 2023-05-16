@@ -73,6 +73,7 @@ Configuration ConfigurationParser::_toConfiguration
 		    server.getClientBodyMaxSize(),
             server.getRoot(),
             server.getIndex(),
+            server.getCgiPath(),
             server.getCgiExtension(),
 		    routes);
     return conf;
