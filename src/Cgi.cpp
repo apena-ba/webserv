@@ -74,7 +74,7 @@ std::string Cgi::process(const HTTPRequestParser &request, const Configuration &
 
         execve(argv[0], (char * const *)argv.data(), envp);
         std::cerr << "execve failed, try changing the cgi program" << std::endl;
-        return "";
+        std::exit(1);
     }
     close(stdin_pipefd[0]);
     write(stdin_pipefd[1], stdin_content.c_str(), stdin_content.length());

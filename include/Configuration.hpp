@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:22:01 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/02 18:22:14 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/16 17:24:56 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 #include <vector>
 #include <iostream>
-#include "../../webservfinaltest/include/Route.hpp"
-#include "../../webservfinaltest/include/macro.hpp"
+#include "Route.hpp"
+#include "macro.hpp"
 
 class Configuration {
 private:
