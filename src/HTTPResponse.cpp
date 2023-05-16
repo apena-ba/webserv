@@ -6,7 +6,7 @@
 /*   By: ntamayo- <ntamayo-@student.42malaga.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/24 11:04:02 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/15 19:32:16 by ntamayo-         ###   ########.fr       */
+/*   Updated: 2023/05/16 17:17:37 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ std::string	HTTPResponse::run_cgi(const Configuration &conf)
 {
 	std::string	cgistr = Cgi::process(this->_request, conf, this->_body);
 
-	if (cgistr == "")
+	if (cgistr.empty())
 	{
 		this->_status = 500;
 		this->_body = ERROR500PAGE;
@@ -129,7 +129,7 @@ void	HTTPResponse::get_perform(const Configuration &conf)
 	if (Configuration::getExtension(this->_vals["location"]) == conf.cgi_extension)
 	{
 		std::string	cgistr = run_cgi(conf);
-		if (cgistr == "")
+		if (cgistr.empty())
 			return;
 		store_cgi(cgistr);
 	}
