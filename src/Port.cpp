@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:47:14 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/16 16:51:11 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/16 19:43:23 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,9 @@ void Port::updateFds(std::vector<pollfd> &general_fds, unsigned int *index)
     }
 }
 
-void Port::closeClient(unsigned int index, bool closer)
+void Port::closeClient(unsigned int index)
 {
-    if (closer == true)
-        close(this->_pollFds[index].fd);
+    close(this->_pollFds[index].fd);
     this->_pollFds.erase(this->_pollFds.begin() + index);
     this->_requests.erase(this->_requests.begin() + index);
 }
@@ -129,19 +128,21 @@ void Port::selectServer(unsigned int i)
             anywhere_index = i;
         if(parser.get("host") == this->_servers[x]->getHost())
         {
-            this->_servers[x]->handleRequest(parser, this->_pollFds[i].fd);
-            this->closeClient(i, false);
+            if(this->_servers[x]->handleRequest(parser, this->_pollFds[i].fd) == true){
+                std::cout << "vec size = " << this->_pollFds.size() << std::endl;
+                this->closeClient(i);
+            }
             return;
         }
     }
     if(anywhere_index != -1)
     {
         HTTPRequestParser parser(this->_requests[i]);
-        this->_servers[anywhere_index]->handleRequest(parser, this->_pollFds[i].fd);
-        this->closeClient(i, false);
+        if(this->_servers[anywhere_index]->handleRequest(parser, this->_pollFds[i].fd) == true)
+            this->closeClient(i);
         return;
     }
-    this->closeClient(i, true); // This only happens when no server host is available, maybe we shuld send a status code?
+    this->closeClient(i); // This only happens when no server host is available, maybe we shuld send a status code?
 }
 
 void Port::run(void)
@@ -166,6 +167,6 @@ void Port::run(void)
         else if(this->_pollFds[i].fd > 0 && this->_pollFds[i].revents & POLLOUT && !(this->_pollFds[i].revents & POLLIN)) // Check writing
             this->selectServer(i);
         else if(this->_pollFds[i].fd > 0 && (this->_pollFds[i].revents & POLLHUP || this->_pollFds[i].revents & POLLERR)) // Check error
-            this->closeClient(i, true);
+            this->closeClient(i);
     }
 }

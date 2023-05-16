@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/21 20:33:46 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/16 16:47:17 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/16 19:46:56 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@
 
 #define PORT 8085
 
-#define TIMEOUT_POLL 10
+#define TIMEOUT_POLL 100
 #define TIMEOUT_READING_SEC 3
 #define TIMEOUT_READING_USEC 0
 #define TIMEOUT_WRITING_SEC 3
 #define TIMEOUT_WRITING_USEC 0
-#define MAXCLIENT 100
-#define BUFFER_SIZE 1000
+#define MAXCLIENT 1000
+#define BUFFER_SIZE 1
 
 // types
 typedef std::string                 STRING;

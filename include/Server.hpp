@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:24:53 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/02 19:30:47 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/16 19:18:48 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,14 @@
 #include "HTTPRequestParser.hpp"
 #include <vector>
 
+typedef std::pair < std::string, size_t > pair2;
+typedef std::map<int, pair2> map2;
+
 class Server{
     private:
         Configuration           & _config;
         struct timeval    _timeOutWrite;
+        map2 _fds;
 
     public:
         Server();
@@ -29,7 +33,7 @@ class Server{
         ~Server();
         Server(Configuration &config);
         std::string getHost(void) const;
-        void handleRequest(HTTPRequestParser &parser, int client_socket);
+        bool handleRequest(HTTPRequestParser &parser, int client_socket);
 };
 
 timeval initializeTimeOutWrite(void);

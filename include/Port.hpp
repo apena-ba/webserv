@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:16:15 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/04/20 20:30:24 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/16 19:34:24 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ class Port{
         // METHODS
         void run(void);
         void createNewClient(void);
-        void closeClient(unsigned int index, bool closer);
+        void closeClient(unsigned int index);
         bool setSockTimeOut(int fd);
         void selectServer(unsigned int i);
         void updateFds(std::vector<pollfd> &general_fds, unsigned int *index);
