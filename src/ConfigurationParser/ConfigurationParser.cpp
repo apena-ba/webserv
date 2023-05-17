@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ConfigurationParser.cpp                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: efournou <efournou@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/16 20:16:09 by efournou          #+#    #+#             */
+/*   Updated: 2023/05/16 20:16:11 by efournou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ConfigurationParser/ConfigurationParser.hpp"
 #include "ConfigurationParser/utils/ParsingUtils.hpp"
 #include "ConfigurationParser/utils/_TempConfiguration.hpp"

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Configuration.cpp                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: efournou <efournou@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/16 20:16:21 by efournou          #+#    #+#             */
+/*   Updated: 2023/05/16 20:16:21 by efournou         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "Configuration.hpp"
 
 STRING Configuration::getExtension(const STRING &path) {
