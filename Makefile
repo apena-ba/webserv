@@ -4,7 +4,7 @@ NAME		= webserv
 
 CXX			= c++
 
-CXXFLAGS	= -Wall -Wextra -Werror -Wno-unused -Wno-unused-parameter -std=c++98
+CXXFLAGS	= -Wall -Wextra -Werror -std=c++98
 
 INC			= -I include -I include/ConfigurationParser
 

@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 17:49:10 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/17 10:52:20 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/17 10:54:12 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void cleanExit(int signal){
 
 //void ft(){system("leaks -q webserv");}
 
-int main(int argc, char **argv, char **env) {
+int main(int argc, char **argv) {
     if (argc != 2) {
         std::cerr << "Bad number of arguments" << std::endl;
         return (1);
