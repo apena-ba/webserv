@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 19:11:04 by ntamayo-          #+#    #+#             */
-/*   Updated: 2023/05/16 19:07:38 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/17 15:11:22 by ntamayo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ bool	HTTPRequestParser::parsefirstline(const std::string &req, uint32_t &i)
 	{
 		std::cerr << ">> Error: 503, service unavailable." << std::endl;
 		this->_status = 503;
-		return false;
 	}
 	this->_vals.insert(std::pair<std::string, std::string>("type", method));
 	i += method.size();
