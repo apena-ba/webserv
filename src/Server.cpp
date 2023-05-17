@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 20:54:01 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/16 19:51:24 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/17 10:36:21 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,7 @@ bool Server::handleRequest(HTTPRequestParser &parser, int client_socket)
     int retwrite = write(client_socket, this->_fds[client_socket].first.c_str() + this->_fds[client_socket].second, this->_fds[client_socket].first.size() - this->_fds[client_socket].second);
     if(retwrite >= 0)
         this->_fds[client_socket].second += retwrite;
-    else
-        std::cout << "WRITE FAILED" << std::endl;
     if(this->_fds[client_socket].second >= this->_fds[client_socket].first.size()){
-        std::cout << "map size = " << this->_fds.size() << std::endl;
         it = this->_fds.find(client_socket);
         this->_fds.erase(it);
         return true;

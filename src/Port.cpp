@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/19 19:47:14 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/16 19:43:23 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/17 10:52:43 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ unsigned int Port::getPort(void) const
     return this->_port;
 }
 
-
 bool Port::setSockTimeOut(int fd)
 {
     if (setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, (const void *) &this->_timeOutRead, sizeof(this->_timeOutRead)) < 0)
@@ -130,10 +129,8 @@ void Port::selectServer(unsigned int i)
             anywhere_index = i;
         if(parser.get("host") == this->_servers[x]->getHost())
         {
-            if(this->_servers[x]->handleRequest(parser, this->_pollFds[i].fd) == true){
-                std::cout << "vec size = " << this->_pollFds.size() << std::endl;
+            if(this->_servers[x]->handleRequest(parser, this->_pollFds[i].fd) == true)
                 this->closeClient(i);
-            }
             return;
         }
     }
@@ -144,7 +141,7 @@ void Port::selectServer(unsigned int i)
             this->closeClient(i);
         return;
     }
-    this->closeClient(i); // This only happens when no server host is available, maybe we shuld send a status code?
+    this->closeClient(i);
 }
 
 void Port::run(void)

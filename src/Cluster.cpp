@@ -6,7 +6,7 @@
 /*   By: apena-ba <apena-ba@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/13 20:08:07 by apena-ba          #+#    #+#             */
-/*   Updated: 2023/05/16 16:40:50 by apena-ba         ###   ########.fr       */
+/*   Updated: 2023/05/17 10:50:31 by apena-ba         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 #include <algorithm>
 
 // Cluster
-
-// Cluster::Cluster() {}
 
 Cluster::Cluster(std::vector<Configuration> &configs) {
     std::map<unsigned int, int> portsNumbers;
