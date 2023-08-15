@@ -1,11 +1,11 @@
 # WebServ
 ## Description
-Welcome to out HTTP 1.1 Web Server!
+Welcome to our HTTP 1.1 Web Server!
 
 This server was made for high availability taking Nginx as reference. It has some features like:
 - Displaying static and dynamic web pages using cgi
 - Hosting multiple servers in one system port
-- GET and POST request handling
+- GET, DELETE and POST request handling
 
 This server was developed for MacOs Ventura
 
