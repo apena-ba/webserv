@@ -37,8 +37,8 @@ void ConfigurationParser::_accessRoutePaths(const std::string & location_path,
 }
 
 void ConfigurationParser::_accessGeneralPaths(const std::string & root_path,
-                                              const std::string & index_path,
-                                              const std::string & error_page_path) {
+                                            const std::string & index_path,
+                                            const std::string & error_page_path) {
     if (access(root_path.c_str(), F_OK) == -1) {
         throw BadFile("Error: Cannot access root path");
     }
@@ -76,18 +76,17 @@ void ConfigurationParser::_accessPaths(FINAL_MODEL & model){
 }
 
 Configuration ConfigurationParser::_toConfiguration
-		(TEMP_CONFIGURATION &server,
-		 const VECTOR_ROUTE &routes) {
+		(TEMP_CONFIGURATION &server, const VECTOR_ROUTE &routes) {
     Configuration conf(server.getHost(),
-		    server.getMaxClients(),
-		    server.getDefaultErrorPage(),
-		    server.getPorts(),
-		    server.getClientBodyMaxSize(),
-            server.getRoot(),
-            server.getIndex(),
-            server.getCgiPath(),
-            server.getCgiExtension(),
-		    routes);
+		server.getMaxClients(),
+		server.getDefaultErrorPage(),
+		server.getPorts(),
+		server.getClientBodyMaxSize(),
+        server.getRoot(),
+        server.getIndex(),
+        server.getCgiPath(),
+        server.getCgiExtension(),
+		routes);
     return conf;
 }
 

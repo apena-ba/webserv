@@ -210,7 +210,3 @@ int	HTTPRequestParser::status() const
 {
 	return (this->_status);
 }
-
-// int									_status;
-// 		std::map<std::string, std::string>	_vals;
-// 		static std::vector<std::string>		_requestHeaderFields;

@@ -137,8 +137,6 @@ void	HTTPResponse::get_perform(const Configuration &conf)
 
 void	HTTPResponse::pos_perform(const Configuration &conf)
 {
-	/* if (!read_file(conf))
-	 *     return; */
 	this->_body = this->_vals["body"];
 	std::string	cgistr = run_cgi(conf);
 	if (this->_isDir)

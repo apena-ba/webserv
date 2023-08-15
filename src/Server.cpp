@@ -33,7 +33,6 @@ timeval initializeTimeOutWrite()
 
 // CONSTRUCTOR AND DESTRUCTOR
 
-//Server::Server() : _config(Configuration()), _timeOutWrite(initializeTimeOutWrite()){}
 Server::~Server(){}
 
 Server::Server(Configuration &config) : _config(config), _timeOutWrite(initializeTimeOutWrite())
@@ -42,35 +41,10 @@ Server::Server(Configuration &config) : _config(config), _timeOutWrite(initializ
 	HTTPResponse::fillerrorpages(config);
 }
 
-/*
-Server & Server::operator= (const Server & ref )
-{
-    this->_config = ref._config;
-    this->_timeOutWrite = ref._timeOutWrite;
-    return *this;
-}*/
-
-
 std::string Server::getHost(void) const
 {
     return (this->_config.host);
 }
-
-// void Server::handleRequest(HTTPRequestParser &parser, int client_socket)
-// {
-//     HTTPResponse    response(parser, this->_config);
-//     unsigned int size = response.getresponse().length();
-//     unsigned int cont = 0;
-//     int ret = 0;
-    
-//     while(cont < size){
-//         ret = write(client_socket, response.getresponse().c_str() + cont, size - cont);
-//         if (ret < 0)
-//             break;
-//         cont += ret;
-//     }
-//     close(client_socket);
-// }
 
 bool Server::handleRequest(HTTPRequestParser &parser, int client_socket)
 {
